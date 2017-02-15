@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>账户注册</title>
+    <link rel="stylesheet" href="js/lib/weuijs/style/weuijs.min.css">
+    <style>
+    .btn_plain-disabled {
+        color: rgba(0, 0, 0, .2);
+        border-color: rgba(0, 0, 0, .2);
+    }
+    </style>
+</head>
+
+<body>
+    <div class="weui-cells__title" style="margin: 1em auto; text-align: center; font-size: 18px; color: #000;">账户注册</div>
+    <form action="" method="post" id="form">
+        <input type="hidden" name="pubkey" id="pubkey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDL24wh6/WKW/7TkrNHiDKc0RUTIAdqWDvhlxlb4Az3n8v5hXqIsGV6b2Aol8Zn/ga7NIPz+cw2vsMh8fqQMMyc+VNAL548D4FEU/LG8MFoaRceGJFGCorEGaugUiq8L7rJXoHOUgsgnmvrFkzCSbnYe0XUG+WKfG5LSVakqr+JrwIDAQAB">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell" id="mobile-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">手机号</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="tel" required="" pattern="^\d{11}$" placeholder="请输入手机号" notMatchTips="请输入有效的手机号" name="mobile">
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode" id="vcode-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">验证码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" required="" pattern="^\d{4}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
+                </div>
+                <div class="weui-cell__ft">
+                    <img class="weui-vcode-img" src="/m/action/user/vcode" onclick="this.src='/m/action/user/vcode?t='+new Date().getTime()">
+                </div>
+            </div>
+            <div class="weui-cell weui-cell_vcode">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">短信验证码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" required="" pattern="^\d{6}$" placeholder="请输入短信验证码" notMatchTips="请输入有效的短信验证码" name="mobilecode">
+                </div>
+                <div class="weui-cell__ft">
+                    <button class="weui-vcode-btn" type="button" style="width: 6.35em; padding: 0;" id="mobilecode-btn">获取验证码</button>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">登录密码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="password" required="" placeholder="请输入登录密码" name="login_pwd" id="login-pwd">
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox" id="view-pwd">
+                </div>
+            </div>
+        </div>
+        <div class="weui-btn-area">
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="register-btn">注册</a>
+        </div>
+    </form>
+    <script type="text/javascript" src="js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
+    <script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
+    <script type="text/javascript">
+    function encryptPassword(password) {
+        //加密密码
+        var crypt = new JSEncrypt();
+        crypt.setPublicKey($('#pubkey').val());
+        return crypt.encrypt(password);
+    }
+
+    function getMobileCode() {
+        if (!weui.form.validate('#mobile-cell,#vcode-cell')) return;
+
+        var target = this;
+        if ($(target).hasClass('btn_plain-disabled')) {
+            return false;
+        }
+
+        var data = $('#form').serializeObject();
+
+        var secord = 180;
+        $(target).addClass('btn_plain-disabled').text(secord + '秒后重发');
+        var timer = setInterval(function() {
+            secord--;
+            $(target).text(secord + '秒后重发');
+            if (secord == 0) {
+                clearInterval(timer);
+                $(target).removeClass('btn_plain-disabled').text('重发验证码');
+            }
+        }, 1000);
+
+        $.ajax({
+            url: '/m/action/notify/mobilecode/register',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                mobile: data.mobile,
+                vcode: data.vcode
+            },
+            error: function() {
+                console.log(arguments);
+            },
+            success: function(data) {
+                console.log(arguments);
+            }
+        });
+    }
+
+    function register() {
+        if (!weui.form.validate('#form')) return;
+
+        var loading = weui.loading('注册中...');
+
+        var data = $('#form').serializeObject();
+        data.login_pwd = encryptPassword(data.login_pwd);
+
+        $.ajax({
+            url: '/m/action/user/register',
+            type: 'POST',
+            dataType: 'json',
+            data: data,
+            error: function() {
+                console.log(arguments);
+            },
+            success: function(data) {
+                console.log(arguments);
+            },
+            complete: function() {
+                loading.hide();
+            }
+        });
+    }
+
+    $(function() {
+        weui.form.checkIfBlur('#form');
+
+        $('#mobilecode-btn').on('click', getMobileCode);
+        $('#view-pwd').on('change', function() {
+            if ($(this).prop('checked')) {
+                $('#login-pwd').prop('type', 'text');
+            } else {
+                $('#login-pwd').prop('type', 'password');
+            }
+        });
+        $('#register-btn').on('click', register);
+    });
+    </script>
+</body>
+
+</html>

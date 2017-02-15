@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>账户登录</title>
+    <link rel="stylesheet" href="js/lib/weuijs/style/weuijs.min.css">
+</head>
+
+<body>
+    <div class="weui-cells__title" style="margin: 1em auto; text-align: center; font-size: 18px; color: #000;">账户登录</div>
+    <form action="" method="post" id="form">
+        <input type="hidden" name="pubkey" id="pubkey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDL24wh6/WKW/7TkrNHiDKc0RUTIAdqWDvhlxlb4Az3n8v5hXqIsGV6b2Aol8Zn/ga7NIPz+cw2vsMh8fqQMMyc+VNAL548D4FEU/LG8MFoaRceGJFGCorEGaugUiq8L7rJXoHOUgsgnmvrFkzCSbnYe0XUG+WKfG5LSVakqr+JrwIDAQAB">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">账户</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" required="" pattern="^\d{11}$" placeholder="请输入手机号" notMatchTips="请输入有效的手机号" name="mobile">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">登录密码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="password" required="" placeholder="请输入登录密码" name="login_pwd" id="login-pwd">
+                </div>
+                <div class="weui-cell__ft">
+                    <input class="weui-switch" type="checkbox" id="view-pwd">
+                </div>
+            </div>
+        </div>
+        <div class="weui-btn-area">
+            <a class="weui-btn weui-btn_primary" href="javascript:" id="login-btn">登录</a>
+        </div>
+    </form>
+    <div class="weui-cell weui-cell_link">
+        <a href="register.html" class="weui-cell__bd" style="text-align: left;">免费注册</a>
+        <a href="reset-pwd.html" class="weui-cell__bd" style="text-align: right;">忘记密码</a>
+    </div>
+    <script type="text/javascript" src="js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
+    <script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
+    <script type="text/javascript">
+    function encryptPassword(password) {
+        //加密密码
+        var crypt = new JSEncrypt();
+        crypt.setPublicKey($('#pubkey').val());
+        return crypt.encrypt(password);
+    }
+
+    function login() {
+        if (!weui.form.validate('#form')) return;
+
+        var loading = weui.loading('登录中...');
+
+        var data = $('#form').serializeObject();
+        data.login_pwd = encryptPassword(data.login_pwd);
+
+        $.ajax({
+            url: '/m/action/user/login',
+            type: 'POST',
+            dataType: 'json',
+            data: data,
+            error: function() {
+                console.log(arguments);
+            },
+            success: function(data) {
+                console.log(arguments);
+            },
+            complete: function() {
+                loading.hide();
+            }
+        });
+    }
+
+    $(function() {
+        weui.form.checkIfBlur('#form');
+
+        $('#view-pwd').on('change', function() {
+            if ($(this).prop('checked')) {
+                $('#login-pwd').prop('type', 'text');
+            } else {
+                $('#login-pwd').prop('type', 'password');
+            }
+        });
+        $('#login-btn').on('click', login);
+    });
+    </script>
+</body>
+
+</html>
