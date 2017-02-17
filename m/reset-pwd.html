@@ -33,7 +33,7 @@
                     <label class="weui-label">验证码</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="number" required="" pattern="^\d{6}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
+                    <input class="weui-input" type="number" required="" pattern="^\d{4}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
                 </div>
                 <div class="weui-cell__ft">
                     <img class="weui-vcode-img" src="/m/action/user/vcode" onclick="this.src='/m/action/user/vcode?t='+new Date().getTime()">
@@ -86,18 +86,6 @@
         }
 
         var data = $('#form').serializeObject();
-
-        var secord = 180;
-        $(target).addClass('btn_plain-disabled').text(secord + '秒后重发');
-        var timer = setInterval(function() {
-            secord--;
-            $(target).text(secord + '秒后重发');
-            if (secord == 0) {
-                clearInterval(timer);
-                $(target).removeClass('btn_plain-disabled').text('重发验证码');
-            }
-        }, 1000);
-
         $.ajax({
             url: '/m/action/notify/mobilecode/reset-pwd',
             type: 'POST',
@@ -111,6 +99,21 @@
             },
             success: function(data) {
                 console.log(arguments);
+
+                if(data.errcode == 0) {
+                    var secord = 180;
+                    $(target).addClass('btn_plain-disabled').text(secord + '秒后重发');
+                    var timer = setInterval(function() {
+                        secord--;
+                        $(target).text(secord + '秒后重发');
+                        if (secord == 0) {
+                            clearInterval(timer);
+                            $(target).removeClass('btn_plain-disabled').text('重发验证码');
+                        }
+                    }, 1000);
+                } else {
+                    weui.topTips(data.errmsg);
+                }
             }
         });
     }
@@ -133,6 +136,12 @@
             },
             success: function(data) {
                 console.log(arguments);
+
+                if(data.errcode == 0) {
+                    weui.toast('操作成功');
+                } else {
+                    weui.topTips(data.errmsg);
+                }
             },
             complete: function() {
                 loading.hide();

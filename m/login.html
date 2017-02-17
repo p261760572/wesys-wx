@@ -71,6 +71,12 @@
             },
             success: function(data) {
                 console.log(arguments);
+
+                if(data.errcode == 0) {
+                    weui.toast('登录成功');
+                } else {
+                    weui.topTips(data.errmsg);
+                }
             },
             complete: function() {
                 loading.hide();
