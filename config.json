@@ -1,0 +1,6 @@
+{
+    "copy": {
+        "src": ["../weuijs/dist/**"],
+        "dest": "m/js/lib"
+    }
+}

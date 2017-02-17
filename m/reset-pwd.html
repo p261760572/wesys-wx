@@ -36,7 +36,7 @@
                     <input class="weui-input" type="number" required="" pattern="^\d{6}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
                 </div>
                 <div class="weui-cell__ft">
-                    <img class="weui-vcode-img" src="http://weui.github.io/weui/images/vcode.jpg">
+                    <img class="weui-vcode-img" src="/m/action/user/vcode" onclick="this.src='/m/action/user/vcode?t='+new Date().getTime()">
                 </div>
             </div>
             <div class="weui-cell weui-cell_vcode">

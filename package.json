@@ -1,0 +1,16 @@
+{
+  "name": "wesys-wx",
+  "version": "1.0.0",
+  "description": "wesys-wx",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.coding.net/beymy/wesys-wx.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
