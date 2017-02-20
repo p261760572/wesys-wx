@@ -326,7 +326,7 @@
 (function() {
     var _sington;
     var tpl = '<div class="weui-wepay-flow"><div class="weui-wepay-flow__bd"><%for(var i=0; i < steps.length; i++) {%><div class="weui-wepay-flow__li" data-index="<%=i%>"><div class="weui-wepay-flow__state"><%=i+1%></div><p class="weui-wepay-flow__title-<%if(i%2==0){%>bottom<%}else{%>top<%}%>"><%=steps[i].title%></p></div><%if(i != steps.length-1) {%><div class="weui-wepay-flow__line" data-index="<%=i+1%>"><div class="weui-wepay-flow__process"></div></div><%}%><%}%></div></div>';
-    var actionsTpl = '<div class="weui-btn-area flow__btn-area"><a class="weui-btn weui-btn_default flow__btn_previous" href="javascript:;"><%=previousText%></a><a class="weui-btn weui-btn_primary flow__btn_next" href="javascript:"><%=nextText%></a><a class="weui-btn weui-btn_primary flow__btn_finish" href="javascript:"><%=finishText%></a></div>';
+    var actionsTpl = '<div class="weui-btn-area btn-area"><a class="weui-btn weui-btn_default flow__btn_previous" href="javascript:;"><%=previousText%></a><a class="weui-btn weui-btn_primary flow__btn_next" href="javascript:"><%=nextText%></a><a class="weui-btn weui-btn_primary flow__btn_finish" href="javascript:"><%=finishText%></a></div>';
 
     /**
      * flow 流程
@@ -466,12 +466,6 @@
 
 (function() {
 
-    // function _findCellParent(ele) {
-    //     if (!ele || !ele.classList) return null;
-    //     if (ele.classList.contains('weui-cell')) return ele;
-    //     return _findCellParent(ele.parentNode);
-    // }
-
     function _validate($input, $form, regexp) {
         var input = $input[0],
             val = $input.val();
@@ -486,8 +480,8 @@
                 }
                 return 'empty';
             } else if (input.type == 'checkbox') {
+                var checkboxInputs = $form.find('input[type="checkbox"][name="' + input.name + '"]');
                 if (reg) {
-                    var checkboxInputs = $form.find('input[type="checkbox"][name="' + input.name + '"]');
                     var regs = reg.replace(/[{\s}]/g, '').split(',');
                     var count = 0;
 
@@ -515,7 +509,10 @@
                         }
                     }
                 } else {
-                    return input.checked ? null : 'empty';
+                    for (var i = 0, len = checkboxInputs.length; i < len; ++i) {
+                        if (checkboxInputs[i].checked) return null;
+                    }
+                    return 'empty';
                 }
             } else if ($input.is('[required]') && !val.length) {
                 return 'empty';
@@ -827,8 +824,9 @@
 
         $gallery.show().addClass('weui-animate-fade-in');
 
-        _sington = $gallery[0];
-        _sington.hide = hide;
+        _sington = {
+            hide: hide
+        };
         return _sington;
     }
 
@@ -865,9 +863,9 @@
             className: ''
         }, options);
 
-        const $loadingWrap = $($.render(tpl, options));
-        const $loading = $loadingWrap.find('.weui-toast');
-        const $mask = $loadingWrap.find('.weui-mask');
+        var $loadingWrap = $($.render(tpl, options));
+        var $loading = $loadingWrap.find('.weui-toast');
+        var $mask = $loadingWrap.find('.weui-mask');
 
         function _hide() {
             _hide = $.noop; // 防止二次调用导致报错
@@ -898,9 +896,7 @@
 })();
 
 (function() {
-    var tpl = '<div class="<%= className %>" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无数据</span></div></div>';
-
-    var _sington;
+    var tpl = '<div class="<%= className %>" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">我是有底线的</span></div></div>';
 
     /**
      * loadmore 加载更多
@@ -912,8 +908,6 @@
      * weui.loadmore('#loadmore');
      */
     function loadmore(selector, options) {
-        if (_sington) return _sington;
-
         var $parent = $(selector);
 
         options = options || {};
@@ -931,20 +925,17 @@
             _hide = $.noop; // 防止二次调用导致报错
 
             $loadmoreWrap.remove();
-            _sington = false;
         }
 
         function hide() { _hide(); }
 
         function _loading() {
             if (isLoading) return;
-            isLoading = true;
 
             $loadmoreWrap.show();
             $loadmoreWrap.children().hide();
             $loadmoreWrap.find('.weui-loadmore').eq(0).show();
             options.onLoad(options.pageNumber, options.pageSize);
-            options.pageNumber++;
         }
 
         function loading(pageNumber) {
@@ -957,6 +948,7 @@
 
             $loadmoreWrap.children().hide();
             if (hasMore == true) {
+                options.pageNumber++;
                 $loadmoreWrap.find('.weui-footer').show();
             } else if (hasMore == false) {
                 $loadmoreWrap.find('.weui-loadmore_line').show();
@@ -968,7 +960,6 @@
             _loading();
         });
 
-        _sington = true;
         return {
             hide: hide,
             loading: loading,
@@ -986,32 +977,25 @@
     var $currentPage;
 
     function _show($page) {
-        _hide();
+        _hide();        
         $currentPage = $page;
         $page.addClass('page_show weui-animate-fade-in');
     }
 
-    function _hide($page) {
-        if ($page) {
-            $page.removeClass('page_show weui-animate-fade-in');
-        } else if ($currentPage) {
-            $currentPage.removeClass('page_show weui-animate-fade-in');
-        }
+    function _hide() {
+        $currentPage.removeClass('page_show weui-animate-fade-in');
     }
 
     /**
      * show 显示页面
      *
-     * @param {object} ele 当前页面的Dom Element
      * @param {string} selector 显示页面的selector
      *
      * @example
-     * weui.page.show(this, '#page');
+     * weui.page.show('#page');
      */
-    function show(ele, selector) {
-        var $page = $(ele).closest('.page');
-        _hide($page);
-        _history.push($page);
+    function show(selector) {
+        _history.push($currentPage);
         _show($(selector));
     }
 
@@ -1028,6 +1012,8 @@
             _show($page);
         }
     }
+
+    $currentPage = $('body').children('.page_show');
 
     window.weui = window.weui || {};
     window.weui.page = {
@@ -1415,11 +1401,16 @@ $.fn.scroll = function(options) {
      */
     $scrollable = $(this).off().on('touchstart', function(evt) {
         _start(evt.changedTouches[0].pageY);
+        evt.stopPropagation();
+        evt.preventDefault();
     }).on('touchmove', function(evt) {
         _move(evt.changedTouches[0].pageY);
+        evt.stopPropagation();
         evt.preventDefault();
     }).on('touchend', function(evt) {
         _end(evt.changedTouches[0].pageY);
+        evt.stopPropagation();
+        evt.preventDefault();
     }).on('mousedown', function(evt) {
         _start(evt.pageY);
         evt.stopPropagation();
@@ -1625,7 +1616,7 @@ $.fn.scroll = function(options) {
         var result = [];
         var lineTemp = temp[defaults.id];
         var $picker = $($.render(pickerTpl, defaults));
-        var depth = options.depth || (isMulti ? items.length : util.depthOf(items[0])),
+        var depth = options.depth || (isMulti ? items.length : depthOf(items[0])),
             groups = '';
 
         // 显示与隐藏的方法
@@ -1997,8 +1988,8 @@ $.fn.scroll = function(options) {
             $searchBarResult.html('');
         }
 
-        function show(target) {
-            weui.page.show(target, selector);
+        function show() {
+            weui.page.show(selector);
             _clear();
 
             return _obj;

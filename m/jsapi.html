@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>微信JS-SDK</title>
+    <link rel="stylesheet" href="js/lib/weuijs/style/weuijs.css">
+</head>
+
+<body>
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testChooseImage()">wxChooseImage</a>
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testUploadImage()">wxUploadImage</a>
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testGetNetworkType()">wxGetNetworkType</a>
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testLocation()">wxLocation</a>
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testScanQRCode()">wxScanQRCode</a>
+    <script type="text/javascript" src="js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="js/lib/zepto.js"></script>
+    <script type="text/javascript" src="js/lib/weuijs/weuijs.js"></script>
+    <script type="text/javascript" src="js/wx.js"></script>
+    <script type="text/javascript">
+    wxConfig({
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice', 'downloadVoice', 'chooseImage', 'previewImage', 'uploadImage', 'downloadImage', 'translateVoice', 'getNetworkType', 'openLocation', 'getLocation', 'hideOptionMenu', 'showOptionMenu', 'hideMenuItems', 'showMenuItems', 'hideAllNonBaseMenuItem', 'showAllNonBaseMenuItem', 'closeWindow', 'scanQRCode', 'chooseWXPay', 'openProductSpecificView', 'addCard', 'chooseCard', 'openCard']
+    });
+
+    var localIds;
+
+    function testChooseImage() {
+        wxChooseImage({
+            success: function(res) {
+                localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            }
+        });
+    }
+
+    function testUploadImage() {
+        wxUploadImage({
+            localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+            isShowProgressTips: 1, // 默认为1，显示进度提示
+            success: function(res) {
+                var serverId = res.serverId; // 返回图片的服务器端ID
+            }
+        });
+    }
+
+    function testGetNetworkType() {
+        wxGetNetworkType({});
+    }
+
+    function testLocation() {
+        wxLocation({});
+    }
+
+    function testScanQRCode() {
+        wxScanQRCode({});
+    }
+    </script>
+</body>
+
+</html>
