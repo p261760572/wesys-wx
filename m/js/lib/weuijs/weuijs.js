@@ -1,111 +1,58 @@
 (function() {
-    var _sington;
-    var tpl = '<div class="<% if(isAndroid){ %>weui-skin_android <% } %><%= className %>"><div class="weui-mask"></div><div class="weui-actionsheet"><div class="weui-actionsheet__menu"><% for(var i = 0; i < menus.length; i++){ %><div class="weui-actionsheet__cell"><%= menus[i].label %></div><% } %></div><div class="weui-actionsheet__action"><% for(var j = 0; j < actions.length; j++){ %><div class="weui-actionsheet__cell"><%= actions[j].label %></div><% } %></div></div></div>';
-
+    
     /**
-     * actionsheet 弹出式菜单
-     * @param {array} menus 上层的选项
-     * @param {string} menus[].label 选项的文字
-     * @param {function} menus[].onClick 选项点击时的回调
-     *
-     * @param {array} actions 下层的选项
-     * @param {string} actions[].label 选项的文字
-     * @param {function} actions[].onClick 选项点击时的回调
-     *
+     * alert 警告弹框，功能类似于浏览器自带的 alert 弹框，用于提醒、警告用户简单扼要的信息，只有一个“确认”按钮，点击“确认”按钮后关闭弹框。
+     * @param {string} content 弹窗内容
+     * @param {function=} yes 点击确定按钮的回调
      * @param {object=} options 配置项
+     * @param {string=} options.title 弹窗的标题
      * @param {string=} options.className 自定义类名
+     * @param {array=} options.buttons 按钮配置项，详情参考dialog
      *
      * @example
-     * weui.actionSheet([
-     *     {
-     *         label: '拍照',
-     *         onClick: function () {
-     *             console.log('拍照');
-     *         }
-     *     }, {
-     *         label: '从相册选择',
-     *         onClick: function () {
-     *             console.log('从相册选择');
-     *         }
-     *     }, {
-     *         label: '其他',
-     *         onClick: function () {
-     *             console.log('其他');
-     *         }
-     *     }
-     * ], [
-     *     {
-     *         label: '取消',
-     *         onClick: function () {
-     *             console.log('取消');
-     *         }
-     *     }
-     * ], {
-     *     className: 'custom-classname'
+     * weui.alert('普通的alert');
+     * weui.alert('带回调的alert', function(){ console.log('ok') });
+     * var alertDom = weui.alert('手动关闭的alert', function(){
+     *     return false; // 不关闭弹窗，可用alertDom.hide()来手动关闭
+     * });
+     * weui.alert('自定义标题的alert', { title: '自定义标题' });
+     * weui.alert('带回调的自定义标题的alert', function(){
+     *    console.log('ok')
+     * }, {
+     *    title: '自定义标题'
+     * });
+     * weui.alert('自定义按钮的alert', {
+     *     title: '自定义按钮的alert',
+     *     buttons: [{
+     *         label: 'OK',
+     *         type: 'primary',
+     *         onClick: function(){ console.log('ok') }
+     *     }]
      * });
      */
-    function actionSheet(menus, actions, options) {
-        if (_sington) return _sington;
+    function alert(content, yes, options) {
+        yes = yes || $.noop;
 
-        menus = menus || [];
-        actions = actions || [];
-        options = options || {};
+        if (typeof yes === 'object') {
+            options = yes;
+            yes = $.noop;
+        }
 
-        var isAndroid = $.os.android;
         options = $.extend({
-            menus: menus,
-            actions: actions,
-            className: '',
-            isAndroid: isAndroid
+            content: content,
+            buttons: [{
+                label: '确定',
+                type: 'primary',
+                onClick: yes
+            }]
         }, options);
-        var $actionSheetWrap = $($.render(tpl, options));
-        var $actionSheet = $actionSheetWrap.find('.weui-actionsheet');
-        var $actionSheetMask = $actionSheetWrap.find('.weui-mask');
 
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-            
-            $actionSheet.addClass(isAndroid ? 'weui-animate-fade-out' : 'weui-animate-slide-down');
-            $actionSheetMask
-                .addClass('weui-animate-fade-out')
-                .on('animationend webkitAnimationEnd', function() {
-                    $actionSheetWrap.remove();
-                    _sington = false;
-                });
-        }
-
-        function hide() {
-            _hide();
-        }
-
-        $('body').append($actionSheetWrap);
-
-        // 这里获取一下计算后的样式，强制触发渲染. fix IOS10下闪现的问题
-        // $.getStyle($actionSheet[0], 'transform');
-
-        $actionSheet.addClass(isAndroid ? 'weui-animate-fade-in' : 'weui-animate-slide-up');
-        $actionSheetMask
-            .addClass('weui-animate-fade-in')
-            .on('click', hide);
-        $actionSheetWrap.find('.weui-actionsheet__menu').on('click', '.weui-actionsheet__cell', function(evt) {
-            var index = $(this).index();
-            menus[index].onClick.call(this, evt);
-            hide();
-        });
-        $actionSheetWrap.find('.weui-actionsheet__action').on('click', '.weui-actionsheet__cell', function(evt) {
-            var index = $(this).index();
-            actions[index].onClick.call(this, evt);
-            hide();
-        });
-
-        _sington = $actionSheetWrap[0];
-        _sington.hide = hide;
-        return _sington;
+        return weui.dialog(options);
     }
 
     window.weui = window.weui || {};
-    window.weui.actionSheet = actionSheet;
-
+    window.weui.alert = alert;
+    
 })();
 
 (function() {
@@ -177,65 +124,8 @@
 })();
 
 (function() {
-    
-    /**
-     * alert 警告弹框，功能类似于浏览器自带的 alert 弹框，用于提醒、警告用户简单扼要的信息，只有一个“确认”按钮，点击“确认”按钮后关闭弹框。
-     * @param {string} content 弹窗内容
-     * @param {function=} yes 点击确定按钮的回调
-     * @param {object=} options 配置项
-     * @param {string=} options.title 弹窗的标题
-     * @param {string=} options.className 自定义类名
-     * @param {array=} options.buttons 按钮配置项，详情参考dialog
-     *
-     * @example
-     * weui.alert('普通的alert');
-     * weui.alert('带回调的alert', function(){ console.log('ok') });
-     * var alertDom = weui.alert('手动关闭的alert', function(){
-     *     return false; // 不关闭弹窗，可用alertDom.hide()来手动关闭
-     * });
-     * weui.alert('自定义标题的alert', { title: '自定义标题' });
-     * weui.alert('带回调的自定义标题的alert', function(){
-     *    console.log('ok')
-     * }, {
-     *    title: '自定义标题'
-     * });
-     * weui.alert('自定义按钮的alert', {
-     *     title: '自定义按钮的alert',
-     *     buttons: [{
-     *         label: 'OK',
-     *         type: 'primary',
-     *         onClick: function(){ console.log('ok') }
-     *     }]
-     * });
-     */
-    function alert(content, yes, options) {
-        yes = yes || $.noop;
-
-        if (typeof yes === 'object') {
-            options = yes;
-            yes = $.noop;
-        }
-
-        options = $.extend({
-            content: content,
-            buttons: [{
-                label: '确定',
-                type: 'primary',
-                onClick: yes
-            }]
-        }, options);
-
-        return weui.dialog(options);
-    }
-
-    window.weui = window.weui || {};
-    window.weui.alert = alert;
-    
-})();
-
-(function() {
     var _sington;
-    var tpl = '<div class="<%=className%>"><div class="weui-mask"></div><div class="weui-dialog <% if(isAndroid){ %> weui-skin_android <% } %>"><% if(title){ %><div class="weui-dialog__hd"><strong class="weui-dialog__title"><%=title%></strong></div><% } %><div class="weui-dialog__bd"><%=content%></div><div class="weui-dialog__ft"><% for(var i = 0; i < buttons.length; i++){ %><a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_<%=buttons[i][\'type\']%>"><%=buttons[i][\'label\']%></a><% } %></div></div></div>';
+    var tpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-dialog {{if isAndroid}} weui-skin_android{{/if}}">{{if title}}<div class="weui-dialog__hd"><strong class="weui-dialog__title">{{title}}</strong></div>{{/if}}<div class="weui-dialog__bd">{{content}}</div><div class="weui-dialog__ft">{{each buttons as button}}<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_{{button.type}}">{{button.label}}</a>{{/each}}</div></div></div>';
 
     /**
      * dialog，弹窗，alert和confirm的父类
@@ -325,8 +215,8 @@
 
 (function() {
     var _sington;
-    var tpl = '<div class="weui-wepay-flow"><div class="weui-wepay-flow__bd"><%for(var i=0; i < steps.length; i++) {%><div class="weui-wepay-flow__li" data-index="<%=i%>"><div class="weui-wepay-flow__state"><%=i+1%></div><p class="weui-wepay-flow__title-<%if(i%2==0){%>bottom<%}else{%>top<%}%>"><%=steps[i].title%></p></div><%if(i != steps.length-1) {%><div class="weui-wepay-flow__line" data-index="<%=i+1%>"><div class="weui-wepay-flow__process"></div></div><%}%><%}%></div></div>';
-    var actionsTpl = '<div class="weui-btn-area btn-area"><a class="weui-btn weui-btn_default flow__btn_previous" href="javascript:;"><%=previousText%></a><a class="weui-btn weui-btn_primary flow__btn_next" href="javascript:"><%=nextText%></a><a class="weui-btn weui-btn_primary flow__btn_finish" href="javascript:"><%=finishText%></a></div>';
+    var tpl = '<div class="weui-wepay-flow"><div class="weui-wepay-flow__bd">{{each steps as step i}}<div class="weui-wepay-flow__li" data-index="{{i}}"><div class="weui-wepay-flow__state">{{i+1}}</div><p class="weui-wepay-flow__title-{{if i%2==0}}bottom{{else}}top{{/if}}">{{step.title}}</p></div>{{if i != steps.length-1}}<div class="weui-wepay-flow__line" data-index="{{i+1}}"><div class="weui-wepay-flow__process"></div></div>{{/if}}{{/each}}</div></div>';
+    var actionsTpl = '<div class="weui-btn-area btn-area"><a class="weui-btn weui-btn_default flow__btn_previous" href="javascript:;">{{previousText}}</a><a class="weui-btn weui-btn_primary flow__btn_next" href="javascript:">{{nextText}}</a><a class="weui-btn weui-btn_primary flow__btn_finish" href="javascript:">{{finishText}}</a></div>';
 
     /**
      * flow 流程
@@ -363,6 +253,13 @@
     function flow(selector, options) {
         options = options || {};
         var $ele = $(selector);
+        var $steps = $ele.children('.flow__step');
+        var steps = [];
+        for (var i = 0; i < $steps.length; i++) {
+            steps.push({
+                title: $steps[i].title
+            });
+        }
         options = $.extend({
             finishText: '完成',
             nextText: '下一步',
@@ -372,12 +269,11 @@
             onFinishing: $.noop,
             onFinished: $.noop
         }, options, {
-            steps: $ele.children('.flow__step')
+            steps: steps
         });
         var $flow = $($.render(tpl, options));
         var $actions = $($.render(actionsTpl, options));
         var currentIndex = 0;
-        var $steps = options.steps;
 
         function _stepChange(newIndex) {
             if(options.onStepChanging(currentIndex, newIndex) == false) return;
@@ -771,7 +667,7 @@
 
 (function() {
     var _sington;
-    var tpl = '<div class="weui-gallery <%= className %>"><span class="weui-gallery__img" style="background-image: url(<%= url %>); <% if(!deletable){ %>bottom: 0;<% } %>"><%= url %></span><% if(deletable){ %><div class="weui-gallery__opr"><a href="javascript:" class="weui-gallery__del"><i class="weui-icon-delete weui-icon_gallery-delete"></i></a></div><% } %></div>';
+    var tpl = '<div class="weui-gallery {{className}}"><span class="weui-gallery__img" style="background-image: url({{url}}); {{if !deletable}}bottom: 0;{{/if}}">{{url}}</span>{{if deletable}}<div class="weui-gallery__opr"><a href="javascript:" class="weui-gallery__del"><i class="weui-icon-delete weui-icon_gallery-delete"></i></a></div>{{/if}}</div>';
 
     /**
      * gallery 带删除按钮的图片预览，主要是配合图片上传使用
@@ -837,7 +733,7 @@
 
 (function() {
     var _sington;
-    var tpl = '<div class="weui-loading_toast <%= className %>"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-loading weui-icon_toast"></i><p class="weui-toast__content"><%=content%></p></div></div>';
+    var tpl = '<div class="weui-loading_toast {{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-loading weui-icon_toast"></i><p class="weui-toast__content">{{content}}</p></div></div>';
 
     /**
      * loading
@@ -896,7 +792,7 @@
 })();
 
 (function() {
-    var tpl = '<div class="<%= className %>" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">我是有底线的</span></div></div>';
+    var tpl = '<div class="{{className}}" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">我是有底线的</span></div></div>';
 
     /**
      * loadmore 加载更多
@@ -1020,6 +916,116 @@
         show: show,
         back: back
     };
+
+})();
+
+(function() {
+    var _sington;
+    var tpl = '<div class="{{if isAndroid}}weui-skin_android {{/if}}{{className}}"><div class="weui-mask"></div><div class="weui-actionsheet"><div class="weui-actionsheet__menu">{{each menus as menu}}<div class="weui-actionsheet__cell">{{menu.label }}</div>{{/each}}</div><div class="weui-actionsheet__action">{{each actions as action}}<div class="weui-actionsheet__cell">{{action.label}}</div>{{/each}}</div></div></div>';
+
+    /**
+     * actionsheet 弹出式菜单
+     * @param {array} menus 上层的选项
+     * @param {string} menus[].label 选项的文字
+     * @param {function} menus[].onClick 选项点击时的回调
+     *
+     * @param {array} actions 下层的选项
+     * @param {string} actions[].label 选项的文字
+     * @param {function} actions[].onClick 选项点击时的回调
+     *
+     * @param {object=} options 配置项
+     * @param {string=} options.className 自定义类名
+     *
+     * @example
+     * weui.actionSheet([
+     *     {
+     *         label: '拍照',
+     *         onClick: function () {
+     *             console.log('拍照');
+     *         }
+     *     }, {
+     *         label: '从相册选择',
+     *         onClick: function () {
+     *             console.log('从相册选择');
+     *         }
+     *     }, {
+     *         label: '其他',
+     *         onClick: function () {
+     *             console.log('其他');
+     *         }
+     *     }
+     * ], [
+     *     {
+     *         label: '取消',
+     *         onClick: function () {
+     *             console.log('取消');
+     *         }
+     *     }
+     * ], {
+     *     className: 'custom-classname'
+     * });
+     */
+    function actionSheet(menus, actions, options) {
+        if (_sington) return _sington;
+
+        menus = menus || [];
+        actions = actions || [];
+        options = options || {};
+
+        var isAndroid = $.os.android;
+        options = $.extend({
+            menus: menus,
+            actions: actions,
+            className: '',
+            isAndroid: isAndroid
+        }, options);
+        var $actionSheetWrap = $($.render(tpl, options));
+        var $actionSheet = $actionSheetWrap.find('.weui-actionsheet');
+        var $actionSheetMask = $actionSheetWrap.find('.weui-mask');
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+            
+            $actionSheet.addClass(isAndroid ? 'weui-animate-fade-out' : 'weui-animate-slide-down');
+            $actionSheetMask
+                .addClass('weui-animate-fade-out')
+                .on('animationend webkitAnimationEnd', function() {
+                    $actionSheetWrap.remove();
+                    _sington = false;
+                });
+        }
+
+        function hide() {
+            _hide();
+        }
+
+        $('body').append($actionSheetWrap);
+
+        // 这里获取一下计算后的样式，强制触发渲染. fix IOS10下闪现的问题
+        // $.getStyle($actionSheet[0], 'transform');
+
+        $actionSheet.addClass(isAndroid ? 'weui-animate-fade-in' : 'weui-animate-slide-up');
+        $actionSheetMask
+            .addClass('weui-animate-fade-in')
+            .on('click', hide);
+        $actionSheetWrap.find('.weui-actionsheet__menu').on('click', '.weui-actionsheet__cell', function(evt) {
+            var index = $(this).index();
+            menus[index].onClick.call(this, evt);
+            hide();
+        });
+        $actionSheetWrap.find('.weui-actionsheet__action').on('click', '.weui-actionsheet__cell', function(evt) {
+            var index = $(this).index();
+            actions[index].onClick.call(this, evt);
+            hide();
+        });
+
+        _sington = $actionSheetWrap[0];
+        _sington.hide = hide;
+        return _sington;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.actionSheet = actionSheet;
 
 })();
 
@@ -1879,68 +1885,6 @@ $.fn.scroll = function(options) {
 (function() {
 
     /**
-     * searchbar 搜索框，主要实现搜索框组件一些显隐逻辑
-     * @param {string} selector searchbar的selector
-     * @param {function=} onSearch 搜索提交回调
-     * @param {function=} onCancelSearch 搜索取消回调
-     *
-     * @example
-     * weui.searchBar('#searchBar');
-     */
-    function searchBar(selector, onSearch, onCancelSearch) {
-        var $eles = $(selector);
-
-        onSearch = onSearch || $.noop;
-        onCancelSearch = onCancelSearch || $.noop;
-
-        $eles.forEach(function(ele) {
-            var $searchBar = $(ele);
-            var $searchLabel = $searchBar.find('.weui-search-bar__label');
-            var $searchInput = $searchBar.find('.weui-search-bar__input');
-            var $searchClear = $searchBar.find('.weui-icon-clear');
-            var $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
-            var $searchForm = $searchBar.find('.weui-search-bar__form');
-
-            function cancelSearch() {
-                $searchInput.val('');
-                $searchBar.removeClass('weui-search-bar_focusing');
-                onCancelSearch();
-            }
-
-            $searchLabel.on('click', function() {
-                $searchBar.addClass('weui-search-bar_focusing');
-                $searchInput[0].focus();
-            });
-            $searchInput.on('blur', function() {
-                if (!this.value.length) cancelSearch();
-            });
-            $searchClear.on('click', function() {
-                $searchInput.val('');
-                $searchInput[0].focus();
-            });
-            $searchCancel.on('click', function() {
-                cancelSearch();
-                $searchInput[0].blur();
-            });
-            $searchForm.on('submit', function(evt) {
-                evt.preventDefault();
-                onSearch();
-            });
-        });
-
-        var _obj = {};
-
-        return _obj;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.searchBar = searchBar;
-
-})();
-
-(function() {
-
-    /**
      * searchPage 搜索页
      * @param {string} selector searchPage的selector
      * @param {object=} options 配置项
@@ -2018,6 +1962,68 @@ $.fn.scroll = function(options) {
 
     window.weui = window.weui || {};
     window.weui.searchPage = searchPage;
+
+})();
+
+(function() {
+
+    /**
+     * searchbar 搜索框，主要实现搜索框组件一些显隐逻辑
+     * @param {string} selector searchbar的selector
+     * @param {function=} onSearch 搜索提交回调
+     * @param {function=} onCancelSearch 搜索取消回调
+     *
+     * @example
+     * weui.searchBar('#searchBar');
+     */
+    function searchBar(selector, onSearch, onCancelSearch) {
+        var $eles = $(selector);
+
+        onSearch = onSearch || $.noop;
+        onCancelSearch = onCancelSearch || $.noop;
+
+        $eles.forEach(function(ele) {
+            var $searchBar = $(ele);
+            var $searchLabel = $searchBar.find('.weui-search-bar__label');
+            var $searchInput = $searchBar.find('.weui-search-bar__input');
+            var $searchClear = $searchBar.find('.weui-icon-clear');
+            var $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
+            var $searchForm = $searchBar.find('.weui-search-bar__form');
+
+            function cancelSearch() {
+                $searchInput.val('');
+                $searchBar.removeClass('weui-search-bar_focusing');
+                onCancelSearch();
+            }
+
+            $searchLabel.on('click', function() {
+                $searchBar.addClass('weui-search-bar_focusing');
+                $searchInput[0].focus();
+            });
+            $searchInput.on('blur', function() {
+                if (!this.value.length) cancelSearch();
+            });
+            $searchClear.on('click', function() {
+                $searchInput.val('');
+                $searchInput[0].focus();
+            });
+            $searchCancel.on('click', function() {
+                cancelSearch();
+                $searchInput[0].blur();
+            });
+            $searchForm.on('submit', function(evt) {
+                evt.preventDefault();
+                onSearch();
+            });
+        });
+
+        var _obj = {};
+
+        return _obj;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.searchBar = searchBar;
 
 })();
 
@@ -2189,7 +2195,7 @@ $.fn.scroll = function(options) {
 
 (function() {
     var _sington;
-    var tpl = '<div class="<%= className %>"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-icon_toast weui-icon-success-no-circle"></i><p class="weui-toast__content"><%=content%></p></div></div>';
+    var tpl = '<div class="{{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-icon_toast weui-icon-success-no-circle"></i><p class="weui-toast__content">{{content}}</p></div></div>';
 
     /**
      * toast 一般用于操作成功时的提示场景
@@ -2253,80 +2259,6 @@ $.fn.scroll = function(options) {
 
     window.weui = window.weui || {};
     window.weui.toast = toast;
-
-})();
-
-(function() {
-    var _toptips = null;
-    var tpl = '<div class="weui-toptips weui-toptips_warn <%= className %>" style="display: block;"><%= content %></div>';
-
-    /**
-     * toptips 顶部报错提示
-     * @param {string} content 报错的文字
-     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
-     * @param {number=} [options.duration=3000] 多少毫秒后消失
-     * @param {function=} options.callback 消失后的回调
-     *
-     * @example
-     * weui.topTips('请填写正确的字段');
-     * weui.topTips('请填写正确的字段', 3000);
-     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
-     * weui.topTips('请填写正确的字段', {
-     *     duration: 3000,
-     *     className: 'custom-classname',
-     *     callback: function(){ console.log('close') }
-     * });
-     */
-    function topTips(content, options) {
-        options = options || {};
-        if (typeof options === 'number') {
-            options = {
-                duration: options
-            };
-        }
-
-        if (typeof options === 'function') {
-            options = {
-                callback: options
-            };
-        }
-
-        options = $.extend({
-            content: content,
-            duration: 3000,
-            callback: $.noop,
-            className: ''
-        }, options);
-
-        var $topTips = $($.render(tpl, options));
-
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-
-            $topTips.remove();
-            options.callback();
-            _toptips = null;
-        }
-
-        function hide() { _hide(); }
-
-        $('body').append($topTips);
-        if (_toptips) {
-            clearTimeout(_toptips.timeout);
-            _toptips.hide();
-        }
-
-        _toptips = {
-            hide: hide
-        };
-        _toptips.timeout = setTimeout(hide, options.duration);
-
-        $topTips[0].hide = hide;
-        return $topTips[0];
-    }
-
-    window.weui = window.weui || {};
-    window.weui.topTips = topTips;
 
 })();
 
@@ -2529,7 +2461,7 @@ function compress(file, options, callback) {
 }
 
 
-    var tplItem = '<li class="weui-uploader__file weui-uploader__file_status" data-id="<%= id %>"><div class="weui-uploader__file-content"><i class="weui-loading" style="width: 30px;height: 30px;"></i></div></li>';
+    var tplItem = '<li class="weui-uploader__file weui-uploader__file_status" data-id="{{id}}"><div class="weui-uploader__file-content"><i class="weui-loading" style="width: 30px;height: 30px;"></i></div></li>';
 
     var _id = 0;
 
@@ -2786,5 +2718,79 @@ function compress(file, options, callback) {
 
     window.weui = window.weui || {};
     window.weui.uploader = uploader;
+
+})();
+
+(function() {
+    var _toptips = null;
+    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
+
+    /**
+     * toptips 顶部报错提示
+     * @param {string} content 报错的文字
+     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
+     * @param {number=} [options.duration=3000] 多少毫秒后消失
+     * @param {function=} options.callback 消失后的回调
+     *
+     * @example
+     * weui.topTips('请填写正确的字段');
+     * weui.topTips('请填写正确的字段', 3000);
+     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
+     * weui.topTips('请填写正确的字段', {
+     *     duration: 3000,
+     *     className: 'custom-classname',
+     *     callback: function(){ console.log('close') }
+     * });
+     */
+    function topTips(content, options) {
+        options = options || {};
+        if (typeof options === 'number') {
+            options = {
+                duration: options
+            };
+        }
+
+        if (typeof options === 'function') {
+            options = {
+                callback: options
+            };
+        }
+
+        options = $.extend({
+            content: content,
+            duration: 3000,
+            callback: $.noop,
+            className: ''
+        }, options);
+
+        var $topTips = $($.render(tpl, options));
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+
+            $topTips.remove();
+            options.callback();
+            _toptips = null;
+        }
+
+        function hide() { _hide(); }
+
+        $('body').append($topTips);
+        if (_toptips) {
+            clearTimeout(_toptips.timeout);
+            _toptips.hide();
+        }
+
+        _toptips = {
+            hide: hide
+        };
+        _toptips.timeout = setTimeout(hide, options.duration);
+
+        $topTips[0].hide = hide;
+        return $topTips[0];
+    }
+
+    window.weui = window.weui || {};
+    window.weui.topTips = topTips;
 
 })();

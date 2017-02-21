@@ -7,7 +7,15 @@ var minimist = require('minimist');
 var options = minimist(process.argv.slice(2));
 
 gulp.task('copy', function() {
-    gulp.src(config.copy.src).pipe(gulp.dest(config.copy.dest));
+    var dest = config.copy.dest;
+    if(!Array.isArray(dest)) {
+        dest = [dest];
+    }
+    
+    dest.forEach(function (currentValue) {
+        gulp.src(config.copy.src).pipe(gulp.dest(currentValue));
+    });
+    
 });
 
 gulp.task('release', ['copy']);
