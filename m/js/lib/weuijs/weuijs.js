@@ -1,4 +1,114 @@
 (function() {
+    var _sington;
+    var tpl = '<div class="{{if isAndroid}}weui-skin_android {{/if}}{{className}}"><div class="weui-mask"></div><div class="weui-actionsheet"><div class="weui-actionsheet__menu">{{each menus as menu}}<div class="weui-actionsheet__cell {{menu.className}}">{{menu.label }}</div>{{/each}}</div><div class="weui-actionsheet__action">{{each actions as action}}<div class="weui-actionsheet__cell {{action.className}}">{{action.label}}</div>{{/each}}</div></div></div>';
+
+    /**
+     * actionsheet 弹出式菜单
+     * @param {array} menus 上层的选项
+     * @param {string} menus[].label 选项的文字
+     * @param {function} menus[].onClick 选项点击时的回调
+     *
+     * @param {array} actions 下层的选项
+     * @param {string} actions[].label 选项的文字
+     * @param {function} actions[].onClick 选项点击时的回调
+     *
+     * @param {object=} options 配置项
+     * @param {string=} options.className 自定义类名
+     *
+     * @example
+     * weui.actionSheet([
+     *     {
+     *         label: '拍照',
+     *         onClick: function () {
+     *             console.log('拍照');
+     *         }
+     *     }, {
+     *         label: '从相册选择',
+     *         onClick: function () {
+     *             console.log('从相册选择');
+     *         }
+     *     }, {
+     *         label: '其他',
+     *         onClick: function () {
+     *             console.log('其他');
+     *         }
+     *     }
+     * ], [
+     *     {
+     *         label: '取消',
+     *         onClick: function () {
+     *             console.log('取消');
+     *         }
+     *     }
+     * ], {
+     *     className: 'custom-classname'
+     * });
+     */
+    function actionSheet(menus, actions, options) {
+        if (_sington) return _sington;
+
+        menus = menus || [];
+        actions = actions || [];
+        options = options || {};
+
+        var isAndroid = $.os.android;
+        options = $.extend({
+            menus: menus,
+            actions: actions,
+            className: '',
+            isAndroid: isAndroid
+        }, options);
+        var $actionSheetWrap = $($.render(tpl, options));
+        var $actionSheet = $actionSheetWrap.find('.weui-actionsheet');
+        var $actionSheetMask = $actionSheetWrap.find('.weui-mask');
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+            
+            $actionSheet.addClass(isAndroid ? 'weui-animate-fade-out' : 'weui-animate-slide-down');
+            $actionSheetMask
+                .addClass('weui-animate-fade-out')
+                .on('animationend webkitAnimationEnd', function() {
+                    $actionSheetWrap.remove();
+                    _sington = false;
+                });
+        }
+
+        function hide() {
+            _hide();
+        }
+
+        $('body').append($actionSheetWrap);
+
+        // 这里获取一下计算后的样式，强制触发渲染. fix IOS10下闪现的问题
+        // $.getStyle($actionSheet[0], 'transform');
+
+        $actionSheet.addClass(isAndroid ? 'weui-animate-fade-in' : 'weui-animate-slide-up');
+        $actionSheetMask
+            .addClass('weui-animate-fade-in')
+            .on('click', hide);
+        $actionSheetWrap.find('.weui-actionsheet__menu').on('click', '.weui-actionsheet__cell', function(evt) {
+            var index = $(this).index();
+            menus[index].onClick.call(this, evt);
+            hide();
+        });
+        $actionSheetWrap.find('.weui-actionsheet__action').on('click', '.weui-actionsheet__cell', function(evt) {
+            var index = $(this).index();
+            actions[index].onClick.call(this, evt);
+            hide();
+        });
+
+        _sington = $actionSheetWrap[0];
+        _sington.hide = hide;
+        return _sington;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.actionSheet = actionSheet;
+
+})();
+
+(function() {
     
     /**
      * alert 警告弹框，功能类似于浏览器自带的 alert 弹框，用于提醒、警告用户简单扼要的信息，只有一个“确认”按钮，点击“确认”按钮后关闭弹框。
@@ -362,76 +472,52 @@
 
 (function() {
 
-    function _validate($input, $form, regexp) {
+    function _validate($input, $form, rules) {
         var input = $input[0],
             val = $input.val();
 
         if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
-            var reg = input.getAttribute('pattern') || '';
+            var reg = $input.attr('pattern') || '';
+            var validType = $input.attr('validtype') || '';
 
             if (input.type == 'radio') {
-                var radioInputs = $form.find('input[type="radio"][name="' + input.name + '"]');
-                for (var i = 0, len = radioInputs.length; i < len; ++i) {
-                    if (radioInputs[i].checked) return null;
+                // radio支持required
+                var $radioInputs = $form.find('input[type="radio"][name="' + input.name + '"]');
+                for (var i = 0, len = $radioInputs.length; i < len; ++i) {
+                    if ($radioInputs[i].checked) return null;
                 }
-                return 'empty';
+                return 'missing';
             } else if (input.type == 'checkbox') {
-                var checkboxInputs = $form.find('input[type="checkbox"][name="' + input.name + '"]');
-                if (reg) {
-                    var regs = reg.replace(/[{\s}]/g, '').split(',');
-                    var count = 0;
+                // checkbox支持required、pattern
+                var $checkboxInputs = $form.find('input[type="checkbox"][name="' + input.name + '"]');
 
-                    if (regs.length != 2) {
-                        throw input.outerHTML + ' regexp is wrong.';
-                    }
-
-                    checkboxInputs.forEach(function(checkboxInput) {
-                        if (checkboxInput.checked) ++count;
-                    });
-
-                    if (!count) return 'empty';
-
-                    if (regs[1] === '') { // {0,}
-                        if (count >= parseInt(regs[0])) {
-                            return null;
-                        } else {
-                            return 'notMatch';
-                        }
-                    } else { // {0,2}
-                        if (parseInt(regs[0]) <= count && count <= parseInt(regs[1])) {
-                            return null;
-                        } else {
-                            return 'notMatch';
-                        }
-                    }
-                } else {
-                    for (var i = 0, len = checkboxInputs.length; i < len; ++i) {
-                        if (checkboxInputs[i].checked) return null;
-                    }
-                    return 'empty';
+                var count = '';
+                for (var i = 0, len = $checkboxInputs.length; i < len; ++i) {
+                    if ($checkboxInputs[i].checked) count += '1';
                 }
+
+                if ($input.is('[required]') && !count.length) return 'missing';
+
+                return new RegExp('^1' + reg + '$').test(count) ? null : 'invalid';
             } else if ($input.is('[required]') && !val.length) {
-                return 'empty';
-            } else if (val.length && reg) {
-                if (/^REG_/.test(reg)) {
-                    if (!regexp) throw 'RegExp ' + reg + ' is empty.';
-
-                    reg = reg.replace(/^REG_/, '');
-                    if (!regexp[reg]) throw 'RegExp ' + reg + ' has not found.';
-
-                    reg = regexp[reg];
+                return 'missing';
+            } else if (val.length) {
+                var result = null;
+                if (reg) result = new RegExp(reg).test(val) ? null : 'invalid';
+                if (validType) {
+                    var arr = /(\w+)(.*)/.exec(validType);
+                    var rule = rules[arr[1]];
+                    if (rule) {
+                        var param = eval(arr[2]);
+                        result = rule(val, param) ? null : 'invalid';
+                    }
                 }
-                if (typeof reg == 'function') {
-                    return reg(val) ? null : 'notMatch';
-                } else {
-                    return new RegExp(reg).test(val) ? null : 'notMatch';
-                }
-            } else {
-                return null;
+
+                return result;
             }
         } else if ($input.is('[required]') && !val.length) {
             // 没有输入值
-            return 'empty';
+            return 'missing';
         }
 
         return null;
@@ -460,12 +546,13 @@
      * @example
      * ##### 普通input的HTML
      * ```html
-     * <input type="tel" required pattern="[0-9]{11}" placeholder="输入你现在的手机号" emptyTips="请输入手机号" notMatchTips="请输入正确的手机号">
-     * <input type="text" required pattern="REG_IDNUM" placeholder="输入你的身份证号码" emptyTips="请输入身份证号码" notMatchTips="请输入正确的身份证号码">
+     * <input type="tel" required pattern="[0-9]{11}" placeholder="输入你现在的手机号" missingTips="请输入手机号" invalidTips="请输入正确的手机号">
+     * <input type="text" required validType="idnum" placeholder="输入你的身份证号码" missingTips="请输入身份证号码" invalidTips="请输入正确的身份证号码">
      * ```
      * - required 表示需要校验
-     * - pattern 表示校验的正则，不填则进行为空校验。当以REG_开头时，则获取校验时传入的正则。如`pattern="REG_IDNUM"`，则需要在调用相应方法时传入`{regexp:{IDNUM: /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/}}`，详情请看下面`checkIfBlur`和`validate`
-     * - 报错的wording会从 emptyTips | notMatchTips | tips | placeholder 里获得
+     * - pattern 表示校验的正则，不填则进行为空校验。
+     * - validType 校验类型。如`validType="idnum"`，则需要在调用相应方法时传入`{rules: {idnum: function(value) {return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value); } } }`，详情请看下面`checkIfBlur`和`validate`
+     * - 报错的wording会从 missingTips | invalidTips | tips | placeholder 里获得
      * <br>
      *
      * ##### radio
@@ -478,7 +565,7 @@
      *
      * ##### checkbox
      * checkbox需要校验，只需把参数写在同一表单下，同name的第一个元素即可。
-     * pattern 规定选择个数，用法与正则一致，例如：
+     * pattern 规定选择个数，例如：
      * ```html
      * <input type="checkbox" name="assistance" value="黄药师" required pattern="{1,2}" tips="请勾选1-2个敲码助手" />
      * <input type="checkbox" name="assistance" value="欧阳锋" />
@@ -497,9 +584,10 @@
      *         console.log(error); // error: {dom:[Object], msg:[String]}
      *         // return true; // 当return true时，不会显示错误
      *     },
-     *     regexp: {
-     *         IDNUM: /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/,
-     *         VCODE: /^.{4}$/
+     *     rules: {
+     *         idnum: function(value) {
+     *             return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value);
+     *         }
      *     }
      * });
      * ```
@@ -513,15 +601,12 @@
         var result = true;
         $eles.each(function(index, ele) {
             var $form = $(ele);
-            var $requireds = $form.find('[required],[pattern]') ;
-            // $requireds.forEach(function(ele) {
-            //     $(ele).closest('.weui-cell').removeClass('weui-cell_warn');
-            // });
+            var $fields = $form.find('[required],[pattern],[validType]');
 
-            for (var i = 0, len = $requireds.length; i < len; ++i) {
-                var $required = $requireds.eq(i),
-                    errorMsg = _validate($required, $form, options.regexp),
-                    error = { ele: $required[0], msg: errorMsg };
+            for (var i = 0, len = $fields.length; i < len; ++i) {
+                var $field = $fields.eq(i),
+                    errorMsg = _validate($field, $form, options.rules),
+                    error = { ele: $field[0], msg: errorMsg };
                 if (errorMsg) {
                     if (!options.callback(error)) _showErrorMsg(error);
                     result = false;
@@ -541,9 +626,10 @@
      *
      * @example
      * weui.form.checkIfBlur('#form', {
-     *     regexp: {
-     *         IDNUM: /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/,
-     *         VCODE: /^.{4}$/
+     *     rules: {
+     *         idnum: function(value) {
+     *             return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value);
+     *         }
      *     }
      * });
      */
@@ -554,14 +640,14 @@
 
         $eles.forEach(function(ele) {
             var $form = $(ele);
-            $form.find('[required],[pattern]').on('blur', function() {
+            $form.find('[required],[pattern],[validType]').on('blur', function() {
                 // checkbox 和 radio 不做blur检测，以免误触发
                 if (this.type == 'checkbox' || this.type == 'radio') return;
 
                 var $this = $(this);
                 if ($this.val().length < 1) return; // 当空的时候不校验，以防不断弹出toptips
 
-                var errorMsg = _validate($this, $form, options.regexp);
+                var errorMsg = _validate($this, $form, options.rules);
                 if (errorMsg) {
                     _showErrorMsg({
                         ele: $this[0],
@@ -572,8 +658,6 @@
                 $(this).closest('.weui-cell').removeClass('weui-cell_warn');
             });
         });
-
-        return this;
     }
 
     /**
@@ -653,7 +737,7 @@
             }
         });
     }
-  
+
 
     window.weui = window.weui || {};
     window.weui.form = {
@@ -792,7 +876,7 @@
 })();
 
 (function() {
-    var tpl = '<div class="{{className}}" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">我是有底线的</span></div></div>';
+    var tpl = '<div class="{{className}}" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无更多数据</span></div></div>';
 
     /**
      * loadmore 加载更多
@@ -916,116 +1000,6 @@
         show: show,
         back: back
     };
-
-})();
-
-(function() {
-    var _sington;
-    var tpl = '<div class="{{if isAndroid}}weui-skin_android {{/if}}{{className}}"><div class="weui-mask"></div><div class="weui-actionsheet"><div class="weui-actionsheet__menu">{{each menus as menu}}<div class="weui-actionsheet__cell">{{menu.label }}</div>{{/each}}</div><div class="weui-actionsheet__action">{{each actions as action}}<div class="weui-actionsheet__cell">{{action.label}}</div>{{/each}}</div></div></div>';
-
-    /**
-     * actionsheet 弹出式菜单
-     * @param {array} menus 上层的选项
-     * @param {string} menus[].label 选项的文字
-     * @param {function} menus[].onClick 选项点击时的回调
-     *
-     * @param {array} actions 下层的选项
-     * @param {string} actions[].label 选项的文字
-     * @param {function} actions[].onClick 选项点击时的回调
-     *
-     * @param {object=} options 配置项
-     * @param {string=} options.className 自定义类名
-     *
-     * @example
-     * weui.actionSheet([
-     *     {
-     *         label: '拍照',
-     *         onClick: function () {
-     *             console.log('拍照');
-     *         }
-     *     }, {
-     *         label: '从相册选择',
-     *         onClick: function () {
-     *             console.log('从相册选择');
-     *         }
-     *     }, {
-     *         label: '其他',
-     *         onClick: function () {
-     *             console.log('其他');
-     *         }
-     *     }
-     * ], [
-     *     {
-     *         label: '取消',
-     *         onClick: function () {
-     *             console.log('取消');
-     *         }
-     *     }
-     * ], {
-     *     className: 'custom-classname'
-     * });
-     */
-    function actionSheet(menus, actions, options) {
-        if (_sington) return _sington;
-
-        menus = menus || [];
-        actions = actions || [];
-        options = options || {};
-
-        var isAndroid = $.os.android;
-        options = $.extend({
-            menus: menus,
-            actions: actions,
-            className: '',
-            isAndroid: isAndroid
-        }, options);
-        var $actionSheetWrap = $($.render(tpl, options));
-        var $actionSheet = $actionSheetWrap.find('.weui-actionsheet');
-        var $actionSheetMask = $actionSheetWrap.find('.weui-mask');
-
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-            
-            $actionSheet.addClass(isAndroid ? 'weui-animate-fade-out' : 'weui-animate-slide-down');
-            $actionSheetMask
-                .addClass('weui-animate-fade-out')
-                .on('animationend webkitAnimationEnd', function() {
-                    $actionSheetWrap.remove();
-                    _sington = false;
-                });
-        }
-
-        function hide() {
-            _hide();
-        }
-
-        $('body').append($actionSheetWrap);
-
-        // 这里获取一下计算后的样式，强制触发渲染. fix IOS10下闪现的问题
-        // $.getStyle($actionSheet[0], 'transform');
-
-        $actionSheet.addClass(isAndroid ? 'weui-animate-fade-in' : 'weui-animate-slide-up');
-        $actionSheetMask
-            .addClass('weui-animate-fade-in')
-            .on('click', hide);
-        $actionSheetWrap.find('.weui-actionsheet__menu').on('click', '.weui-actionsheet__cell', function(evt) {
-            var index = $(this).index();
-            menus[index].onClick.call(this, evt);
-            hide();
-        });
-        $actionSheetWrap.find('.weui-actionsheet__action').on('click', '.weui-actionsheet__cell', function(evt) {
-            var index = $(this).index();
-            actions[index].onClick.call(this, evt);
-            hide();
-        });
-
-        _sington = $actionSheetWrap[0];
-        _sington.hide = hide;
-        return _sington;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.actionSheet = actionSheet;
 
 })();
 
@@ -1434,7 +1408,7 @@ $.fn.scroll = function(options) {
 };
 
 
-    var pickerTpl = '<div class="<%= className %>"><div class="weui-mask"></div><div class="weui-picker"><div class="weui-picker__hd"><a href="javascript:;" data-action="cancel" class="weui-picker__action">取消</a><a href="javascript:;" data-action="select" class="weui-picker__action" id="weui-picker-confirm">确定</a></div><div class="weui-picker__bd"></div></div></div>';
+    var pickerTpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-picker"><div class="weui-picker__hd"><a href="javascript:;" data-action="cancel" class="weui-picker__action">取消</a><a href="javascript:;" data-action="select" class="weui-picker__action" id="weui-picker-confirm">确定</a></div><div class="weui-picker__bd"></div></div></div>';
     var groupTpl = '<div class="weui-picker__group"><div class="weui-picker__mask"></div><div class="weui-picker__indicator"></div><div class="weui-picker__content"></div></div>';
 
     function Result(item) {
@@ -1449,7 +1423,7 @@ $.fn.scroll = function(options) {
     };
 
     var _sington;
-    var temp = {}; // temp 存在上一次滑动的位置
+    // var temp = {}; // temp 存在上一次滑动的位置
 
     /**
      * picker 多列选择器。
@@ -1618,9 +1592,9 @@ $.fn.scroll = function(options) {
         }
 
         // 获取缓存
-        temp[defaults.id] = temp[defaults.id] || [];
+        // temp[defaults.id] = temp[defaults.id] || [];
         var result = [];
-        var lineTemp = temp[defaults.id];
+        var lineTemp = []; //temp[defaults.id];
         var $picker = $($.render(pickerTpl, defaults));
         var depth = options.depth || (isMulti ? items.length : depthOf(items[0])),
             groups = '';
@@ -1885,6 +1859,68 @@ $.fn.scroll = function(options) {
 (function() {
 
     /**
+     * searchbar 搜索框，主要实现搜索框组件一些显隐逻辑
+     * @param {string} selector searchbar的selector
+     * @param {function=} onSearch 搜索提交回调
+     * @param {function=} onCancelSearch 搜索取消回调
+     *
+     * @example
+     * weui.searchBar('#searchBar');
+     */
+    function searchBar(selector, onSearch, onCancelSearch) {
+        var $eles = $(selector);
+
+        onSearch = onSearch || $.noop;
+        onCancelSearch = onCancelSearch || $.noop;
+
+        $eles.forEach(function(ele) {
+            var $searchBar = $(ele);
+            var $searchLabel = $searchBar.find('.weui-search-bar__label');
+            var $searchInput = $searchBar.find('.weui-search-bar__input');
+            var $searchClear = $searchBar.find('.weui-icon-clear');
+            var $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
+            var $searchForm = $searchBar.find('.weui-search-bar__form');
+
+            function cancelSearch() {
+                $searchInput.val('');
+                $searchBar.removeClass('weui-search-bar_focusing');
+                onCancelSearch();
+            }
+
+            $searchLabel.on('click', function() {
+                $searchBar.addClass('weui-search-bar_focusing');
+                $searchInput[0].focus();
+            });
+            $searchInput.on('blur', function() {
+                if (!this.value.length) cancelSearch();
+            });
+            $searchClear.on('click', function() {
+                $searchInput.val('');
+                $searchInput[0].focus();
+            });
+            $searchCancel.on('click', function() {
+                cancelSearch();
+                $searchInput[0].blur();
+            });
+            $searchForm.on('submit', function(evt) {
+                evt.preventDefault();
+                onSearch();
+            });
+        });
+
+        var _obj = {};
+
+        return _obj;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.searchBar = searchBar;
+
+})();
+
+(function() {
+
+    /**
      * searchPage 搜索页
      * @param {string} selector searchPage的selector
      * @param {object=} options 配置项
@@ -1962,68 +1998,6 @@ $.fn.scroll = function(options) {
 
     window.weui = window.weui || {};
     window.weui.searchPage = searchPage;
-
-})();
-
-(function() {
-
-    /**
-     * searchbar 搜索框，主要实现搜索框组件一些显隐逻辑
-     * @param {string} selector searchbar的selector
-     * @param {function=} onSearch 搜索提交回调
-     * @param {function=} onCancelSearch 搜索取消回调
-     *
-     * @example
-     * weui.searchBar('#searchBar');
-     */
-    function searchBar(selector, onSearch, onCancelSearch) {
-        var $eles = $(selector);
-
-        onSearch = onSearch || $.noop;
-        onCancelSearch = onCancelSearch || $.noop;
-
-        $eles.forEach(function(ele) {
-            var $searchBar = $(ele);
-            var $searchLabel = $searchBar.find('.weui-search-bar__label');
-            var $searchInput = $searchBar.find('.weui-search-bar__input');
-            var $searchClear = $searchBar.find('.weui-icon-clear');
-            var $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
-            var $searchForm = $searchBar.find('.weui-search-bar__form');
-
-            function cancelSearch() {
-                $searchInput.val('');
-                $searchBar.removeClass('weui-search-bar_focusing');
-                onCancelSearch();
-            }
-
-            $searchLabel.on('click', function() {
-                $searchBar.addClass('weui-search-bar_focusing');
-                $searchInput[0].focus();
-            });
-            $searchInput.on('blur', function() {
-                if (!this.value.length) cancelSearch();
-            });
-            $searchClear.on('click', function() {
-                $searchInput.val('');
-                $searchInput[0].focus();
-            });
-            $searchCancel.on('click', function() {
-                cancelSearch();
-                $searchInput[0].blur();
-            });
-            $searchForm.on('submit', function(evt) {
-                evt.preventDefault();
-                onSearch();
-            });
-        });
-
-        var _obj = {};
-
-        return _obj;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.searchBar = searchBar;
 
 })();
 
@@ -2259,6 +2233,80 @@ $.fn.scroll = function(options) {
 
     window.weui = window.weui || {};
     window.weui.toast = toast;
+
+})();
+
+(function() {
+    var _toptips = null;
+    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
+
+    /**
+     * toptips 顶部报错提示
+     * @param {string} content 报错的文字
+     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
+     * @param {number=} [options.duration=3000] 多少毫秒后消失
+     * @param {function=} options.callback 消失后的回调
+     *
+     * @example
+     * weui.topTips('请填写正确的字段');
+     * weui.topTips('请填写正确的字段', 3000);
+     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
+     * weui.topTips('请填写正确的字段', {
+     *     duration: 3000,
+     *     className: 'custom-classname',
+     *     callback: function(){ console.log('close') }
+     * });
+     */
+    function topTips(content, options) {
+        options = options || {};
+        if (typeof options === 'number') {
+            options = {
+                duration: options
+            };
+        }
+
+        if (typeof options === 'function') {
+            options = {
+                callback: options
+            };
+        }
+
+        options = $.extend({
+            content: content,
+            duration: 3000,
+            callback: $.noop,
+            className: ''
+        }, options);
+
+        var $topTips = $($.render(tpl, options));
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+
+            $topTips.remove();
+            options.callback();
+            _toptips = null;
+        }
+
+        function hide() { _hide(); }
+
+        $('body').append($topTips);
+        if (_toptips) {
+            clearTimeout(_toptips.timeout);
+            _toptips.hide();
+        }
+
+        _toptips = {
+            hide: hide
+        };
+        _toptips.timeout = setTimeout(hide, options.duration);
+
+        $topTips[0].hide = hide;
+        return $topTips[0];
+    }
+
+    window.weui = window.weui || {};
+    window.weui.topTips = topTips;
 
 })();
 
@@ -2718,79 +2766,5 @@ function compress(file, options, callback) {
 
     window.weui = window.weui || {};
     window.weui.uploader = uploader;
-
-})();
-
-(function() {
-    var _toptips = null;
-    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
-
-    /**
-     * toptips 顶部报错提示
-     * @param {string} content 报错的文字
-     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
-     * @param {number=} [options.duration=3000] 多少毫秒后消失
-     * @param {function=} options.callback 消失后的回调
-     *
-     * @example
-     * weui.topTips('请填写正确的字段');
-     * weui.topTips('请填写正确的字段', 3000);
-     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
-     * weui.topTips('请填写正确的字段', {
-     *     duration: 3000,
-     *     className: 'custom-classname',
-     *     callback: function(){ console.log('close') }
-     * });
-     */
-    function topTips(content, options) {
-        options = options || {};
-        if (typeof options === 'number') {
-            options = {
-                duration: options
-            };
-        }
-
-        if (typeof options === 'function') {
-            options = {
-                callback: options
-            };
-        }
-
-        options = $.extend({
-            content: content,
-            duration: 3000,
-            callback: $.noop,
-            className: ''
-        }, options);
-
-        var $topTips = $($.render(tpl, options));
-
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-
-            $topTips.remove();
-            options.callback();
-            _toptips = null;
-        }
-
-        function hide() { _hide(); }
-
-        $('body').append($topTips);
-        if (_toptips) {
-            clearTimeout(_toptips.timeout);
-            _toptips.hide();
-        }
-
-        _toptips = {
-            hide: hide
-        };
-        _toptips.timeout = setTimeout(hide, options.duration);
-
-        $topTips[0].hide = hide;
-        return $topTips[0];
-    }
-
-    window.weui = window.weui || {};
-    window.weui.topTips = topTips;
 
 })();

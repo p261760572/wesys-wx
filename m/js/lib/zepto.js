@@ -2471,7 +2471,7 @@ window.$ === undefined && (window.$ = Zepto)
             return '$helpers.' + name + '(' + js + args + ')';
         }
 
-
+        // 语法解析器
         function parser(code) {
 
             code = code.replace(/^\s/, '');
