@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商户-商户参数</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <style type="text/css">
+    .weui-cells {
+        /*font-size: 16px;*/
+    }
+    
+    .weui-cell__bd {
+        position: relative;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="page1" class="page page_show">
+        <div class="weui-search-bar">
+            <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
+        </div>
+    </div>
+    <div id="page2" class="page">
+        <form id="form">
+          <div class="weui-cells__title">商户-商户参数</div>
+            <div class="weui-cells weui-cells_form">
+                
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">客户号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="mchnt_id" required=""  placeholder="请输入客户号"> </div>
+                </div>
+                
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商户参数ID</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="mchnt_param_id" required=""  placeholder="请输入商户参数ID"> </div>
+                </div>
+                 
+            </div>
+            <div class="weui-btn-area btn-area">
+                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
+                <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="../js/lib/zepto.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
+    <script id="result-template" type="text/html">
+        {{each rows as row}}
+        <div class="weui-cell weui-cell_access searchbar-result__item">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>
+                    {{row.text}}
+                </p>
+            </div>
+            <div class="weui-cell__ft">
+            </div>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+    var operateType;
+    var searchPage = weui.searchPage('#page1', {
+        resultTpl: '#result-template',
+        loader: onSearch,
+        onChange: function() {
+            console.log(this, arguments);
+        },
+        onSelect: function(row) {
+            console.log(this, arguments);
+            // weui.page.back();
+            showActions(row);
+        }
+    });
+
+    function onSearch(param, success, error) {
+        $$.request('/action/bm/mchnt-mchnt-param-rel/search', param, {
+            success: function(data) {
+                success(data.rows);
+            },
+            error: function() {
+                error();
+            }
+        });
+    }
+
+    function onView(param) {
+        $$.request('/action/bm/mchnt-mchnt-param-rel/view', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.form.load('#form', data.data);
+                } else {
+                    weui.alert(data.errmsg, { title: '错误提示' });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function onDelete(param) {
+        $$.request('/action/bm/mchnt-mchnt-param-rel/delete', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功');
+                } else {
+                    weui.alert(data.errmsg, { title: '错误提示' });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function showActions(row) {
+        weui.actionSheet([{
+            label: '查看',
+            onClick: function() {
+                console.log(this, arguments);
+                onView(row);
+                weui.page.show('#page2');
+                $('#back-btn').show().siblings().hide();
+            }
+        }, {
+            label: '编辑',
+            onClick: function() {
+                console.log(this, arguments);
+                onView(row);
+                operateType = 'update';
+                weui.page.show('#page2');
+                $('#back-btn').show().siblings().show();
+            }
+        }, {
+            label: '删除',
+            onClick: function() {
+                console.log(this, arguments);
+                weui.confirm('确认要删除?', function() {
+                    onDelete(row);
+                });
+            }
+        }], [{
+            label: '取消',
+            onClick: function() {
+                console.log(this, arguments);
+            }
+        }]);
+    }
+
+    var options = {
+        callback: function(error) {
+            console.log(this, arguments);
+        },
+        rules: {
+            idnum: function(value, args) {
+                return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value);
+            }
+        }
+    };
+
+    // 失去焦点时检测
+    weui.form.checkIfBlur('#form', options);
+
+    function onSubmit() {
+        if (!weui.form.validate('#form', options)) return;
+        var param = $('#form').serializeObject();
+
+        $$.request('/action/bm/mchnt-mchnt-param-rel/' + operateType, param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功');
+                } else {
+                    weui.alert(data.errmsg, { title: '错误提示' });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function onClickAdd() {
+        operateType = 'create';
+        weui.page.show('#page2');
+    }
+
+    $(function() {
+        $('#add-btn').on('click', onClickAdd);
+        $('#submit-btn').on('click', onSubmit) ;
+    });
+    </script>
+</body>
+
+</html>
