@@ -1,6 +1,6 @@
 {
     "copy": {
         "src": ["../weuijs/dist/**"],
-        "dest": ["m/js/lib", "../project/wxapp-v2/app/js/lib"]
+        "dest": ["m/js/lib", "../wxapp-v2/app/js/lib"]
     }
 }
