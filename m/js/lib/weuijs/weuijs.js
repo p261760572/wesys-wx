@@ -904,12 +904,12 @@
         var isLoading = false;
 
         function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-
             $loadmoreWrap.hide(); //只做hide不做remove
         }
 
-        function hide() { _hide(); }
+        function hide() {
+            _hide(); 
+        }
 
         function _loading() {
             if (isLoading) return;
@@ -2037,7 +2037,10 @@ $.fn.scroll = function(options) {
             return _obj;
         }
 
-        function search() {
+        function search(param) {
+            if(param) {
+                weui.form.load($searchForm, param);
+            }
             $searchForm.submit();
 
             return _obj;
@@ -2142,7 +2145,13 @@ $.fn.scroll = function(options) {
 
         function hide() { _hide(); }
 
+        function search(param) {
+            searchPage.search(param);
+            return _obj;
+        }
+
         var _obj = {
+            search: searchPage.search,
             hide: hide,
             options: options
         }
