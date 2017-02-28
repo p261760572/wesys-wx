@@ -341,7 +341,13 @@
     function onSearch(param, success, error) {
         $$.request('/action/bm/term-info/search', param, {
             success: function(data) {
-                success(data.rows);
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+                    weui.alert(data.errmsg, function () {
+                        error();
+                    }, { title: '提示' });
+                }
             },
             error: function() {
                 error();
@@ -355,7 +361,7 @@
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
                 } else {
-                    weui.alert(data.errmsg, { title: '错误提示' });
+                    weui.alert(data.errmsg, { title: '提示' });
                 }
             },
             error: function() {}
@@ -368,7 +374,7 @@
                 if (data.errcode == 0) {
                     weui.toast('操作成功');
                 } else {
-                    weui.alert(data.errmsg, { title: '错误提示' });
+                    weui.alert(data.errmsg, { title: '提示' });
                 }
             },
             error: function() {}
@@ -432,7 +438,7 @@
                 if (data.errcode == 0) {
                     weui.toast('操作成功');
                 } else {
-                    weui.alert(data.errmsg, { title: '错误提示' });
+                    weui.alert(data.errmsg, { title: '提示' });
                 }
             },
             error: function() {}
