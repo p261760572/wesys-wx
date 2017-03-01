@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>e通</title>
+    <link rel="stylesheet" href="../../lib/weui/style/weui.min.css">
+    <link rel="stylesheet" href="../../lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../../css/ui-base.css">
+</head>
+
+<body class="page_navbar">
+    <div class="navbar">
+        <div class="navbar__inner">
+            <div class="navbar__left">
+                <a href="javascript:history.back()" class="navbar__link">
+                    <i class="icon-back_nav"></i>
+                </a>
+            </div>
+            <div class="navbar__center">昵称</div>
+            <div class="navbar__right">
+                <a href="javascript:;" class="navbar__link" onclick="submitDetail()">
+                    <span>保存</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="page__content">
+        <form id="detail-fm" method="post" action="/action/user/update-nickname">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">昵称</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input validate" type="text" name="nickname" placeholder="请输入昵称" required="required">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="../../lib/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="../../lib/zepto/zepto.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../lib/art-template/template.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../lib/weuijs/weuijs.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/base.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    $(function() {
+        $$.request('/action/user/view', {}, function(data) {
+            $('#detail-fm').form('load', data.data);
+        });
+    });
+
+    function submitDetail() {
+        $$.submit('detail-fm', function() {
+            history.back();
+        });
+    }
+    </script>
+</body>
+
+</html>
