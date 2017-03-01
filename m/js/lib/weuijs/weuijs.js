@@ -471,6 +471,72 @@
 })();
 
 (function() {
+    var _sington;
+    var tpl = '<div class="weui-gallery {{className}}"><span class="weui-gallery__img" style="background-image: url({{url}}); {{if !deletable}}bottom: 0;{{/if}}">{{url}}</span>{{if deletable}}<div class="weui-gallery__opr"><a href="javascript:" class="weui-gallery__del"><i class="weui-icon-delete weui-icon_gallery-delete"></i></a></div>{{/if}}</div>';
+
+    /**
+     * gallery 带删除按钮的图片预览，主要是配合图片上传使用
+     * @param {string} url gallery显示的图片的url
+     * @param {object=} options 配置项
+     * @param {string=} options.className 自定义类名
+     * @param {boolean=} options.deletable 是否可以删除
+     * @param {function=} options.onDelete 点击删除图片时的回调
+     *
+     * @example
+     * var gallery = weui.gallery(url, {
+     *     className: 'custom-classname',
+     *     onDelete: function(){
+     *         if(confirm('确定删除该图片？')){ console.log('删除'); }
+     *         gallery.hide();
+     *     }
+     * });
+     */
+    function gallery(url, options) {
+        if (_sington) return _sington;
+
+        options = options || {};
+
+        options = $.extend({
+            className: '',
+            deletable: true,
+            onDelete: $.noop
+        }, options);
+
+        var $gallery = $($.render(tpl, $.extend({
+            url: url
+        }, options)));
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+
+            $gallery.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
+                $gallery.remove();
+                _sington = false;
+            });
+        }
+
+        function hide() { _hide(); }
+
+        $('body').append($gallery);
+        $gallery.find('.weui-gallery__img').on('click', hide);
+        $gallery.find('.weui-gallery__del').on('click', function() {
+            options.onDelete.call(this, url);
+        });
+
+        $gallery.show().addClass('weui-animate-fade-in');
+
+        _sington = {
+            hide: hide
+        };
+        return _sington;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.gallery = gallery;
+
+})();
+
+(function() {
 
     function _validate($input, $form, rules) {
         var input = $input[0],
@@ -751,72 +817,6 @@
 
 (function() {
     var _sington;
-    var tpl = '<div class="weui-gallery {{className}}"><span class="weui-gallery__img" style="background-image: url({{url}}); {{if !deletable}}bottom: 0;{{/if}}">{{url}}</span>{{if deletable}}<div class="weui-gallery__opr"><a href="javascript:" class="weui-gallery__del"><i class="weui-icon-delete weui-icon_gallery-delete"></i></a></div>{{/if}}</div>';
-
-    /**
-     * gallery 带删除按钮的图片预览，主要是配合图片上传使用
-     * @param {string} url gallery显示的图片的url
-     * @param {object=} options 配置项
-     * @param {string=} options.className 自定义类名
-     * @param {boolean=} options.deletable 是否可以删除
-     * @param {function=} options.onDelete 点击删除图片时的回调
-     *
-     * @example
-     * var gallery = weui.gallery(url, {
-     *     className: 'custom-classname',
-     *     onDelete: function(){
-     *         if(confirm('确定删除该图片？')){ console.log('删除'); }
-     *         gallery.hide();
-     *     }
-     * });
-     */
-    function gallery(url, options) {
-        if (_sington) return _sington;
-
-        options = options || {};
-
-        options = $.extend({
-            className: '',
-            deletable: true,
-            onDelete: $.noop
-        }, options);
-
-        var $gallery = $($.render(tpl, $.extend({
-            url: url
-        }, options)));
-
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-
-            $gallery.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
-                $gallery.remove();
-                _sington = false;
-            });
-        }
-
-        function hide() { _hide(); }
-
-        $('body').append($gallery);
-        $gallery.find('.weui-gallery__img').on('click', hide);
-        $gallery.find('.weui-gallery__del').on('click', function() {
-            options.onDelete.call(this, url);
-        });
-
-        $gallery.show().addClass('weui-animate-fade-in');
-
-        _sington = {
-            hide: hide
-        };
-        return _sington;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.gallery = gallery;
-
-})();
-
-(function() {
-    var _sington;
     var tpl = '<div class="weui-loading_toast {{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-loading weui-icon_toast"></i><p class="weui-toast__content">{{content}}</p></div></div>';
 
     /**
@@ -1002,6 +1002,70 @@
         show: show,
         back: back
     };
+
+})();
+
+(function() {
+
+    /**
+     * searchbar 搜索框，主要实现搜索框组件一些显隐逻辑
+     * @param {string} selector searchbar的selector
+     * @param {function=} onSearch 搜索提交回调
+     * @param {function=} onInput 搜索输入变化回调
+     *
+     * @example
+     * weui.searchBar('#searchBar');
+     */
+    function searchBar(selector, onSearch, onInput) {
+        onSearch = onSearch || $.noop;
+        onInput = onInput || $.noop;
+
+        var $eles = $(selector);
+
+        $eles.forEach(function(ele) {
+            var $searchBar = $(ele);
+            var $searchLabel = $searchBar.find('.weui-search-bar__label');
+            var $searchInput = $searchBar.find('.weui-search-bar__input');
+            var $searchClear = $searchBar.find('.weui-icon-clear');
+            var $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
+            var $searchForm = $searchBar.find('.weui-search-bar__form');
+
+            function cancelSearch() {
+                $searchInput.val('');
+                $searchBar.removeClass('weui-search-bar_focusing');
+            }
+
+            $searchLabel.on('click', function() {
+                $searchBar.addClass('weui-search-bar_focusing');
+                $searchInput[0].focus();
+            });
+            $searchInput.on('blur', function(evt) {
+                if (!this.value.length) cancelSearch();
+            }).on('input', function() {
+                onInput(this.value);
+            });
+            $searchClear.on('click', function() {
+                $searchInput.val('');
+                $searchInput[0].focus();
+            });
+            $searchCancel.on('click', function() {
+                cancelSearch();
+                onInput(null); //取消值为null
+                $searchInput[0].blur();
+            });
+            $searchForm.on('submit', function(evt) {
+                evt.preventDefault();
+                onSearch($searchInput.val());
+            });
+        });
+
+        var _obj = {};
+
+        return _obj;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.searchBar = searchBar;
 
 })();
 
@@ -1847,70 +1911,6 @@ $.fn.scroll = function(options) {
     window.weui = window.weui || {};
     window.weui.picker = picker;
     window.weui.datePicker = datePicker;
-
-})();
-
-(function() {
-
-    /**
-     * searchbar 搜索框，主要实现搜索框组件一些显隐逻辑
-     * @param {string} selector searchbar的selector
-     * @param {function=} onSearch 搜索提交回调
-     * @param {function=} onInput 搜索输入变化回调
-     *
-     * @example
-     * weui.searchBar('#searchBar');
-     */
-    function searchBar(selector, onSearch, onInput) {
-        onSearch = onSearch || $.noop;
-        onInput = onInput || $.noop;
-
-        var $eles = $(selector);
-
-        $eles.forEach(function(ele) {
-            var $searchBar = $(ele);
-            var $searchLabel = $searchBar.find('.weui-search-bar__label');
-            var $searchInput = $searchBar.find('.weui-search-bar__input');
-            var $searchClear = $searchBar.find('.weui-icon-clear');
-            var $searchCancel = $searchBar.find('.weui-search-bar__cancel-btn');
-            var $searchForm = $searchBar.find('.weui-search-bar__form');
-
-            function cancelSearch() {
-                $searchInput.val('');
-                $searchBar.removeClass('weui-search-bar_focusing');
-            }
-
-            $searchLabel.on('click', function() {
-                $searchBar.addClass('weui-search-bar_focusing');
-                $searchInput[0].focus();
-            });
-            $searchInput.on('blur', function(evt) {
-                if (!this.value.length) cancelSearch();
-            }).on('input', function() {
-                onInput(this.value);
-            });
-            $searchClear.on('click', function() {
-                $searchInput.val('');
-                $searchInput[0].focus();
-            });
-            $searchCancel.on('click', function() {
-                cancelSearch();
-                onInput(null); //取消值为null
-                $searchInput[0].blur();
-            });
-            $searchForm.on('submit', function(evt) {
-                evt.preventDefault();
-                onSearch($searchInput.val());
-            });
-        });
-
-        var _obj = {};
-
-        return _obj;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.searchBar = searchBar;
 
 })();
 
