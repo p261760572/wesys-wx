@@ -39,57 +39,59 @@
     </div>
     <div id="page2" class="page">
         <form id="form">
+          <input type="hidden" name="rec_id">
+          <input type="hidden" name="oper_in">
+          <input type="hidden" name="proc_st">
           <div class="weui-cells__title">终端参数</div>
             <div class="weui-cells weui-cells_form">
-                
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">终端参数ID</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="term_param_id" required=""  placeholder="请输入终端参数ID"> </div>
+                        <input class="weui-input" type="text" name="term_param_id" required=""  placeholder="请输入终端参数ID">
+                    </div>
                 </div>
-                
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">商户参数ID</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_param_id" required=""  placeholder="请输入商户参数ID"> </div>
+                        <input class="weui-input" type="text" name="mchnt_param_id" required=""  placeholder="请输入商户参数ID">
+                    </div>
                 </div>
-                
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">终端号</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="term_id" required=""  placeholder="请输入终端号"> </div>
+                        <input class="weui-input" type="text" name="term_id" required=""  placeholder="请输入终端号">
+                    </div>
                 </div>
-                
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">参数状态</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="status"   placeholder="请输入参数状态"> </div>
+                        <input class="weui-input" type="text" name="status"   placeholder="请输入参数状态">
+                    </div>
                 </div>
-                
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">拓展方</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_inst_id" required=""  placeholder="请输入拓展方"> </div>
+                        <input class="weui-input" type="text" name="expand_inst_id" required=""  placeholder="请输入拓展方">
+                    </div>
                 </div>
-                
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">拓展人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_id"   placeholder="请输入拓展人"> </div>
+                        <input class="weui-input" type="text" name="expand_id"   placeholder="请输入拓展人">
+                    </div>
                 </div>
-                 
             </div>
             <div class="weui-btn-area btn-area">
                 <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
@@ -105,52 +107,59 @@
                     </div>
                 </div>
                 <div class="weui-form-preview__bd">
-                    
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">终端参数ID</label>
                         <span class="weui-form-preview__value" id="preview.term_param_id"></span>
                     </div>
-                    
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">商户参数ID</label>
                         <span class="weui-form-preview__value" id="preview.mchnt_param_id"></span>
                     </div>
-                    
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">终端号</label>
                         <span class="weui-form-preview__value" id="preview.term_id"></span>
                     </div>
-                    
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">参数状态</label>
                         <span class="weui-form-preview__value" id="preview.status"></span>
                     </div>
-                    
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">拓展方</label>
                         <span class="weui-form-preview__value" id="preview.expand_inst_id"></span>
                     </div>
-                    
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">拓展人</label>
                         <span class="weui-form-preview__value" id="preview.expand_id"></span>
                     </div>
-                    
                 </div>
             </div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script id="result-template" type="text/html">
-        {{each rows as row}}
-        <div class="weui-cell weui-cell_access searchbar-result__item">
+        {{each rows as row i}}
+        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.text}}
-                </p>
+                <p>{{row.term_param_id}}{{row.mchnt_param_id}}</p>
             </div>
-            <div class="weui-cell__ft">
-            </div>
+            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st}}</div>
+        </a>
+        <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box__desc">{{row.term_id}}</div>
+            <div class="weui-media-box__desc">{{row.status}}</div>
+            <div class="weui-media-box__desc">{{row.checked_reason}}</div>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">{{row.created_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.created_by}}</li>
+            </ul>
+            <ul class="weui-media-box__info" style="margin-top: 0px;">
+                <li class="weui-media-box__info__meta">{{row.last_modified_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_modified_by}}</li>
+            </ul>
+            <ul class="weui-media-box__info" style="margin-top: 0px;">
+                <li class="weui-media-box__info__meta">{{row.last_checked_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_checked_by}}</li>
+            </ul>
         </div>
         {{/each}}
     </script>
@@ -159,10 +168,10 @@
     var searchPage = weui.searchPage('#page1', {
         resultTpl: '#result-template',
         loader: onSearch,
-        onChange: function() {
+        onInput: function() {
             console.log(this, arguments);
         },
-        onSelect: function(row) {
+        onClickItem: function(row) {
             console.log(this, arguments);
             // weui.page.back();
             showActions(row);
@@ -203,7 +212,9 @@
         $$.request('/action/bm/term-param/delete', param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    weui.toast('操作成功');
+                    weui.toast('操作成功', function () {
+                        searchPage.search();
+                    });
                 } else {
                     weui.alert(data.errmsg, { title: '提示' });
                 }
@@ -267,7 +278,10 @@
         $$.request('/action/bm/term-param/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    weui.toast('操作成功');
+                    weui.toast('操作成功', function () {
+                        searchPage.search();
+                         weui.page.back();
+                    });
                 } else {
                     weui.alert(data.errmsg, { title: '提示' });
                 }
