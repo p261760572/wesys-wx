@@ -57,15 +57,15 @@
                         <label class="weui-label">联系人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="linkman" required="" placeholder="请输入联系人">
+                        <input class="weui-input" type="text" name="linkman" required="" pattern="" placeholder="请输入联系人">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">手机</label>
+                        <label class="weui-label">手机号</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mobile" required="" placeholder="请输入手机">
+                        <input class="weui-input" type="text" name="mobile" required="" placeholder="请输入手机号" validType="mobile">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -73,7 +73,7 @@
                         <label class="weui-label">常用邮箱</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="email" placeholder="请输入常用邮箱">
+                        <input class="weui-input" type="text" name="email" placeholder="请输入常用邮箱" invalidType="email">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -89,7 +89,7 @@
                         <label class="weui-label">联系电话</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="telno" placeholder="请输入联系电话">
+                        <input class="weui-input" type="text" name="telno" placeholder="请输入联系电话" validType="telno">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -121,7 +121,7 @@
                         <label class="weui-label">营业执照号</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号">
+                        <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号" invalidType="license_no">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -129,7 +129,7 @@
                         <label class="weui-label">营业执照期限</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="license_date" placeholder="请选择营业执照期限" id="license-date-picker">
+                        <input class="weui-input" type="text" name="license_date" placeholder="请选择营业执照期限" invalidType="date" id="license-date-picker">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -179,7 +179,7 @@
                         <label class="weui-label">证件号码</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_id" required="" placeholder="请输入证件号码">
+                        <input class="weui-input" type="text" name="cert_id" required="" placeholder="请输入证件号码" validType="idnum">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -187,7 +187,7 @@
                         <label class="weui-label">证件有效期</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_date" placeholder="请输入证件有效期">
+                        <input class="weui-input" type="text" name="cert_date" placeholder="请输入证件有效期" invalidType="date">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -195,15 +195,18 @@
                         <label class="weui-label">组织机构代码</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="org_code" placeholder="请输入组织机构代码">
+                        <input class="weui-input" type="text" name="org_code" placeholder="请输入组织机构代码" pattern="^[A-Za-z0-9]+$">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">状态</label>
+                        <label for="" class="weui-label">状态</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="status" required="" placeholder="请输入状态">
+                        <select class="weui-select" name="status">
+                            <option value="1">启用</option>
+                            <option value="0">注销</option>
+                        </select>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -474,22 +477,11 @@
         }]);
     }
 
-    var options = {
-        callback: function(error) {
-            console.log(this, arguments);
-        },
-        rules: {
-            idnum: function(value, args) {
-                return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value);
-            }
-        }
-    };
-
     // 失去焦点时检测
-    weui.form.checkIfBlur('#form', options);
+    weui.form.checkIfBlur('#form', $$.rules);
 
     function onSubmit() {
-        if (!weui.form.validate('#form', options)) return;
+        if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
 
         $$.request('/action/bm/mchnt-base-info/' + operateType, param, {
@@ -578,7 +570,7 @@
                         if (data.errcode == 0) {
                             success(data[options.rowsName]);
                         } else {
-                            weui.alert(data.errmsg, {
+                            weui.alert(data.errmsg, error, {
                                 title: '提示'
                             });
                         }
@@ -588,8 +580,7 @@
                     }
                 })
             },
-            onClickItem: function(row) {
-                var opts = this.options;
+            onClickItem: function(row, opts) {
                 $target.val(row[opts.textField]).attr('data-value', row[opts.valueField]);
             }
         }, options);

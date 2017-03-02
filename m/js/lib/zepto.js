@@ -2590,12 +2590,12 @@ window.$ === undefined && (window.$ = Zepto)
                 loading = weui.loading('加载中...');
             },
             complete: function(xhr, status) {
-                if(loading) loading.hide();
+                if (loading) loading.hide();
             }
         }, options);
 
 
-        $.ajax(options);
+        return $.ajax(options);
     };
 
 
@@ -2698,5 +2698,50 @@ window.$ === undefined && (window.$ = Zepto)
             }
         }
         return null;
-    }
+    };
+
+    $$.rules = {
+        rules: {
+            email: function(value) {
+                return /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value);
+            },
+            url: function(value) {
+                return /^(https?|ftp):\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/.test(value);
+            },
+            length: function(value, param) {
+                var len = $.trim(_44).length;
+                return len >= param[0] && len <= param[1];
+            },
+            remote: function(value, param) {
+                var errcode = -1;
+                var data = {};
+                data[param[1]] = value;
+                $$.request(param[0], data, {
+                    async: false,
+                    success: function(data) {
+                        errcode = data.errcode;
+                    }
+                });
+                return errcode == 0;
+            },
+            mobile: function(value) {
+                return /^1[34578]{1}\d{9}$/.test(value);
+            },
+            telno: function(value) {
+                return /^\d{3}-\d{8}$|^\d{4}-\d{7}$/.test(value);
+            },
+            ip: function(value) {
+                return /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/.test(value);
+            },
+            date: function(value) {
+                return /^\d{4}-\d{1,2}-\d{1,2}$/.test(value);
+            },
+            idnum: function(value, args) {
+                return /^\d{15}$|^\d{17}[\dXx]$/.test(value);
+            },
+            license_no: function(value) {
+                return /^[A-Za-z0-9]+$/.test(value);
+            }
+        }
+    };
 })();

@@ -2285,57 +2285,76 @@ $.fn.scroll = function(options) {
 })();
 
 (function() {
+    var _toptips = null;
+    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
 
     /**
-     * tab tab导航栏
-     * @param {string} selector tab的selector
-     * @param {object=} options 配置项
-     * @param {number=} [options.defaultIndex=0] 初始展示的index
-     * @param {function=} options.onChange 点击tab时，返回对应的index
+     * toptips 顶部报错提示
+     * @param {string} content 报错的文字
+     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
+     * @param {number=} [options.duration=3000] 多少毫秒后消失
+     * @param {function=} options.callback 消失后的回调
      *
      * @example
-     * weui.tab('#tab',{
-     *     defaultIndex: 0,
-     *     onChange: function(index){
-     *         console.log(index);
-     *     }
+     * weui.topTips('请填写正确的字段');
+     * weui.topTips('请填写正确的字段', 3000);
+     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
+     * weui.topTips('请填写正确的字段', {
+     *     duration: 3000,
+     *     className: 'custom-classname',
+     *     callback: function(){ console.log('close') }
      * });
      */
-    function tab(selector, options) {
-        var $eles = $(selector);
+    function topTips(content, options) {
         options = options || {};
+        if (typeof options === 'number') {
+            options = {
+                duration: options
+            };
+        }
+
+        if (typeof options === 'function') {
+            options = {
+                callback: options
+            };
+        }
+
         options = $.extend({
-            defaultIndex: 0,
-            onChange: $.noop
+            content: content,
+            duration: 3000,
+            callback: $.noop,
+            className: ''
         }, options);
 
-        $eles.forEach(function(ele) {
-            var $tab = $(ele);
-            var $tabItems = $tab.find('.weui-navbar__item, .weui-tabbar__item');
-            var $tabContents = $tab.find('.weui-tab__content');
+        var $topTips = $($.render(tpl, options));
 
-            $tabItems.eq(options.defaultIndex).addClass('weui-bar__item_on');
-            $tabContents.eq(options.defaultIndex).show();
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
 
-            $tabItems.on('click', function() {
-                var $this = $(this),
-                    index = $this.index();
+            $topTips.remove();
+            options.callback();
+            _toptips = null;
+        }
 
-                $tabItems.removeClass('weui-bar__item_on');
-                $this.addClass('weui-bar__item_on');
+        function hide() { _hide(); }
 
-                $tabContents.hide();
-                $tabContents.eq(index).show();
+        $('body').append($topTips);
+        if (_toptips) {
+            clearTimeout(_toptips.timeout);
+            _toptips.hide();
+        }
 
-                options.onChange.call(this, index);
-            });
-        });
+        _toptips = {
+            hide: hide
+        };
+        _toptips.timeout = setTimeout(hide, options.duration);
 
-        return this;
+        $topTips[0].hide = hide;
+        return $topTips[0];
     }
 
     window.weui = window.weui || {};
-    window.weui.tab = tab;
+    window.weui.topTips = topTips;
 
 })();
 
@@ -2409,76 +2428,57 @@ $.fn.scroll = function(options) {
 })();
 
 (function() {
-    var _toptips = null;
-    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
 
     /**
-     * toptips 顶部报错提示
-     * @param {string} content 报错的文字
-     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
-     * @param {number=} [options.duration=3000] 多少毫秒后消失
-     * @param {function=} options.callback 消失后的回调
+     * tab tab导航栏
+     * @param {string} selector tab的selector
+     * @param {object=} options 配置项
+     * @param {number=} [options.defaultIndex=0] 初始展示的index
+     * @param {function=} options.onChange 点击tab时，返回对应的index
      *
      * @example
-     * weui.topTips('请填写正确的字段');
-     * weui.topTips('请填写正确的字段', 3000);
-     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
-     * weui.topTips('请填写正确的字段', {
-     *     duration: 3000,
-     *     className: 'custom-classname',
-     *     callback: function(){ console.log('close') }
+     * weui.tab('#tab',{
+     *     defaultIndex: 0,
+     *     onChange: function(index){
+     *         console.log(index);
+     *     }
      * });
      */
-    function topTips(content, options) {
+    function tab(selector, options) {
+        var $eles = $(selector);
         options = options || {};
-        if (typeof options === 'number') {
-            options = {
-                duration: options
-            };
-        }
-
-        if (typeof options === 'function') {
-            options = {
-                callback: options
-            };
-        }
-
         options = $.extend({
-            content: content,
-            duration: 3000,
-            callback: $.noop,
-            className: ''
+            defaultIndex: 0,
+            onChange: $.noop
         }, options);
 
-        var $topTips = $($.render(tpl, options));
+        $eles.forEach(function(ele) {
+            var $tab = $(ele);
+            var $tabItems = $tab.find('.weui-navbar__item, .weui-tabbar__item');
+            var $tabContents = $tab.find('.weui-tab__content');
 
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
+            $tabItems.eq(options.defaultIndex).addClass('weui-bar__item_on');
+            $tabContents.eq(options.defaultIndex).show();
 
-            $topTips.remove();
-            options.callback();
-            _toptips = null;
-        }
+            $tabItems.on('click', function() {
+                var $this = $(this),
+                    index = $this.index();
 
-        function hide() { _hide(); }
+                $tabItems.removeClass('weui-bar__item_on');
+                $this.addClass('weui-bar__item_on');
 
-        $('body').append($topTips);
-        if (_toptips) {
-            clearTimeout(_toptips.timeout);
-            _toptips.hide();
-        }
+                $tabContents.hide();
+                $tabContents.eq(index).show();
 
-        _toptips = {
-            hide: hide
-        };
-        _toptips.timeout = setTimeout(hide, options.duration);
+                options.onChange.call(this, index);
+            });
+        });
 
-        $topTips[0].hide = hide;
-        return $topTips[0];
+        return this;
     }
 
     window.weui = window.weui || {};
-    window.weui.topTips = topTips;
+    window.weui.tab = tab;
 
 })();
 
