@@ -538,8 +538,9 @@
         }
         options = $.extend({
             defaultValue: defaultValue,
-            onChange: function(result, opts) {},
-            onConfirm: function(result, opts) {
+            onChange: function(result) {},
+            onConfirm: function(result) {
+                var opts = this.options;
                 var text = result.map(function(item) {
                     return item[opts.textField];
                 });
@@ -587,7 +588,8 @@
                     }
                 })
             },
-            onClickItem: function(row, opts) {
+            onClickItem: function(row) {
+                var opts = this.options;
                 $target.val(row[opts.textField]).attr('data-value', row[opts.valueField]);
             }
         }, options);
