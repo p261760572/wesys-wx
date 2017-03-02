@@ -1648,7 +1648,7 @@ $.fn.scroll = function(options) {
                     lineTemp[level] = index;
 
                     if (isMulti) {
-                        defaults.onChange(result);
+                        defaults.onChange.call(_sington, result);
                     } else {
                         /**
                          * @子列表处理
@@ -1673,7 +1673,7 @@ $.fn.scroll = function(options) {
 
                             result.splice(level + 1);
 
-                            defaults.onChange(result);
+                            defaults.onChange.call(_sington, result);
                         }
                     }
                 }
@@ -1688,6 +1688,16 @@ $.fn.scroll = function(options) {
         $picker.find('.weui-picker__bd').html(groups);
         show();
 
+        $picker.on('click', '.weui-mask', hide).on('click', '.weui-picker__action', hide)
+            .on('click', '#weui-picker-confirm', function() {
+                defaults.onConfirm.call(_sington, result);
+            });
+            
+        _sington = {
+            hide: hide,
+            options: defaults
+        };
+
         if (isMulti) {
             items.forEach(function(item, index) {
                 scroll(item, index);
@@ -1696,12 +1706,6 @@ $.fn.scroll = function(options) {
             scroll(items, 0);
         }
 
-        $picker.on('click', '.weui-mask', hide).on('click', '.weui-picker__action', hide)
-            .on('click', '#weui-picker-confirm', function() {
-                defaults.onConfirm(result);
-            });
-        _sington = $picker[0];
-        _sington.hide = hide;
         return _sington;
     }
 
@@ -1958,7 +1962,7 @@ $.fn.scroll = function(options) {
             weui.searchBar($searchBar, $.noop, function(q) {
                 _clear();
                 loadData(filter(q));
-                options.onInput.apply(this, arguments);
+                options.onInput.call(_obj, q);
             });
 
             loadData(options.data);
@@ -1980,11 +1984,11 @@ $.fn.scroll = function(options) {
                 }
             });
 
-            weui.searchBar($searchBar, function() {
+            weui.searchBar($searchBar, function(q) {
                 _clear();
                 loadmore.loading();
-            }, function() {
-                options.onInput.apply(this, arguments);
+            }, function(q) {
+                options.onInput.call(_obj, q);
             });
         }
 
@@ -2001,7 +2005,7 @@ $.fn.scroll = function(options) {
                 .on('click', '.searchbar-result__item', function() {
                     var index = parseInt($(this).attr('data-index'));
                     var row = isNaN(index) ? null : temp[index];
-                    if (options.onClickItem.call(this, row) != false) {
+                    if (options.onClickItem.call(_obj, row, this) != false) {
                         //TODO
                     }
                 });
@@ -2049,7 +2053,8 @@ $.fn.scroll = function(options) {
         var _obj = {
             clear: clear,
             loaded: loaded,
-            search: search
+            search: search,
+            options: options
         }
 
         return _obj;
@@ -2064,6 +2069,8 @@ $.fn.scroll = function(options) {
 
     var searchTpl = '<div class="select2"><div class="weui-search-bar"><a href="javascript:" class="search-bar__btn select2__back-btn">返回</a><form class="weui-search-bar__form" method="post" action=""><div class="weui-search-bar__box"><i class="weui-icon-search"></i><input type="search" class="weui-search-bar__input" name="q" placeholder="{{title}}"><a href="javascript:" class="weui-icon-clear"></a></div><label class="weui-search-bar__label"><i class="weui-icon-search"></i><span>{{title}}</span> </label></form><a href="javascript:" class="weui-search-bar__cancel-btn">取消</a></div><div class="weui-cells searchbar-result"></div></div>';
     var resultTpl = '{{each rows as row i}}<div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}"><div class="weui-cell__bd weui-cell_primary"><p>{{row[textField]}}</p></div><div class="weui-cell__ft"></div></div>{{/each}}';
+
+    var _sington;
 
     /**
      * select2 列表框, searchPage的扩展
@@ -2104,6 +2111,8 @@ $.fn.scroll = function(options) {
      * });
      */
     function select2(options) {
+        if (_sington) return _sington;
+
         options = options || {};
 
         options = $.extend({
@@ -2121,8 +2130,8 @@ $.fn.scroll = function(options) {
 
         //点击
         var onClickItem = options.onClickItem;
-        options.onClickItem = function(row) {
-            if (onClickItem(row) != false) {
+        options.onClickItem = function(row, target) {
+            if (onClickItem.call(_sington, row, target) != false) {
                 hide();
             }
         };
@@ -2140,6 +2149,7 @@ $.fn.scroll = function(options) {
 
             $ele.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
                 $ele.remove();
+                _sington = false;
             });
         }
 
@@ -2147,15 +2157,15 @@ $.fn.scroll = function(options) {
 
         function search(param) {
             searchPage.search(param);
-            return _obj;
+            return _sington;
         }
 
-        var _obj = {
+        _sington = {
             search: searchPage.search,
             hide: hide,
             options: options
         }
-        return _obj;
+        return _sington;
     }
 
     window.weui = window.weui || {};
@@ -2275,57 +2285,76 @@ $.fn.scroll = function(options) {
 })();
 
 (function() {
+    var _toptips = null;
+    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
 
     /**
-     * tab tab导航栏
-     * @param {string} selector tab的selector
-     * @param {object=} options 配置项
-     * @param {number=} [options.defaultIndex=0] 初始展示的index
-     * @param {function=} options.onChange 点击tab时，返回对应的index
+     * toptips 顶部报错提示
+     * @param {string} content 报错的文字
+     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
+     * @param {number=} [options.duration=3000] 多少毫秒后消失
+     * @param {function=} options.callback 消失后的回调
      *
      * @example
-     * weui.tab('#tab',{
-     *     defaultIndex: 0,
-     *     onChange: function(index){
-     *         console.log(index);
-     *     }
+     * weui.topTips('请填写正确的字段');
+     * weui.topTips('请填写正确的字段', 3000);
+     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
+     * weui.topTips('请填写正确的字段', {
+     *     duration: 3000,
+     *     className: 'custom-classname',
+     *     callback: function(){ console.log('close') }
      * });
      */
-    function tab(selector, options) {
-        var $eles = $(selector);
+    function topTips(content, options) {
         options = options || {};
+        if (typeof options === 'number') {
+            options = {
+                duration: options
+            };
+        }
+
+        if (typeof options === 'function') {
+            options = {
+                callback: options
+            };
+        }
+
         options = $.extend({
-            defaultIndex: 0,
-            onChange: $.noop
+            content: content,
+            duration: 3000,
+            callback: $.noop,
+            className: ''
         }, options);
 
-        $eles.forEach(function(ele) {
-            var $tab = $(ele);
-            var $tabItems = $tab.find('.weui-navbar__item, .weui-tabbar__item');
-            var $tabContents = $tab.find('.weui-tab__content');
+        var $topTips = $($.render(tpl, options));
 
-            $tabItems.eq(options.defaultIndex).addClass('weui-bar__item_on');
-            $tabContents.eq(options.defaultIndex).show();
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
 
-            $tabItems.on('click', function() {
-                var $this = $(this),
-                    index = $this.index();
+            $topTips.remove();
+            options.callback();
+            _toptips = null;
+        }
 
-                $tabItems.removeClass('weui-bar__item_on');
-                $this.addClass('weui-bar__item_on');
+        function hide() { _hide(); }
 
-                $tabContents.hide();
-                $tabContents.eq(index).show();
+        $('body').append($topTips);
+        if (_toptips) {
+            clearTimeout(_toptips.timeout);
+            _toptips.hide();
+        }
 
-                options.onChange.call(this, index);
-            });
-        });
+        _toptips = {
+            hide: hide
+        };
+        _toptips.timeout = setTimeout(hide, options.duration);
 
-        return this;
+        $topTips[0].hide = hide;
+        return $topTips[0];
     }
 
     window.weui = window.weui || {};
-    window.weui.tab = tab;
+    window.weui.topTips = topTips;
 
 })();
 
@@ -2399,76 +2428,57 @@ $.fn.scroll = function(options) {
 })();
 
 (function() {
-    var _toptips = null;
-    var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
 
     /**
-     * toptips 顶部报错提示
-     * @param {string} content 报错的文字
-     * @param {number|function|object=} options 多少毫秒后消失|消失后的回调|配置项
-     * @param {number=} [options.duration=3000] 多少毫秒后消失
-     * @param {function=} options.callback 消失后的回调
+     * tab tab导航栏
+     * @param {string} selector tab的selector
+     * @param {object=} options 配置项
+     * @param {number=} [options.defaultIndex=0] 初始展示的index
+     * @param {function=} options.onChange 点击tab时，返回对应的index
      *
      * @example
-     * weui.topTips('请填写正确的字段');
-     * weui.topTips('请填写正确的字段', 3000);
-     * weui.topTips('请填写正确的字段', function(){ console.log('close') });
-     * weui.topTips('请填写正确的字段', {
-     *     duration: 3000,
-     *     className: 'custom-classname',
-     *     callback: function(){ console.log('close') }
+     * weui.tab('#tab',{
+     *     defaultIndex: 0,
+     *     onChange: function(index){
+     *         console.log(index);
+     *     }
      * });
      */
-    function topTips(content, options) {
+    function tab(selector, options) {
+        var $eles = $(selector);
         options = options || {};
-        if (typeof options === 'number') {
-            options = {
-                duration: options
-            };
-        }
-
-        if (typeof options === 'function') {
-            options = {
-                callback: options
-            };
-        }
-
         options = $.extend({
-            content: content,
-            duration: 3000,
-            callback: $.noop,
-            className: ''
+            defaultIndex: 0,
+            onChange: $.noop
         }, options);
 
-        var $topTips = $($.render(tpl, options));
+        $eles.forEach(function(ele) {
+            var $tab = $(ele);
+            var $tabItems = $tab.find('.weui-navbar__item, .weui-tabbar__item');
+            var $tabContents = $tab.find('.weui-tab__content');
 
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
+            $tabItems.eq(options.defaultIndex).addClass('weui-bar__item_on');
+            $tabContents.eq(options.defaultIndex).show();
 
-            $topTips.remove();
-            options.callback();
-            _toptips = null;
-        }
+            $tabItems.on('click', function() {
+                var $this = $(this),
+                    index = $this.index();
 
-        function hide() { _hide(); }
+                $tabItems.removeClass('weui-bar__item_on');
+                $this.addClass('weui-bar__item_on');
 
-        $('body').append($topTips);
-        if (_toptips) {
-            clearTimeout(_toptips.timeout);
-            _toptips.hide();
-        }
+                $tabContents.hide();
+                $tabContents.eq(index).show();
 
-        _toptips = {
-            hide: hide
-        };
-        _toptips.timeout = setTimeout(hide, options.duration);
+                options.onChange.call(this, index);
+            });
+        });
 
-        $topTips[0].hide = hide;
-        return $topTips[0];
+        return this;
     }
 
     window.weui = window.weui || {};
-    window.weui.topTips = topTips;
+    window.weui.tab = tab;
 
 })();
 
