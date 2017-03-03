@@ -2619,21 +2619,32 @@ window.$ === undefined && (window.$ = Zepto)
     };
 
     //解析日期
-    $$.parseDate = function(format) {
+    $$.parseDate = function(dateString, format) {
         var date = new Date();
-        var o = {
-            "y+": 'setFullYear', //year
-            "M+": 'setMonth', //month
-            "d+": 'setDate', //day
-            "h+": 'setHours', //hour
-            "m+": 'setMinutes', //minute
-            "s+": 'setSeconds', //second
-            "S": 'setMilliseconds' //millisecond
-        }
+        if (dateString.length == format.length) {
+            var o = {
+                "y+": 'setFullYear', //year
+                "M+": 'setMonth', //month
+                "d+": 'setDate', //day
+                "h+": 'setHours', //hour
+                "m+": 'setMinutes', //minute
+                "s+": 'setSeconds', //second
+                "S": 'setMilliseconds' //millisecond
+            }
 
-        for (var k in o)
-            if (new RegExp("(" + k + ")").test(format))
-                date[o[k]](RegExp.$1);
+            for (var k in o) {
+                var re = new RegExp("(" + k + ")")
+                var arr = re.exec(format);
+                if(arr !== null) {
+                    var val = dateString.substr(arr.index, arr[0].length);
+                    if (k == "M+") {
+                        date[o[k]](val - 1);
+                    } else {
+                        date[o[k]](val);
+                    }
+                }
+            }
+        }
         return date;
     };
 

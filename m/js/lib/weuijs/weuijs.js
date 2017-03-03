@@ -166,74 +166,6 @@
 })();
 
 (function() {
-
-    /**
-     * 确认弹窗
-     * @param {string} content 弹窗内容
-     * @param {function=} yes 点击确定按钮的回调
-     * @param {function=} no  点击取消按钮的回调
-     * @param {object=} options 配置项
-     * @param {string=} options.title 弹窗的标题
-     * @param {string=} options.className 自定义类名
-     * @param {array=} options.buttons 按钮配置项，详情参考dialog
-     *
-     * @example
-     * weui.confirm('普通的confirm');
-     * weui.confirm('自定义标题的confirm', { title: '自定义标题' });
-     * weui.confirm('带回调的confirm', function(){ console.log('yes') }, function(){ console.log('no') });
-     * var confirmDom = weui.confirm('手动关闭的confirm', function(){
-     *     return false; // 不关闭弹窗，可用confirmDom.hide()来手动关闭
-     * });
-     * weui.confirm('带回调的自定义标题的confirm', function(){ console.log('yes') }, function(){ console.log('no') }, {
-     *     title: '自定义标题'
-     * });
-     * weui.confirm('自定义按钮的confirm', {
-     *     title: '自定义按钮的confirm',
-     *     buttons: [{
-     *         label: 'NO',
-     *         type: 'default',
-     *         onClick: function(){ console.log('no') }
-     *     }, {
-     *         label: 'YES',
-     *         type: 'primary',
-     *         onClick: function(){ console.log('yes') }
-     *     }]
-     * });
-     */
-    function confirm(content, yes, no, options) {
-        yes = yes || $.noop;
-        no = no || $.noop;
-
-        if (typeof yes === 'object') {
-            options = yes;
-            yes = $.noop;
-        } else if(typeof no === 'object'){
-            options = no;
-            no = $.noop;
-        }
-
-        options = $.extend({
-            content: content,
-            buttons: [{
-                label: '取消',
-                type: 'default',
-                onClick: no
-            }, {
-                label: '确定',
-                type: 'primary',
-                onClick: yes
-            }]
-        }, options);
-
-        return weui.dialog(options);
-    }
-
-    window.weui = window.weui || {};
-    window.weui.confirm = confirm;
-
-})();
-
-(function() {
     var _sington;
     var tpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-dialog {{if isAndroid}} weui-skin_android{{/if}}">{{if title}}<div class="weui-dialog__hd"><strong class="weui-dialog__title">{{title}}</strong></div>{{/if}}<div class="weui-dialog__bd">{{content}}</div><div class="weui-dialog__ft">{{each buttons as button}}<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_{{button.type}}">{{button.label}}</a>{{/each}}</div></div></div>';
 
@@ -320,6 +252,74 @@
 
     window.weui = window.weui || {};
     window.weui.dialog = dialog;
+
+})();
+
+(function() {
+
+    /**
+     * 确认弹窗
+     * @param {string} content 弹窗内容
+     * @param {function=} yes 点击确定按钮的回调
+     * @param {function=} no  点击取消按钮的回调
+     * @param {object=} options 配置项
+     * @param {string=} options.title 弹窗的标题
+     * @param {string=} options.className 自定义类名
+     * @param {array=} options.buttons 按钮配置项，详情参考dialog
+     *
+     * @example
+     * weui.confirm('普通的confirm');
+     * weui.confirm('自定义标题的confirm', { title: '自定义标题' });
+     * weui.confirm('带回调的confirm', function(){ console.log('yes') }, function(){ console.log('no') });
+     * var confirmDom = weui.confirm('手动关闭的confirm', function(){
+     *     return false; // 不关闭弹窗，可用confirmDom.hide()来手动关闭
+     * });
+     * weui.confirm('带回调的自定义标题的confirm', function(){ console.log('yes') }, function(){ console.log('no') }, {
+     *     title: '自定义标题'
+     * });
+     * weui.confirm('自定义按钮的confirm', {
+     *     title: '自定义按钮的confirm',
+     *     buttons: [{
+     *         label: 'NO',
+     *         type: 'default',
+     *         onClick: function(){ console.log('no') }
+     *     }, {
+     *         label: 'YES',
+     *         type: 'primary',
+     *         onClick: function(){ console.log('yes') }
+     *     }]
+     * });
+     */
+    function confirm(content, yes, no, options) {
+        yes = yes || $.noop;
+        no = no || $.noop;
+
+        if (typeof yes === 'object') {
+            options = yes;
+            yes = $.noop;
+        } else if(typeof no === 'object'){
+            options = no;
+            no = $.noop;
+        }
+
+        options = $.extend({
+            content: content,
+            buttons: [{
+                label: '取消',
+                type: 'default',
+                onClick: no
+            }, {
+                label: '确定',
+                type: 'primary',
+                onClick: yes
+            }]
+        }, options);
+
+        return weui.dialog(options);
+    }
+
+    window.weui = window.weui || {};
+    window.weui.confirm = confirm;
 
 })();
 
@@ -2285,6 +2285,130 @@ $.fn.scroll = function(options) {
 })();
 
 (function() {
+
+    /**
+     * tab tab导航栏
+     * @param {string} selector tab的selector
+     * @param {object=} options 配置项
+     * @param {number=} [options.defaultIndex=0] 初始展示的index
+     * @param {function=} options.onChange 点击tab时，返回对应的index
+     *
+     * @example
+     * weui.tab('#tab',{
+     *     defaultIndex: 0,
+     *     onChange: function(index){
+     *         console.log(index);
+     *     }
+     * });
+     */
+    function tab(selector, options) {
+        var $eles = $(selector);
+        options = options || {};
+        options = $.extend({
+            defaultIndex: 0,
+            onChange: $.noop
+        }, options);
+
+        $eles.forEach(function(ele) {
+            var $tab = $(ele);
+            var $tabItems = $tab.find('.weui-navbar__item, .weui-tabbar__item');
+            var $tabContents = $tab.find('.weui-tab__content');
+
+            $tabItems.eq(options.defaultIndex).addClass('weui-bar__item_on');
+            $tabContents.eq(options.defaultIndex).show();
+
+            $tabItems.on('click', function() {
+                var $this = $(this),
+                    index = $this.index();
+
+                $tabItems.removeClass('weui-bar__item_on');
+                $this.addClass('weui-bar__item_on');
+
+                $tabContents.hide();
+                $tabContents.eq(index).show();
+
+                options.onChange.call(this, index);
+            });
+        });
+
+        return this;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.tab = tab;
+
+})();
+
+(function() {
+    var _sington;
+    var tpl = '<div class="{{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-icon_toast weui-icon-success-no-circle"></i><p class="weui-toast__content">{{content}}</p></div></div>';
+
+    /**
+     * toast 一般用于操作成功时的提示场景
+     * @param {string} content toast的文字
+     * @param {Object|number|function=} options 配置项|多少毫秒后关闭|关闭后的回调
+     * @param {number=} [options.duration=3000] 多少毫秒后关闭toast
+     * @param {function=} options.callback 关闭后的回调
+     * @param {string=} options.className 自定义类名
+     *
+     * @example
+     * weui.toast('操作成功', 3000);
+     * weui.toast('操作成功', {
+     *     duration: 3000,
+     *     className: 'custom-classname',
+     *     callback: function(){ console.log('close') }
+     * });
+     */
+    function toast(content, options) {
+        if (_sington) return _sington;
+
+        options = options || {};
+
+        if (typeof options === 'number') {
+            options = {
+                duration: options
+            };
+        }
+        if (typeof options === 'function') {
+            options = {
+                callback: options
+            };
+        }
+
+        options = $.extend({
+            content: content,
+            duration: 3000,
+            callback: $.noop,
+            className: ''
+        }, options);
+
+        var $toastWrap = $($.render(tpl, options));
+        var $toast = $toastWrap.find('.weui-toast');
+        var $mask = $toastWrap.find('.weui-mask');
+
+        $('body').append($toastWrap);
+        $toast.addClass('weui-animate-fade-in');
+        $mask.addClass('weui-animate-fade-in');
+
+        setTimeout(function() {
+            $mask.addClass('weui-animate-fade-out');
+            $toast.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
+                $toastWrap.remove();
+                _sington = false;
+                options.callback();
+            });
+        }, options.duration);
+
+        _sington = $toastWrap[0];
+        return $toastWrap[0];
+    }
+
+    window.weui = window.weui || {};
+    window.weui.toast = toast;
+
+})();
+
+(function() {
     var _toptips = null;
     var tpl = '<div class="weui-toptips weui-toptips_warn {{className}}" style="display: block;">{{content}}</div>';
 
@@ -2359,132 +2483,9 @@ $.fn.scroll = function(options) {
 })();
 
 (function() {
-    var _sington;
-    var tpl = '<div class="{{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-icon_toast weui-icon-success-no-circle"></i><p class="weui-toast__content">{{content}}</p></div></div>';
-
-    /**
-     * toast 一般用于操作成功时的提示场景
-     * @param {string} content toast的文字
-     * @param {Object|number|function=} options 配置项|多少毫秒后关闭|关闭后的回调
-     * @param {number=} [options.duration=3000] 多少毫秒后关闭toast
-     * @param {function=} options.callback 关闭后的回调
-     * @param {string=} options.className 自定义类名
-     *
-     * @example
-     * weui.toast('操作成功', 3000);
-     * weui.toast('操作成功', {
-     *     duration: 3000,
-     *     className: 'custom-classname',
-     *     callback: function(){ console.log('close') }
-     * });
-     */
-    function toast(content, options) {
-        if (_sington) return _sington;
-
-        options = options || {};
-
-        if (typeof options === 'number') {
-            options = {
-                duration: options
-            };
-        }
-        if (typeof options === 'function') {
-            options = {
-                callback: options
-            };
-        }
-
-        options = $.extend({
-            content: content,
-            duration: 3000,
-            callback: $.noop,
-            className: ''
-        }, options);
-
-        var $toastWrap = $($.render(tpl, options));
-        var $toast = $toastWrap.find('.weui-toast');
-        var $mask = $toastWrap.find('.weui-mask');
-
-        $('body').append($toastWrap);
-        $toast.addClass('weui-animate-fade-in');
-        $mask.addClass('weui-animate-fade-in');
-
-        setTimeout(function() {
-            $mask.addClass('weui-animate-fade-out');
-            $toast.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
-                $toastWrap.remove();
-                _sington = false;
-                options.callback();
-            });
-        }, options.duration);
-
-        _sington = $toastWrap[0];
-        return $toastWrap[0];
-    }
-
-    window.weui = window.weui || {};
-    window.weui.toast = toast;
-
-})();
-
-(function() {
-
-    /**
-     * tab tab导航栏
-     * @param {string} selector tab的selector
-     * @param {object=} options 配置项
-     * @param {number=} [options.defaultIndex=0] 初始展示的index
-     * @param {function=} options.onChange 点击tab时，返回对应的index
-     *
-     * @example
-     * weui.tab('#tab',{
-     *     defaultIndex: 0,
-     *     onChange: function(index){
-     *         console.log(index);
-     *     }
-     * });
-     */
-    function tab(selector, options) {
-        var $eles = $(selector);
-        options = options || {};
-        options = $.extend({
-            defaultIndex: 0,
-            onChange: $.noop
-        }, options);
-
-        $eles.forEach(function(ele) {
-            var $tab = $(ele);
-            var $tabItems = $tab.find('.weui-navbar__item, .weui-tabbar__item');
-            var $tabContents = $tab.find('.weui-tab__content');
-
-            $tabItems.eq(options.defaultIndex).addClass('weui-bar__item_on');
-            $tabContents.eq(options.defaultIndex).show();
-
-            $tabItems.on('click', function() {
-                var $this = $(this),
-                    index = $this.index();
-
-                $tabItems.removeClass('weui-bar__item_on');
-                $this.addClass('weui-bar__item_on');
-
-                $tabContents.hide();
-                $tabContents.eq(index).show();
-
-                options.onChange.call(this, index);
-            });
-        });
-
-        return this;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.tab = tab;
-
-})();
-
-(function() {
     /**
  * 检查图片是否有被压扁，如果有，返回比率
+ * ref to http://stackoverflow.com/questions/11929099/html5-canvas-drawimage-ratio-bug-ios
  */
 function detectVerticalSquash(img) {
     // 拍照在IOS7或以下的机型会出现照片被压扁的bug
@@ -2521,15 +2522,89 @@ function detectVerticalSquash(img) {
  * dataURI to blob, ref to https://gist.github.com/fupslot/5015897
  * @param dataURI
  */
-function dataURItoBlob(dataURI) {
+function dataURItoBuffer(dataURI){
     var byteString = atob(dataURI.split(',')[1]);
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
+    var buffer = new ArrayBuffer(byteString.length);
+    var view = new Uint8Array(buffer);
     for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
+        view[i] = byteString.charCodeAt(i);
     }
-    return new Blob([ab], {type: mimeString});
+    return buffer;
+}
+function dataURItoBlob(dataURI) {
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var buffer = dataURItoBuffer(dataURI);
+    return new Blob([buffer], {type: mimeString});
+}
+
+/**
+ * 获取图片的orientation
+ * ref to http://stackoverflow.com/questions/7584794/accessing-jpeg-exif-rotation-data-in-javascript-on-the-client-side
+ */
+function getOrientation(buffer){
+    var view = new DataView(buffer);
+    if (view.getUint16(0, false) != 0xFFD8) return -2;
+    var length = view.byteLength, offset = 2;
+    while (offset < length) {
+        var marker = view.getUint16(offset, false);
+        offset += 2;
+        if (marker == 0xFFE1) {
+            if (view.getUint32(offset += 2, false) != 0x45786966) return -1;
+            var little = view.getUint16(offset += 6, false) == 0x4949;
+            offset += view.getUint32(offset + 4, little);
+            var tags = view.getUint16(offset, little);
+            offset += 2;
+            for (var i = 0; i < tags; i++)
+                if (view.getUint16(offset + (i * 12), little) == 0x0112)
+                    return view.getUint16(offset + (i * 12) + 8, little);
+        }
+        else if ((marker & 0xFF00) != 0xFF00) break;
+        else offset += view.getUint16(offset, false);
+    }
+    return -1;
+}
+
+/**
+ * 修正拍照时图片的方向
+ * ref to http://stackoverflow.com/questions/19463126/how-to-draw-photo-with-correct-orientation-in-canvas-after-capture-photo-by-usin
+ */
+function orientationHelper(canvas, ctx, orientation) {
+    var w = canvas.width, h = canvas.height;
+    if(orientation > 4){
+        canvas.width = h;
+        canvas.height = w;
+    }
+    switch (orientation) {
+        case 2:
+            ctx.translate(w, 0);
+            ctx.scale(-1, 1);
+            break;
+        case 3:
+            ctx.translate(w, h);
+            ctx.rotate(Math.PI);
+            break;
+        case 4:
+            ctx.translate(0, h);
+            ctx.scale(1, -1);
+            break;
+        case 5:
+            ctx.rotate(0.5 * Math.PI);
+            ctx.scale(1, -1);
+            break;
+        case 6:
+            ctx.rotate(0.5 * Math.PI);
+            ctx.translate(0, -h);
+            break;
+        case 7:
+            ctx.rotate(0.5 * Math.PI);
+            ctx.translate(w, -h);
+            ctx.scale(-1, 1);
+            break;
+        case 8:
+            ctx.rotate(-0.5 * Math.PI);
+            ctx.translate(-w, 0);
+            break;
+    }
 }
 
 /**
@@ -2539,7 +2614,7 @@ function compress(file, options, callback) {
     var reader = new FileReader();
     reader.onload = function (evt) {
         if(options.compress === false){
-            // 不启用压缩 & base64上传 的分支
+            // 不启用压缩 & base64上传 的分支，不做任何处理，直接返回文件的base64编码
             file.base64 = evt.target.result;
             callback(file);
             return;
@@ -2549,6 +2624,7 @@ function compress(file, options, callback) {
         var img = new Image();
         img.onload = function () {
             var ratio = detectVerticalSquash(img);
+            var orientation = getOrientation(dataURItoBuffer(img.src));
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
 
@@ -2569,6 +2645,9 @@ function compress(file, options, callback) {
             canvas.width = w;
             canvas.height = h;
 
+            if(orientation > 0){
+                orientationHelper(canvas, ctx, orientation);
+            }
             ctx.drawImage(img, 0, 0, w, h / ratio);
 
             if(/image\/jpeg/.test(file.type) || /image\/jpg/.test(file.type)){
@@ -2584,8 +2663,10 @@ function compress(file, options, callback) {
                     callback(file);
                 }else{
                     var blob = dataURItoBlob(dataURL);
+                    blob.id = file.id;
                     blob.name = file.name;
                     blob.lastModified = file.lastModified;
+                    blob.lastModifiedDate = file.lastModifiedDate;
                     callback(blob);
                 }
             }else{
