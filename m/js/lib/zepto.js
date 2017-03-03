@@ -2755,4 +2755,108 @@ window.$ === undefined && (window.$ = Zepto)
             }
         }
     };
+
+    $$.showPicker = function(target, items, options) {
+        options = options || {}
+        $target = $(target);
+        var defaultValue = [];              
+        var depth = weui.depthOf(items[0]);
+        var $temp = $target;
+        for(var i = 0; i < depth; i++) {
+            $temp = $temp.next();
+            defaultValue.push($temp.val());
+        }        
+        options = $.extend({
+            defaultValue: defaultValue,
+            onChange: function(result) {},
+            onConfirm: function(result) {
+                var opts = this.options;
+                var text = result.map(function(item) {
+                    return item[opts.textField];
+                });
+
+                $target.val(text.join(' '));
+
+                var $temp = $target;
+                for(var i = 0; i < result.length; i++) {
+                    $temp = $temp.next();
+                    $temp.val(result[i][opts.valueField]);
+                }                
+            },
+            id: $target.attr('id')
+        }, options);
+
+        return weui.picker(items, options);
+    }
+
+
+    $$.showSelect2 = function(target, data, options) {
+        options = options || {};
+        $target = $(target);
+
+        if (!$.isArray(data)) {
+            options = data;
+            data = null;
+        }
+
+        options = $.extend({
+            data: data,
+            queryParams: {},
+            rowsName: 'rows',
+            loader: function(param, success, error) {
+                var queryParams = $.extend(options.queryParams, param);
+
+                $$.request(options.url, queryParams, {
+                    success: function(data) {
+                        if (data.errcode == 0) {
+                            success(data[options.rowsName]);
+                        } else {
+                            weui.alert(data.errmsg, error, {
+                                title: '提示'
+                            });
+                        }
+                    },
+                    error: function() {
+                        error();
+                    }
+                })
+            },
+            onClickItem: function(row) {
+                var opts = this.options;
+                $target.val(row[opts.textField]).next().val(row[opts.valueField]);
+            }
+        }, options);
+
+        return weui.select2(options).search($target.val());
+    }
+
+    $$.showDatePicker = function(target, format, options) {
+        options = options || {};
+        $target = $(target);
+
+        if (typeof format === 'object') {
+            options = format;
+            format = null;
+        }
+
+        options.format = options.format || format || 'yyyy-MM-dd';
+
+        var date = $$.parseDate($target.val(), options.format);
+
+        options = $.extend({
+            defaultValue: [date.getFullYear(), date.getMonth() + 1, date.getDate()],
+            end: 2050,
+            onConfirm: function(result) {
+                var opts = this.options;
+                var values = result.map(function(item) {
+                    return item[opts.valueField];
+                });
+
+                $target.val($$.formatDate(new Date(values[0], values[1] - 1, values[2]), opts.format));
+            },
+
+        }, options);
+
+        weui.datePicker(options);
+    }
 })();

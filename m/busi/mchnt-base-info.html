@@ -98,6 +98,9 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="district" required="" placeholder="请选择所在地区" id="city-picker">
+                        <input type="hidden" name="province">
+                        <input type="hidden" name="city">
+                        <input type="hidden" name="district">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -222,7 +225,8 @@
                         <label class="weui-label">拓展方</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_inst_id" required="" placeholder="请输入拓展方">
+                        <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请输入拓展方" id="expand-inst-select2">
+                        <input type="hidden" name="expand_inst_id">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -512,96 +516,124 @@
 
         //init component
         $('#city-picker').on('click', function() {
-            showPicker(this, districtData);
+            $$.showPicker(this, districtData);
         });
 
         $('#license-date-picker').on('click', function() {
-            showDatePicker(this);
+            $$.showDatePicker(this);
         });
+		
+		$('#expand-inst-select2').on('click', function() {
+            $$.showSelect2(this, [{
+				text: 'text',
+				value: 'value'
+			}]);
+        });						
     });
 
-    function showPicker(target, items, options) {
-        options = options || {}
-        $target = $(target);
-        var defaultValue = [];
-        var value = $target.attr('data-value');
-        if (value) {
-            defaultValue = value.split(',');
-        }
-        options = $.extend({
-            defaultValue: defaultValue,
-            onChange: function(result) {},
-            onConfirm: function(result) {
-                var opts = this.options;
-                var text = result.map(function(item) {
-                    return item[opts.textField];
-                });
+  //   function showPicker(target, items, options) {
+  //       options = options || {}
+  //       $target = $(target);
+  //       var defaultValue = [];        		
+		// var depth = weui.depthOf(items[0]);
+		// var $temp = $target;
+		// for(var i = 0; i < depth; i++) {
+		// 	$temp = $temp.next();
+  //           defaultValue.push($temp.val());
+		// }        
+  //       options = $.extend({
+  //           defaultValue: defaultValue,
+  //           onChange: function(result) {},
+  //           onConfirm: function(result) {
+  //               var opts = this.options;
+  //               var text = result.map(function(item) {
+  //                   return item[opts.textField];
+  //               });
 
-                var value = result.map(function(item) {
-                    return item[opts.valueField];
-                });
-                $target.val(text.join(' ')).attr('data-value', value.join(','));
-            },
-            id: $target.attr('id')
-        }, options);
+  //               $target.val(text.join(' '));
 
-        return weui.picker(items, options);
-    }
+  //               var $temp = $target;
+		// 		for(var i = 0; i < result.length; i++) {
+		// 			$temp = $temp.next();
+  //                   $temp.val(result[i][opts.valueField]);
+		// 		}                
+  //           },
+  //           id: $target.attr('id')
+  //       }, options);
+
+  //       return weui.picker(items, options);
+  //   }
 
 
-    function showSelect2(target, data, options) {
-        options = options || {};
-        $target = $(target);
+  //   function showSelect2(target, data, options) {
+  //       options = options || {};
+  //       $target = $(target);
 
-        if (!$.isArray(data)) {
-            options = data;
-            data = null;
-        }
+  //       if (!$.isArray(data)) {
+  //           options = data;
+  //           data = null;
+  //       }
 
-        options = $.extend({
-            data: data,
-            queryParams: {},
-            rowsName: 'rows',
-            loader: function(param, success, error) {
-                var queryParams = $.extend(options.queryParams, param);
+  //       options = $.extend({
+  //           data: data,
+  //           queryParams: {},
+  //           rowsName: 'rows',
+  //           loader: function(param, success, error) {
+  //               var queryParams = $.extend(options.queryParams, param);
 
-                $$.request(options.url, queryParams, {
-                    success: function(data) {
-                        if (data.errcode == 0) {
-                            success(data[options.rowsName]);
-                        } else {
-                            weui.alert(data.errmsg, error, {
-                                title: '提示'
-                            });
-                        }
-                    },
-                    error: function() {
-                        error();
-                    }
-                })
-            },
-            onClickItem: function(row) {
-                var opts = this.options;
-                $target.val(row[opts.textField]).attr('data-value', row[opts.valueField]);
-            }
-        }, options);
+  //               $$.request(options.url, queryParams, {
+  //                   success: function(data) {
+  //                       if (data.errcode == 0) {
+  //                           success(data[options.rowsName]);
+  //                       } else {
+  //                           weui.alert(data.errmsg, error, {
+  //                               title: '提示'
+  //                           });
+  //                       }
+  //                   },
+  //                   error: function() {
+  //                       error();
+  //                   }
+  //               })
+  //           },
+  //           onClickItem: function(row) {
+  //               var opts = this.options;
+  //               $target.val(row[opts.textField]).next().val(row[opts.valueField]);
+  //           }
+  //       }, options);
 
-        return weui.select2(options);
-    }
+  //       return weui.select2(options).search($target.val());
+  //   }
 
-    function showDatePicker(target) {
-        $target = $(target);
+  //   function showDatePicker(target, format, options) {
+  //       options = options || {};
+  //       $target = $(target);
 
-        weui.datePicker({
-            end: 2050,
-            onConfirm: function(result, opts) {
-                var value = result.map(function(item) {
-                    return item[opts.valueField];
-                });
-                $target.val(value.join('-'));
-            },
-        });
-    }
+  //       if (typeof format === 'object') {
+  //           options = format;
+  //           format = null;
+  //       }
+
+  //       options.format = options.format || format || 'yyyy-MM-dd';
+
+  //       var date = $$.parseDate($target.val(), options.format);
+
+  //       options = $.extend({
+  //           defaultValue: [date.getFullYear(), date.getMonth() + 1, date.getDate()],
+  //           end: 2050,
+  //           onConfirm: function(result) {
+  //               var opts = this.options;
+  //               var values = result.map(function(item) {
+  //                   return item[opts.valueField];
+  //               });
+
+  //               $target.val($$.formatDate(new Date(values[0], values[1] - 1, values[2]), opts.format));
+  //           },
+
+  //       }, options);
+
+  //       weui.datePicker(options);
+  //   }
     </script>
 </body>
 

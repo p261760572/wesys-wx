@@ -166,6 +166,74 @@
 })();
 
 (function() {
+
+    /**
+     * 确认弹窗
+     * @param {string} content 弹窗内容
+     * @param {function=} yes 点击确定按钮的回调
+     * @param {function=} no  点击取消按钮的回调
+     * @param {object=} options 配置项
+     * @param {string=} options.title 弹窗的标题
+     * @param {string=} options.className 自定义类名
+     * @param {array=} options.buttons 按钮配置项，详情参考dialog
+     *
+     * @example
+     * weui.confirm('普通的confirm');
+     * weui.confirm('自定义标题的confirm', { title: '自定义标题' });
+     * weui.confirm('带回调的confirm', function(){ console.log('yes') }, function(){ console.log('no') });
+     * var confirmDom = weui.confirm('手动关闭的confirm', function(){
+     *     return false; // 不关闭弹窗，可用confirmDom.hide()来手动关闭
+     * });
+     * weui.confirm('带回调的自定义标题的confirm', function(){ console.log('yes') }, function(){ console.log('no') }, {
+     *     title: '自定义标题'
+     * });
+     * weui.confirm('自定义按钮的confirm', {
+     *     title: '自定义按钮的confirm',
+     *     buttons: [{
+     *         label: 'NO',
+     *         type: 'default',
+     *         onClick: function(){ console.log('no') }
+     *     }, {
+     *         label: 'YES',
+     *         type: 'primary',
+     *         onClick: function(){ console.log('yes') }
+     *     }]
+     * });
+     */
+    function confirm(content, yes, no, options) {
+        yes = yes || $.noop;
+        no = no || $.noop;
+
+        if (typeof yes === 'object') {
+            options = yes;
+            yes = $.noop;
+        } else if(typeof no === 'object'){
+            options = no;
+            no = $.noop;
+        }
+
+        options = $.extend({
+            content: content,
+            buttons: [{
+                label: '取消',
+                type: 'default',
+                onClick: no
+            }, {
+                label: '确定',
+                type: 'primary',
+                onClick: yes
+            }]
+        }, options);
+
+        return weui.dialog(options);
+    }
+
+    window.weui = window.weui || {};
+    window.weui.confirm = confirm;
+
+})();
+
+(function() {
     var _sington;
     var tpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-dialog {{if isAndroid}} weui-skin_android{{/if}}">{{if title}}<div class="weui-dialog__hd"><strong class="weui-dialog__title">{{title}}</strong></div>{{/if}}<div class="weui-dialog__bd">{{content}}</div><div class="weui-dialog__ft">{{each buttons as button}}<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_{{button.type}}">{{button.label}}</a>{{/each}}</div></div></div>';
 
@@ -252,74 +320,6 @@
 
     window.weui = window.weui || {};
     window.weui.dialog = dialog;
-
-})();
-
-(function() {
-
-    /**
-     * 确认弹窗
-     * @param {string} content 弹窗内容
-     * @param {function=} yes 点击确定按钮的回调
-     * @param {function=} no  点击取消按钮的回调
-     * @param {object=} options 配置项
-     * @param {string=} options.title 弹窗的标题
-     * @param {string=} options.className 自定义类名
-     * @param {array=} options.buttons 按钮配置项，详情参考dialog
-     *
-     * @example
-     * weui.confirm('普通的confirm');
-     * weui.confirm('自定义标题的confirm', { title: '自定义标题' });
-     * weui.confirm('带回调的confirm', function(){ console.log('yes') }, function(){ console.log('no') });
-     * var confirmDom = weui.confirm('手动关闭的confirm', function(){
-     *     return false; // 不关闭弹窗，可用confirmDom.hide()来手动关闭
-     * });
-     * weui.confirm('带回调的自定义标题的confirm', function(){ console.log('yes') }, function(){ console.log('no') }, {
-     *     title: '自定义标题'
-     * });
-     * weui.confirm('自定义按钮的confirm', {
-     *     title: '自定义按钮的confirm',
-     *     buttons: [{
-     *         label: 'NO',
-     *         type: 'default',
-     *         onClick: function(){ console.log('no') }
-     *     }, {
-     *         label: 'YES',
-     *         type: 'primary',
-     *         onClick: function(){ console.log('yes') }
-     *     }]
-     * });
-     */
-    function confirm(content, yes, no, options) {
-        yes = yes || $.noop;
-        no = no || $.noop;
-
-        if (typeof yes === 'object') {
-            options = yes;
-            yes = $.noop;
-        } else if(typeof no === 'object'){
-            options = no;
-            no = $.noop;
-        }
-
-        options = $.extend({
-            content: content,
-            buttons: [{
-                label: '取消',
-                type: 'default',
-                onClick: no
-            }, {
-                label: '确定',
-                type: 'primary',
-                onClick: yes
-            }]
-        }, options);
-
-        return weui.dialog(options);
-    }
-
-    window.weui = window.weui || {};
-    window.weui.confirm = confirm;
 
 })();
 
@@ -1248,7 +1248,7 @@ function getMin(offset, rowHeight, length) {
 $.fn.scroll = function(options) {
     var defaults = $.extend({
         valueField: 'value',
-        textField: 'label',
+        textField: 'text',
         items: [], // 数据
         scrollable: '.weui-picker__content', // 滚动的元素
         offset: 3, // 列表初始化时的偏移量（列表初始化时，选项是聚焦在中间的，通过offset强制往上挪3项，以达到初始选项是为顶部的那项）
@@ -1433,20 +1433,20 @@ $.fn.scroll = function(options) {
      * // 单列picker
      * weui.picker([
      * {
-     *     label: '飞机票',
+     *     text: '飞机票',
      *     value: 0,
      *     disabled: true // 不可用
      * },
      * {
-     *     label: '火车票',
+     *     text: '火车票',
      *     value: 1
      * },
      * {
-     *     label: '汽车票',
+     *     text: '汽车票',
      *     value: 3
      * },
      * {
-     *     label: '公车票',
+     *     text: '公车票',
      *     value: 4,
      * }
      * ], {
@@ -1465,24 +1465,24 @@ $.fn.scroll = function(options) {
      * // 多列picker
      * weui.picker([
      *     {
-     *         label: '1',
+     *         text: '1',
      *         value: '1'
      *     }, {
-     *         label: '2',
+     *         text: '2',
      *         value: '2'
      *     }, {
-     *         label: '3',
+     *         text: '3',
      *         value: '3'
      *     }
      * ], [
      *     {
-     *         label: 'A',
+     *         text: 'A',
      *         value: 'A'
      *     }, {
-     *         label: 'B',
+     *         text: 'B',
      *         value: 'B'
      *     }, {
-     *         label: 'C',
+     *         text: 'C',
      *         value: 'C'
      *     }
      * ], {
@@ -1500,48 +1500,48 @@ $.fn.scroll = function(options) {
      * // 级联picker
      * weui.picker([
      * {
-     *     label: '飞机票',
+     *     text: '飞机票',
      *     value: 0,
      *     children: [
      *         {
-     *             label: '经济舱',
+     *             text: '经济舱',
      *             value: 1
      *         },
      *         {
-     *             label: '商务舱',
+     *             text: '商务舱',
      *             value: 2
      *         }
      *     ]
      * },
      * {
-     *     label: '火车票',
+     *     text: '火车票',
      *     value: 1,
      *     children: [
      *         {
-     *             label: '卧铺',
+     *             text: '卧铺',
      *             value: 1,
      *             disabled: true // 不可用
      *         },
      *         {
-     *             label: '坐票',
+     *             text: '坐票',
      *             value: 2
      *         },
      *         {
-     *             label: '站票',
+     *             text: '站票',
      *             value: 3
      *         }
      *     ]
      * },
      * {
-     *     label: '汽车票',
+     *     text: '汽车票',
      *     value: 3,
      *     children: [
      *         {
-     *             label: '快班',
+     *             text: '快班',
      *             value: 1
      *         },
      *         {
-     *             label: '普通',
+     *             text: '普通',
      *             value: 2
      *         }
      *     ]
@@ -1567,7 +1567,7 @@ $.fn.scroll = function(options) {
             id: 'default',
             className: '',
             valueField: 'value',
-            textField: 'label',
+            textField: 'text',
             onChange: $.noop,
             onConfirm: $.noop
         }, options);
@@ -1822,7 +1822,7 @@ $.fn.scroll = function(options) {
             var Y = findBy(date, 'value', year);
             if (!Y) {
                 Y = {
-                    label: year + '年',
+                    text: year + '年',
                     value: year,
                     children: []
                 };
@@ -1831,14 +1831,14 @@ $.fn.scroll = function(options) {
             var M = findBy(Y.children, 'value', month);
             if (!M) {
                 M = {
-                    label: month + '月',
+                    text: month + '月',
                     value: month,
                     children: []
                 };
                 Y.children.push(M);
             }
             M.children.push({
-                label: day + '日',
+                text: day + '日',
                 value: day
             });
         }
@@ -1849,6 +1849,7 @@ $.fn.scroll = function(options) {
 
 
     window.weui = window.weui || {};
+    window.weui.depthOf = depthOf;
     window.weui.picker = picker;
     window.weui.datePicker = datePicker;
 
