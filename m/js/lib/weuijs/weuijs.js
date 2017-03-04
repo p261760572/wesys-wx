@@ -109,63 +109,6 @@
 })();
 
 (function() {
-    
-    /**
-     * alert 警告弹框，功能类似于浏览器自带的 alert 弹框，用于提醒、警告用户简单扼要的信息，只有一个“确认”按钮，点击“确认”按钮后关闭弹框。
-     * @param {string} content 弹窗内容
-     * @param {function=} yes 点击确定按钮的回调
-     * @param {object=} options 配置项
-     * @param {string=} options.title 弹窗的标题
-     * @param {string=} options.className 自定义类名
-     * @param {array=} options.buttons 按钮配置项，详情参考dialog
-     *
-     * @example
-     * weui.alert('普通的alert');
-     * weui.alert('带回调的alert', function(){ console.log('ok') });
-     * var alertDom = weui.alert('手动关闭的alert', function(){
-     *     return false; // 不关闭弹窗，可用alertDom.hide()来手动关闭
-     * });
-     * weui.alert('自定义标题的alert', { title: '自定义标题' });
-     * weui.alert('带回调的自定义标题的alert', function(){
-     *    console.log('ok')
-     * }, {
-     *    title: '自定义标题'
-     * });
-     * weui.alert('自定义按钮的alert', {
-     *     title: '自定义按钮的alert',
-     *     buttons: [{
-     *         label: 'OK',
-     *         type: 'primary',
-     *         onClick: function(){ console.log('ok') }
-     *     }]
-     * });
-     */
-    function alert(content, yes, options) {
-        yes = yes || $.noop;
-
-        if (typeof yes === 'object') {
-            options = yes;
-            yes = $.noop;
-        }
-
-        options = $.extend({
-            content: content,
-            buttons: [{
-                label: '确定',
-                type: 'primary',
-                onClick: yes
-            }]
-        }, options);
-
-        return weui.dialog(options);
-    }
-
-    window.weui = window.weui || {};
-    window.weui.alert = alert;
-    
-})();
-
-(function() {
 
     /**
      * 确认弹窗
@@ -230,96 +173,6 @@
 
     window.weui = window.weui || {};
     window.weui.confirm = confirm;
-
-})();
-
-(function() {
-    var _sington;
-    var tpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-dialog {{if isAndroid}} weui-skin_android{{/if}}">{{if title}}<div class="weui-dialog__hd"><strong class="weui-dialog__title">{{title}}</strong></div>{{/if}}<div class="weui-dialog__bd">{{content}}</div><div class="weui-dialog__ft">{{each buttons as button}}<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_{{button.type}}">{{button.label}}</a>{{/each}}</div></div></div>';
-
-    /**
-     * dialog，弹窗，alert和confirm的父类
-     *
-     * @param {object=} options 配置项
-     * @param {string=} options.title 弹窗的标题
-     * @param {string=} options.content 弹窗的内容
-     * @param {string=} options.className 弹窗的自定义类名
-     * @param {array=} options.buttons 按钮配置项
-     *
-     * @param {string} [options.buttons[].label=确定] 按钮的文字
-     * @param {string} [options.buttons[].type=primary] 按钮的类型 [primary, default]
-     * @param {function} [options.buttons[].onClick=$.noop] 按钮的回调
-     *
-     * @example
-     * weui.dialog({
-     *     title: 'dialog标题',
-     *     content: 'dialog内容',
-     *     className: 'custom-classname',
-     *     buttons: [{
-     *         label: '取消',
-     *         type: 'default',
-     *         onClick: function () { alert('取消') }
-     *     }, {
-     *         label: '确定',
-     *         type: 'primary',
-     *         onClick: function () { alert('确定') }
-     *     }]
-     * });
-     */
-    function dialog(options) {
-        if (_sington) return _sington;
-        options = options || {};
-
-        var isAndroid = $.os.android;
-        options = $.extend({
-            title: null,
-            content: '',
-            className: '',
-            buttons: [{
-                label: '确定',
-                type: 'primary',
-                onClick: $.noop
-            }],
-            isAndroid: isAndroid
-        }, options);
-        var $dialogWrap = $($.render(tpl, options));
-        var $dialog = $dialogWrap.find('.weui-dialog');
-        var $mask = $dialogWrap.find('.weui-mask');
-
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-
-            $mask.addClass('weui-animate-fade-out');
-            $dialog.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
-                $dialogWrap.remove();
-                _sington = false;
-            });
-        }
-
-        function hide() { _hide(); }
-
-        $('body').append($dialogWrap);
-        // 不能直接把.weui-animate-fade-in加到$dialog，会导致mask的z-index有问题
-        $mask.addClass('weui-animate-fade-in');
-        $dialog.addClass('weui-animate-fade-in');
-
-        $dialogWrap.on('click', '.weui-dialog__btn', function(evt) {
-            var index = $(this).index();
-            if (options.buttons[index].onClick) {
-                if (options.buttons[index].onClick.call(this, evt) !== false) hide();
-            } else {
-                hide();
-            }
-        });
-
-        _sington = {
-            hide: hide
-        };
-        return _sington;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.dialog = dialog;
 
 })();
 
@@ -467,6 +320,96 @@
 
     window.weui = window.weui || {};
     window.weui.flow = flow;
+
+})();
+
+(function() {
+    var _sington;
+    var tpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-dialog {{if isAndroid}} weui-skin_android{{/if}}">{{if title}}<div class="weui-dialog__hd"><strong class="weui-dialog__title">{{title}}</strong></div>{{/if}}<div class="weui-dialog__bd">{{content}}</div><div class="weui-dialog__ft">{{each buttons as button}}<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_{{button.type}}">{{button.label}}</a>{{/each}}</div></div></div>';
+
+    /**
+     * dialog，弹窗，alert和confirm的父类
+     *
+     * @param {object=} options 配置项
+     * @param {string=} options.title 弹窗的标题
+     * @param {string=} options.content 弹窗的内容
+     * @param {string=} options.className 弹窗的自定义类名
+     * @param {array=} options.buttons 按钮配置项
+     *
+     * @param {string} [options.buttons[].label=确定] 按钮的文字
+     * @param {string} [options.buttons[].type=primary] 按钮的类型 [primary, default]
+     * @param {function} [options.buttons[].onClick=$.noop] 按钮的回调
+     *
+     * @example
+     * weui.dialog({
+     *     title: 'dialog标题',
+     *     content: 'dialog内容',
+     *     className: 'custom-classname',
+     *     buttons: [{
+     *         label: '取消',
+     *         type: 'default',
+     *         onClick: function () { alert('取消') }
+     *     }, {
+     *         label: '确定',
+     *         type: 'primary',
+     *         onClick: function () { alert('确定') }
+     *     }]
+     * });
+     */
+    function dialog(options) {
+        if (_sington) return _sington;
+        options = options || {};
+
+        var isAndroid = $.os.android;
+        options = $.extend({
+            title: null,
+            content: '',
+            className: '',
+            buttons: [{
+                label: '确定',
+                type: 'primary',
+                onClick: $.noop
+            }],
+            isAndroid: isAndroid
+        }, options);
+        var $dialogWrap = $($.render(tpl, options));
+        var $dialog = $dialogWrap.find('.weui-dialog');
+        var $mask = $dialogWrap.find('.weui-mask');
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+
+            $mask.addClass('weui-animate-fade-out');
+            $dialog.addClass('weui-animate-fade-out').on('animationend webkitAnimationEnd', function() {
+                $dialogWrap.remove();
+                _sington = false;
+            });
+        }
+
+        function hide() { _hide(); }
+
+        $('body').append($dialogWrap);
+        // 不能直接把.weui-animate-fade-in加到$dialog，会导致mask的z-index有问题
+        $mask.addClass('weui-animate-fade-in');
+        $dialog.addClass('weui-animate-fade-in');
+
+        $dialogWrap.on('click', '.weui-dialog__btn', function(evt) {
+            var index = $(this).index();
+            if (options.buttons[index].onClick) {
+                if (options.buttons[index].onClick.call(this, evt) !== false) hide();
+            } else {
+                hide();
+            }
+        });
+
+        _sington = {
+            hide: hide
+        };
+        return _sington;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.dialog = dialog;
 
 })();
 
@@ -2976,4 +2919,61 @@ function compress(file, options, callback) {
     window.weui.uploader = uploader;
     window.weui.ajaxUploader = ajaxUploader;
 
+})();
+
+(function() {
+    
+    /**
+     * alert 警告弹框，功能类似于浏览器自带的 alert 弹框，用于提醒、警告用户简单扼要的信息，只有一个“确认”按钮，点击“确认”按钮后关闭弹框。
+     * @param {string} content 弹窗内容
+     * @param {function=} yes 点击确定按钮的回调
+     * @param {object=} options 配置项
+     * @param {string=} options.title 弹窗的标题
+     * @param {string=} options.className 自定义类名
+     * @param {array=} options.buttons 按钮配置项，详情参考dialog
+     *
+     * @example
+     * weui.alert('普通的alert');
+     * weui.alert('带回调的alert', function(){ console.log('ok') });
+     * var alertDom = weui.alert('手动关闭的alert', function(){
+     *     return false; // 不关闭弹窗，可用alertDom.hide()来手动关闭
+     * });
+     * weui.alert('自定义标题的alert', { title: '自定义标题' });
+     * weui.alert('带回调的自定义标题的alert', function(){
+     *    console.log('ok')
+     * }, {
+     *    title: '自定义标题'
+     * });
+     * weui.alert('自定义按钮的alert', {
+     *     title: '自定义按钮的alert',
+     *     buttons: [{
+     *         label: 'OK',
+     *         type: 'primary',
+     *         onClick: function(){ console.log('ok') }
+     *     }]
+     * });
+     */
+    function alert(content, yes, options) {
+        yes = yes || $.noop;
+
+        if (typeof yes === 'object') {
+            options = yes;
+            yes = $.noop;
+        }
+
+        options = $.extend({
+            content: content,
+            buttons: [{
+                label: '确定',
+                type: 'primary',
+                onClick: yes
+            }]
+        }, options);
+
+        return weui.dialog(options);
+    }
+
+    window.weui = window.weui || {};
+    window.weui.alert = alert;
+    
 })();

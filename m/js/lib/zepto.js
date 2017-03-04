@@ -2739,7 +2739,7 @@ window.$ === undefined && (window.$ = Zepto)
                 return /^1[34578]{1}\d{9}$/.test(value);
             },
             telno: function(value) {
-                return /^\d{3}-\d{8}$|^\d{4}-\d{7}$/.test(value);
+                return /^(\d{3,4})?-?\d{7,8}(-\d{1,4})?$/.test(value);
             },
             ip: function(value) {
                 return /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])(\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])){3}$/.test(value);
