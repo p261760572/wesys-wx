@@ -145,7 +145,7 @@ var Zepto = (function() {
     if (singleTagRE.test(html)) dom = $(document.createElement(RegExp.$1))
 
     if (!dom) {
-      if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
+      if (html.replace) html = html.replace(tagExpanderRE, "<$1><$2>")
       if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
       if (!(name in containers)) name = '*'
 
@@ -2261,7 +2261,7 @@ window.$ === undefined && (window.$ = Zepto)
     };
 
     var escapeMap = {
-        '<': '&#60;',
+		'<': '&#60;',
         '>': '&#62;',
         '"': '&#34;',
         "'": '&#39;',
@@ -2775,12 +2775,12 @@ window.$ === undefined && (window.$ = Zepto)
                     return item[opts.textField];
                 });
 
-                $target.val(text.join(' '));
+                $target.val(text.join(' ')).change();
 
                 var $temp = $target;
                 for(var i = 0; i < result.length; i++) {
                     $temp = $temp.next();
-                    $temp.val(result[i][opts.valueField]);
+                    $temp.val(result[i][opts.valueField]).change();
                 }                
             },
             id: $target.attr('id')
@@ -2823,7 +2823,7 @@ window.$ === undefined && (window.$ = Zepto)
             },
             onClickItem: function(row) {
                 var opts = this.options;
-                $target.val(row[opts.textField]).next().val(row[opts.valueField]);
+                $target.val(row[opts.textField]).change().next().val(row[opts.valueField]).change();
             }
         }, options);
 
@@ -2852,7 +2852,7 @@ window.$ === undefined && (window.$ = Zepto)
                     return item[opts.valueField];
                 });
 
-                $target.val($$.formatDate(new Date(values[0], values[1] - 1, values[2]), opts.format));
+                $target.val($$.formatDate(new Date(values[0], values[1] - 1, values[2]), opts.format)).change();
             },
 
         }, options);
