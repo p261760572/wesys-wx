@@ -19,7 +19,7 @@
 </head>
 
 <body>
-    <div id="page1" class="page page_show">
+    <div id="search-page" class="page page_show">
         <div class="weui-search-bar">
             <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
             <form class="weui-search-bar__form" method="post" action="">
@@ -30,14 +30,14 @@
                 </div>
                 <label class="weui-search-bar__label">
                     <i class="weui-icon-search"></i>
-                    <span>搜索</span> </label>
+                    <span>搜索终端参数</span> </label>
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
         <div class="weui-cells searchbar-result">
         </div>
     </div>
-    <div id="page2" class="page">
+    <div id="detail-page" class="page">
         <form id="form">
           <input type="hidden" name="rec_id">
           <input type="hidden" name="oper_in">
@@ -99,40 +99,44 @@
             </div>
         </form>
     </div>
-    <div id="page3" class="page">
+    <div id="preview-page" class="page">
         <div class="weui-form-preview">
-                <div class="weui-form-preview__hd">
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">终端参数</label>
-                    </div>
-                </div>
-                <div class="weui-form-preview__bd">
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">终端参数ID</label>
-                        <span class="weui-form-preview__value" id="preview.term_param_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">商户参数ID</label>
-                        <span class="weui-form-preview__value" id="preview.mchnt_param_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">终端号</label>
-                        <span class="weui-form-preview__value" id="preview.term_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">参数状态</label>
-                        <span class="weui-form-preview__value" id="preview.status"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">拓展方</label>
-                        <span class="weui-form-preview__value" id="preview.expand_inst_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">拓展人</label>
-                        <span class="weui-form-preview__value" id="preview.expand_id"></span>
-                    </div>
+            <div class="weui-form-preview__hd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">终端参数</label>
                 </div>
             </div>
+            <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">终端参数ID</label>
+                    <span class="weui-form-preview__value" id="preview-term_param_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户参数ID</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_param_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">终端号</label>
+                    <span class="weui-form-preview__value" id="preview-term_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">参数状态</label>
+                    <span class="weui-form-preview__value" id="preview-status"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">拓展方</label>
+                    <span class="weui-form-preview__value" id="preview-expand_inst_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">拓展人</label>
+                    <span class="weui-form-preview__value" id="preview-expand_id"></span>
+                </div>
+            </div>
+             <div class="weui-form-preview__ft">
+                <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
+                <!-- <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">编辑</button> -->
+             </div>
+        </div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
@@ -165,7 +169,7 @@
     </script>
     <script>
     var operateType;
-    var searchPage = weui.searchPage('#page1', {
+    var searchPage = weui.searchPage('#search-page', {
         resultTpl: '#result-template',
         loader: onSearch,
         onInput: function() {
@@ -176,7 +180,7 @@
             // weui.page.back();
             showActions(row);
         }
-    });
+    }).search();
 
     function onSearch(param, success, error) {
         $$.request('/action/bm/term-param/search', param, {
@@ -184,9 +188,9 @@
                 if (data.errcode == 0) {
                     success(data.rows);
                 } else {
-                    weui.alert(data.errmsg, function () {
-                        error();
-                    }, { title: '提示' });
+                    weui.alert(data.errmsg, error, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {
@@ -195,13 +199,37 @@
         });
     }
 
+    function onPreview(param) {
+        weui.page.show('#preview-page');
+
+        $$.request('/action/bm/term-param/view', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
+                    for (var name in data.data) {
+                        $('#preview-' + name).html(data.data[name]);
+                    }
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
     function onView(param) {
+        weui.page.show('#detail-page');
+
         $$.request('/action/bm/term-param/view', param, {
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
                 } else {
-                    weui.alert(data.errmsg, { title: '提示' });
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {}
@@ -212,11 +240,13 @@
         $$.request('/action/bm/term-param/delete', param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    weui.toast('操作成功', function () {
+                    weui.toast('操作成功', function() {
                         searchPage.search();
                     });
                 } else {
-                    weui.alert(data.errmsg, { title: '提示' });
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {}
@@ -224,32 +254,50 @@
     }
 
     function showActions(row) {
-        weui.actionSheet([{
+        var actions = [{
             label: '查看',
             onClick: function() {
                 console.log(this, arguments);
-                onView(row);
-                weui.page.show('#page2');
+                onPreview(row);
                 $('#back-btn').show().siblings().hide();
             }
-        }, {
-            label: '编辑',
-            onClick: function() {
-                console.log(this, arguments);
-                onView(row);
-                operateType = 'update';
-                weui.page.show('#page2');
-                $('#back-btn').show().siblings().show();
-            }
-        }, {
-            label: '删除',
-            onClick: function() {
-                console.log(this, arguments);
-                weui.confirm('确认要删除?', function() {
-                    onDelete(row);
-                });
-            }
-        }], [{
+        }]
+
+        if ($.inArray(row.proc_st, ['8', '9', 'A']) >= 0) {
+            actions.push({
+                label: '编辑',
+                onClick: function() {
+                    console.log(this, arguments);
+                    operateType = 'update';
+                    onView(row);
+                    $('#back-btn').show().siblings().show();
+                }
+            });
+        }
+
+        if (row.oper_in == 'I' && $.inArray(row.proc_st, ['9', 'A']) >= 0) {
+            actions.push({
+                label: '删除',
+                onClick: function() {
+                    console.log(this, arguments);
+                    weui.confirm('确认要删除?', function() {
+                        onDelete(row);
+                    });
+                }
+            });
+        }
+
+        // actions.push({
+        //         label: '终端管理',
+        //         onClick: function() {
+        //             console.log(this, arguments);
+        //             window.location.href = 'term-info.html?' + $.param({
+        //                 mchnt_id: row.mchnt_id
+        //             });
+        //         }
+        //     });
+
+        weui.actionSheet(actions, [{
             label: '取消',
             onClick: function() {
                 console.log(this, arguments);
@@ -257,33 +305,24 @@
         }]);
     }
 
-    var options = {
-        callback: function(error) {
-            console.log(this, arguments);
-        },
-        rules: {
-            idnum: function(value, args) {
-                return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value);
-            }
-        }
-    };
-
     // 失去焦点时检测
-    weui.form.checkIfBlur('#form', options);
+    weui.form.checkIfBlur('#form', $$.rules);
 
     function onSubmit() {
-        if (!weui.form.validate('#form', options)) return;
+        if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
 
         $$.request('/action/bm/term-param/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    weui.toast('操作成功', function () {
+                    weui.toast('操作成功', function() {
                         searchPage.search();
-                         weui.page.back();
+                        weui.page.back();
                     });
                 } else {
-                    weui.alert(data.errmsg, { title: '提示' });
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {}
@@ -292,12 +331,35 @@
 
     function onClickAdd() {
         operateType = 'create';
-        weui.page.show('#page2');
+        weui.page.show('#detail-page');
+        weui.form.clear('#form');
+        $('#back-btn').show().siblings().show();
     }
 
     $(function() {
         $('#add-btn').on('click', onClickAdd);
-        $('#submit-btn').on('click', onSubmit) ;
+        $('#submit-btn').on('click', onSubmit);
+
+        //init component
+        $('#city-picker').on('focus', function() {
+            $$.showPicker(this, districtData);
+        });
+
+        $('#date-picker').on('focus', function() {
+            $$.showDatePicker(this);
+        });
+
+        $('#expand-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand-inst/list'
+            });
+        });
+
+        $('#expand-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand/list'
+            });
+        });
     });
     </script>
 </body>

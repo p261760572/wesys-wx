@@ -8,6 +8,14 @@
     <title>商户基本信息</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <style type="text/css">
+    .hide {
+        display: none;
+    }
+    
+    .required {
+        color: red;
+    }
+
     .weui-cells {
         /*font-size: 16px;*/
     }
@@ -25,12 +33,12 @@
             <form class="weui-search-bar__form" method="post" action="">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="支持联系人、商户简称、地址">
                     <a href="javascript:" class="weui-icon-clear"></a>
                 </div>
                 <label class="weui-search-bar__label">
                     <i class="weui-icon-search"></i>
-                    <span>搜索</span> </label>
+                    <span>搜索商户</span> </label>
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
@@ -54,7 +62,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">联系人</label>
+                        <label class="weui-label">联系人<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="linkman" required="" pattern="" placeholder="请输入联系人">
@@ -62,7 +70,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">手机号</label>
+                        <label class="weui-label">手机号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mobile" required="" placeholder="请输入手机号" validType="mobile" invalidTips="请输入有效的手机号">
@@ -78,7 +86,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户简称</label>
+                        <label class="weui-label">商户简称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mchnt_abbr" required="" placeholder="请输入商户简称">
@@ -94,7 +102,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">所在地区</label>
+                        <label class="weui-label">所在地区<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="district_name" required="" placeholder="请选择所在地区" id="city-picker">
@@ -105,7 +113,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">详细地址</label>
+                        <label class="weui-label">详细地址<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="addr" required="" placeholder="请输入详细地址">
@@ -113,7 +121,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户名称</label>
+                        <label class="weui-label">商户名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mchnt_name" required="" placeholder="请输入商户名称">
@@ -121,7 +129,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">营业执照号</label>
+                        <label class="weui-label">营业执照号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照">
@@ -151,27 +159,19 @@
                         <input class="weui-input" type="text" name="business_scope" placeholder="请输入经营范围">
                     </div>
                 </div>
-                <!-- <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">证件类型</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_type" required="" placeholder="请输入证件类型" id="cert-type-picker">
-                    </div>
-                </div> -->
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label for="" class="weui-label">证件类型</label>
+                        <label for="" class="weui-label">证件类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <select class="weui-select" name="cert_type">
+                        <select class="weui-select" name="cert_type" required="" missingTips="请选择证件类型">
                             <option value="01">身份证</option>
                         </select>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">证件姓名</label>
+                        <label class="weui-label">证件姓名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="cert_name" required="" placeholder="请输入证件姓名">
@@ -179,7 +179,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">证件号码</label>
+                        <label class="weui-label">证件号码<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="cert_id" required="" placeholder="请输入证件号码" validType="idnum" invalidTips="请输入有效的证件号码">
@@ -198,20 +198,20 @@
                         <label class="weui-label">组织机构代码</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="org_code" placeholder="请输入组织机构代码" pattern="^[A-Za-z0-9]+$">
+                        <input class="weui-input" type="text" name="org_code" placeholder="请输入组织机构代码" pattern="^[A-Za-z0-9]+$" invalidTips="请输入有效的组织机构代码">
                     </div>
                 </div>
-                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                <!-- <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label for="" class="weui-label">状态</label>
+                        <label for="" class="weui-label">状态<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <select class="weui-select" name="status">
-                            <option value="1">启用</option>
+                            <option value="1">正常</option>
                             <option value="0">注销</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">备注</label>
@@ -222,7 +222,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">拓展方</label>
+                        <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请选择拓展方" id="expand-inst-select2">
@@ -231,7 +231,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">拓展人</label>
+                        <label class="weui-label">拓展人<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2">
@@ -325,10 +325,10 @@
                     <label class="weui-form-preview__label">组织机构代码</label>
                     <span class="weui-form-preview__value" id="preview-org_code"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <!-- <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">状态</label>
                     <span class="weui-form-preview__value" id="preview-status_nm"></span>
-                </div>
+                </div> -->
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">备注</label>
                     <span class="weui-form-preview__value" id="preview-remark"></span>
@@ -351,17 +351,21 @@
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script type="text/javascript" src="../js/district.js"></script>
+    <script type="text/javascript" src="../js/param.js"></script>
     <script id="result-template" type="text/html">
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.mchnt_id}}{{row.linkman}}</p>
+                <p>{{row.mchnt_abbr}}</p>
             </div>
-            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st}}</div>
+            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st_nm}}</div>
         </a>
         <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box__desc">{{row.linkman}}</div>
             <div class="weui-media-box__desc">{{row.mobile}}</div>
-            <div class="weui-media-box__desc">{{row.email}}</div>
+            <div class="weui-media-box__desc">{{row.addr}}</div>
+            <div class="weui-media-box__desc">{{row.mchnt_name}}</div>
+            <div class="weui-media-box__desc">{{row.license_no}}</div>
             <div class="weui-media-box__desc">{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">{{row.created_time}}</li>
@@ -391,7 +395,7 @@
             // weui.page.back();
             showActions(row);
         }
-    }).search();
+    });//.search();
 
     function onSearch(param, success, error) {
         $$.request('/action/bm/mchnt-base-info/search', param, {
@@ -416,6 +420,7 @@
         $$.request('/action/bm/mchnt-base-info/view', param, {
             success: function(data) {
                 if (data.errcode == 0) {
+                    data.data.cert_type_nm = $$.formatField($$.param['cert_type'], data.data.cert_type);
                     for (var name in data.data) {
                         $('#preview-' + name).html(data.data[name]);
                     }
@@ -497,6 +502,16 @@
             });
         }
 
+        actions.push({
+                label: '终端管理',
+                onClick: function() {
+                    console.log(this, arguments);
+                    window.location.href = 'term-info.html?' + $.param({
+                        mchnt_id: row.mchnt_id
+                    });
+                }
+            });
+
         weui.actionSheet(actions, [{
             label: '取消',
             onClick: function() {
@@ -532,6 +547,13 @@
     function onClickAdd() {
         operateType = 'create';
         weui.page.show('#detail-page');
+        weui.form.clear('#form');
+        //默认值
+        weui.form.load('#form', {
+            cert_type: '01',
+            status: '1'
+        });
+        $('#back-btn').show().siblings().show();
     }
 
     $(function() {
@@ -539,30 +561,28 @@
         $('#submit-btn').on('click', onSubmit);
 
         //init component
-        $('#city-picker').on('click', function() {
+        $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
 
-        $('#license-date-picker').on('click', function() {
+        $('#license-date-picker').on('focus', function() {
             $$.showDatePicker(this);
         });
 
-        $('#cert-date-picker').on('click', function() {
+        $('#cert-date-picker').on('focus', function() {
             $$.showDatePicker(this);
         });
 
-        $('#expand-inst-select2').on('click', function() {
-            $$.showSelect2(this, [{
-                text: 'text',
-                value: 'value'
-            }]);
+        $('#expand-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand-inst/list'
+            });
         });
 
-        $('#expand-select2').on('click', function() {
-            $$.showSelect2(this, [{
-                text: 'text',
-                value: 'value'
-            }]);
+        $('#expand-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand/list'
+            });
         });
     });
     </script>
