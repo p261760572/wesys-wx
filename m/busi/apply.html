@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>业务申请</title>
-    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <style type="text/css">
     body {
         background-color: #f8f8f8;
@@ -26,26 +26,26 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">联系人姓名</label>
+                        <label class="weui-label">联系人姓名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="linkman" type="text" placeholder="请输入联系人姓名">
+                        <input class="weui-input for_base" name="linkman" type="text" placeholder="请输入联系人姓名" required>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">手机号</label>
+                        <label class="weui-label">手机号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="mobile" type="tel" placeholder="请输入手机号">
+                        <input class="weui-input for_base" type="text" name="mobile" validType="mobile" placeholder="请输入手机号" required>
                     </div>
                 </div>
                 <div class="weui-cell">
-                    <div class="weui-cell__hd">
+                    <div class="weui-cell__hd"> 
                         <label class="weui-label">常用邮箱</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="email" type="text" placeholder="请输入常用邮箱">
+                        <input class="weui-input for_base" type="text" name="email" invalidType="email" placeholder="请输入常用邮箱">
                     </div>
                 </div>
             </div>
@@ -53,10 +53,10 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户名称</label>
+                        <label class="weui-label">商户名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="mchnt_name" type="text" placeholder="请输入商户名称">
+                        <input class="weui-input for_base" name="mchnt_name" type="text" placeholder="请输入商户名称" required>
                     </div>
                 </div>
                 <!--div class="weui-cell">
@@ -69,10 +69,10 @@
                 </div-->
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">所在地区</label>
+                        <label class="weui-label">所在地区<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" id="district" name="location" type="text" placeholder="请选择所在地区" readonly>
+                        <input class="weui-input" id="district" required="" name="location" type="text" placeholder="请选择所在地区" readonly>
                         <input class="for_base" type="hidden" name="province" value="43">
                         <input class="for_base" type="hidden" name="city" value="01">
                         <input class="for_base" type="hidden" name="district">
@@ -80,10 +80,10 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">详细地址</label>
+                        <label class="weui-label">详细地址<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="addr" type="text" placeholder="请输入详细地址">
+                        <input class="weui-input for_base" name="addr" required="" type="text" placeholder="请输入详细地址">
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@
                     <div class="weui-cell__bd">
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">身份证正面照片</p>
+                                <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
                             </div>
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files" id="03">
@@ -185,18 +185,18 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">证件姓名</label>
+                        <label class="weui-label">证件姓名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="cert_name" type="text" placeholder="请输入证件姓名">
+                        <input class="weui-input for_base" name="cert_name" required="" type="text" placeholder="请输入证件姓名">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">证件号码</label>
+                        <label class="weui-label">证件号码<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_base" name="cert_id" type="text" placeholder="请输入证件号码">
+                        <input class="weui-input for_base" name="cert_id" required="" type="text" placeholder="请输入证件号码" validType="idnum">
                     </div>
                 </div>
             </div>
@@ -272,7 +272,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label for="" class="weui-label">账户类型</label>
+                        <label for="" class="weui-label">账户类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <select class="weui-select for_busi" name="account_type" id="account_type" value="1">
@@ -285,7 +285,7 @@
                     <div class="weui-cell__bd">
                         <div class="weui-uploader">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">账户正面照片</p>
+                                <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
                             </div>
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files" id="16">
@@ -301,18 +301,18 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">账户户名</label>
+                        <label class="weui-label">账户户名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_busi" name="account_name" type="text" placeholder="请输入账户户名">
+                        <input class="weui-input for_busi" name="account_name" required="" type="text" placeholder="请输入账户户名">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">银行账号</label>
+                        <label class="weui-label">银行账号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_busi" name="account_no" type="text" placeholder="请输入银行账号">
+                        <input class="weui-input for_busi" name="account_no" required="" type="text" placeholder="请输入银行账号">
                     </div>
                 </div>
                 <!--div class="weui-cell">
@@ -333,10 +333,10 @@
                 </div-->
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label for="" class="weui-label">开户支行</label>
+                        <label for="" class="weui-label">开户支行<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="subbranch_name" id="subbranch_name" placeholder="请选择开户支行" readonly>
+                        <input class="weui-input" type="text" required="" name="subbranch_name" id="subbranch_name" placeholder="请选择开户支行" readonly>
                         <input class="for_busi" type="hidden" name="account_bank_id">
                     </div>
                 </div>
@@ -460,7 +460,7 @@
                 <div class="weui-form-preview__bd">
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">银行卡收单</label>
-                        <span class="weui-form-preview__value" name="debit_card_fee_text">/<span name="credit_card_fee_text"></span></span>
+                        <p class="weui-form-preview__value"><span name="debit_card_fee_text"></span>/<span name="credit_card_fee_text"></span></p>
                     </div>
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">当面付</label>
@@ -514,8 +514,56 @@
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script type="text/javascript" src="../js/district.js"></script>
+    <script src="http://api.map.baidu.com/api?v=1.4" type="text/javascript"></script>
     <script type="text/javascript">
 		
+	var getLocation = function (successFunc, errorFunc) { 
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function (position) {
+				var lat = position.coords.latitude;
+				var lon = position.coords.longitude;
+				//var map = new BMap.Map("container");   // 创建Map实例
+				var point = new BMap.Point(lon, lat); // 创建点坐标
+				var gc = new BMap.Geocoder();
+				gc.getLocation(point, function (rs) {
+					var addComp = rs.addressComponents;
+					//当前定位城市
+					//alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street);
+					if (successFunc != undefined)
+						successFunc(addComp);
+				});
+			},
+			function (error) {
+				switch (error.code) {
+					case 1:
+						alert("位置服务被拒绝。");
+						break;
+					case 2:
+						alert("暂时获取不到位置信息。");
+						break;
+					case 3:
+						alert("获取位置信息超时。");
+						break;
+					default:
+						alert("未知错误。");
+						break;
+				}
+				if (errorFunc != undefined)
+					errorFunc(error);
+				}, { timeout: 5000, enableHighAccuracy: true });
+		} else {
+			alert("你的浏览器不支持获取地理位置信息。");
+			if (errorFunc != undefined)
+				errorFunc("你的浏览器不支持获取地理位置信息。");
+		}
+	}
+	
+	$(function(){
+		getLocation(function(){
+			console.log(arguments);
+			$('#addr').val(addComp.province + addComp.city + addComp.district + addComp.street);
+		});
+	});
 	function serializeDetail() {
 		var data = {};
 		var base_info = {};
@@ -558,11 +606,13 @@
 
 		return data;
 	}
+	weui.form.checkIfBlur('#flow', $$.rules);
 		
 	function onSubmit() {
+		if (!weui.form.validate('#flow', $$.rules)) return;
 		var param = serializeDetail();
 
-		$$.request('/action/bm/mchnt-base-info/' + operateType, param, {
+		$$.request('/action/bm/mchnt-base-info/', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					weui.toast('操作成功');
@@ -608,13 +658,13 @@
 	$(function(){
 		$('input,select').on('change', function(){
 			var ele_name = $(this).attr('name');
-			var ele_text = ($(this).tagName == 'input')?$((this).val()):($(this).find('option :selected').text());
+			var ele_text = ($(this).prop('tagName') == 'INPUT')?($(this).val()):($(this).find('option :selected').text());
 			if(ele_name != undefined) {
 				console.log(ele_name);
 				$('#save_all').find('span[name='+ele_name+']').html(ele_text);
 			}
 		});
-		/*
+		
 		$$.request('/action/admin/parameter/list', {
 				debit_fee_algo: '1',
 				credit_fee_algo: '1',
@@ -640,22 +690,7 @@
 				}
 			
 				
-		}); */
-		$('#debit_card_fee').on('click', function() {
-			$$.showPicker(this, [{'value':'CS082','text': '噶1'}]);
-		});
-
-		$('#credit_card_fee').on('click', function() {
-			$$.showPicker(this, [{'value':'CS083','text': '号店2'}]);
-		});
-
-		$('#subbranch_name').on('click', function() {
-			$$.showSelect2(this, [{'value':'123','text': '建设银行'}]);
-		});
-
-		$('#acq_inst_id').on('click', function() {
-			$$.showPicker(this, [{'value':'1234','text': '通联支付'}]);
-		});
+		}); 
 	})
 	
 	$('.weui-uploader').each(function(i, element) {
