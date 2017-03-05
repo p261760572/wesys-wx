@@ -11,7 +11,7 @@
     .hide {
         display: none;
     }
-
+    
     .required {
         color: red;
     }
@@ -331,7 +331,7 @@
             // weui.page.back();
             showActions(row);
         }
-    }); //.search();
+    }).search();
 
     function onSearch(param, success, error) {
         $$.request('/action/bm/term-info/search', param, {
@@ -485,6 +485,9 @@
         operateType = 'create';
         weui.page.show('#detail-page');
         weui.form.clear('#form');
+        weui.form.load('#form', {
+            mchnt_id: query.mchnt_id
+        });
         $('#back-btn').show().siblings().show();
     }
 
@@ -504,7 +507,7 @@
 
         $$.request('/action/bm/parameter/list', {
             term_inves: '1',
-            equi_type:  '1'
+            equi_type: '1'
         }, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -525,19 +528,14 @@
 
         $('#expand-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
-                url: '/action/bm/expand-inst/list'
+                url: '/action/bm/expand-inst/search'
             });
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
-                url: '/action/bm/expand/list'
+                url: '/action/bm/expand/search'
             });
-        });
-
-
-        weui.form.load('#form', {
-            mchnt_id: query.mchnt_id
         });
     });
     </script>

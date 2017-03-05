@@ -15,7 +15,7 @@
     .required {
         color: red;
     }
-
+    
     .weui-cells {
         /*font-size: 16px;*/
     }
@@ -395,7 +395,7 @@
             // weui.page.back();
             showActions(row);
         }
-    });//.search();
+    }).search();
 
     function onSearch(param, success, error) {
         $$.request('/action/bm/mchnt-base-info/search', param, {
@@ -503,14 +503,24 @@
         }
 
         actions.push({
-                label: '终端管理',
-                onClick: function() {
-                    console.log(this, arguments);
-                    window.location.href = 'term-info.html?' + $.param({
-                        mchnt_id: row.mchnt_id
-                    });
-                }
-            });
+            label: '商户参数',
+            onClick: function() {
+                console.log(this, arguments);
+                window.location.href = 'mchnt-param.html?' + $.param({
+                    mchnt_id: row.mchnt_id
+                });
+            }
+        });
+
+        actions.push({
+            label: '终端管理',
+            onClick: function() {
+                console.log(this, arguments);
+                window.location.href = 'term-info.html?' + $.param({
+                    mchnt_id: row.mchnt_id
+                });
+            }
+        });
 
         weui.actionSheet(actions, [{
             label: '取消',
@@ -575,13 +585,13 @@
 
         $('#expand-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
-                url: '/action/bm/expand-inst/list'
+                url: '/action/bm/expand-inst/search'
             });
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
-                url: '/action/bm/expand/list'
+                url: '/action/bm/expand/search'
             });
         });
     });

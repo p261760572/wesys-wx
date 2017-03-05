@@ -8,6 +8,14 @@
     <title>终端参数</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <style type="text/css">
+    .hide {
+        display: none;
+    }
+
+    .required {
+        color: red;
+    }
+
     .weui-cells {
         /*font-size: 16px;*/
     }
@@ -46,7 +54,15 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">终端参数ID</label>
+                        <label class="weui-label">终端标识<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="term_no" required=""  placeholder="请输入终端标识">
+                    </div>
+                </div>
+                <div class="weui-cell hide">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">终端参数ID<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="term_param_id" required=""  placeholder="请输入终端参数ID">
@@ -54,42 +70,48 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户参数ID</label>
+                        <label class="weui-label">商户号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_param_id" required=""  placeholder="请输入商户参数ID">
+                        <input class="weui-input" type="text" name="mchnt_cd" required=""  placeholder="请选择商户号" id="mchnt-cd-select2">
+                        <input type="hidden" name="mchnt_param_id">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">终端号</label>
+                        <label class="weui-label">终端号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="term_id" required=""  placeholder="请输入终端号">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">参数状态</label>
+                        <label for="" class="weui-label">参数状态<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="status"   placeholder="请输入参数状态">
+                        <select class="weui-select" name="status">
+                            <option value="1">正常</option>
+                            <option value="0">注销</option>
+                        </select>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">拓展方</label>
+                        <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_inst_id" required=""  placeholder="请输入拓展方">
+                        <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请选择拓展方" id="expand-inst-select2">
+                        <input type="hidden" name="expand_inst_id">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">拓展人</label>
+                        <label class="weui-label">拓展人<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_id"   placeholder="请输入拓展人">
+                        <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2">
+                        <input type="hidden" name="expand_id">
                     </div>
                 </div>
             </div>
@@ -168,6 +190,7 @@
         {{/each}}
     </script>
     <script>
+    var query = $$.parseQueryString();
     var operateType;
     var searchPage = weui.searchPage('#search-page', {
         resultTpl: '#result-template',
@@ -333,6 +356,10 @@
         operateType = 'create';
         weui.page.show('#detail-page');
         weui.form.clear('#form');
+        weui.form.load('#form', {
+            term_no: query.term_no,
+            status: '1'
+        });
         $('#back-btn').show().siblings().show();
     }
 
@@ -341,22 +368,34 @@
         $('#submit-btn').on('click', onSubmit);
 
         //init component
-        $('#city-picker').on('focus', function() {
-            $$.showPicker(this, districtData);
-        });
+        // $('#city-picker').on('focus', function() {
+        //     $$.showPicker(this, districtData);
+        // });
 
-        $('#date-picker').on('focus', function() {
-            $$.showDatePicker(this);
+        // $('#date-picker').on('focus', function() {
+        //     $$.showDatePicker(this);
+        // });
+
+        $('#mchnt-cd-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索商户参数',
+                url: '/action/bm/mchnt-param/list',
+                queryParams: {
+                    term_no: query.term_no
+                }
+            });
         });
 
         $('#expand-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索拓展方',
                 url: '/action/bm/expand-inst/list'
             });
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索拓展人',
                 url: '/action/bm/expand/list'
             });
         });

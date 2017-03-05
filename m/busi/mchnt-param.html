@@ -8,6 +8,14 @@
     <title>商户参数</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <style type="text/css">
+    .hide {
+        display: none;
+    }
+    
+    .required {
+        color: red;
+    }
+    
     .weui-cells {
         /*font-size: 16px;*/
     }
@@ -19,7 +27,7 @@
 </head>
 
 <body>
-    <div id="page1" class="page page_show">
+    <div id="search-page" class="page page_show">
         <div class="weui-search-bar">
             <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
             <form class="weui-search-bar__form" method="post" action="">
@@ -30,34 +38,52 @@
                 </div>
                 <label class="weui-search-bar__label">
                     <i class="weui-icon-search"></i>
-                    <span>搜索</span> </label>
+                    <span>搜索商户参数</span> </label>
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
         <div class="weui-cells searchbar-result">
         </div>
     </div>
-    <div id="page2" class="page">
+    <div id="detail-page" class="page">
         <form id="form">
-          <input type="hidden" name="rec_id">
-          <input type="hidden" name="oper_in">
-          <input type="hidden" name="proc_st">
-          <div class="weui-cells__title">商户参数</div>
+            <input type="hidden" name="rec_id">
+            <input type="hidden" name="oper_in">
+            <input type="hidden" name="proc_st">
+            <div class="weui-cells__title">商户参数</div>
             <div class="weui-cells weui-cells_form">
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户参数ID</label>
+                        <label class="weui-label">客户号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_param_id" required=""  placeholder="请输入商户参数ID">
+                        <input class="weui-input" type="text" name="mchnt_id" required=""  placeholder="请输入终端标识">
+                    </div>
+                </div>
+                <div class="weui-cell hide">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商户参数ID<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="mchnt_param_id" required="" placeholder="请输入商户参数ID">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">业务类型</label>
+                        <label class="weui-label">业务类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="busi_type" required=""  placeholder="请输入业务类型">
+                        <input class="weui-input" type="text" name="busi_type_nm" required="" placeholder="请选择业务类型" id="busi-type-select2">
+                        <input type="hidden" name="busi_type">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">收单机构<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2">
+                        <input type="hidden" name="acq_inst_id">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -65,55 +91,58 @@
                         <label class="weui-label">商户号</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_cd"   placeholder="请输入商户号">
+                        <input class="weui-input" type="text" name="mchnt_cd" placeholder="请输入商户号">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">收单机构</label>
+                        <label class="weui-label">商户名称</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="acq_inst_id"   placeholder="请输入收单机构">
+                        <input class="weui-input" type="text" name="mchnt_name" placeholder="请输入商户名称">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">账户类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="account_type" required="" missingTips="请选择证件类型">
+                            <option value="1">对私</option>
+                            <option value="2">对公</option>
+                        </select>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">账户类型</label>
+                        <label class="weui-label">开户名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_type"   placeholder="请输入账户类型">
+                        <input class="weui-input" type="text" name="account_name" required="" placeholder="请输入开户名称">
                     </div>
                 </div>
-                <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">开户名称</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_name"   placeholder="请输入开户名称">
-                    </div>
-                </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">开户银行</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_bank"   placeholder="请输入开户银行">
+                        <input class="weui-input" type="text" name="account_bank" placeholder="请输入开户银行">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">开户银行省</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_province"   placeholder="请输入开户银行省">
+                        <input class="weui-input" type="text" name="account_province" placeholder="请输入开户银行省">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">开户银行市</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_city"   placeholder="请输入开户银行市">
+                        <input class="weui-input" type="text" name="account_city" placeholder="请输入开户银行市">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -121,55 +150,59 @@
                         <label class="weui-label">开户支行</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_bank_id"   placeholder="请输入开户支行">
+                        <input class="weui-input" type="text" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
+                        <input type="hidden" name="account_bank_branch_cd">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">银行账号</label>
+                        <label class="weui-label">银行账号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_no"   placeholder="请输入银行账号">
+                        <input class="weui-input" type="text" name="account_no" required="" placeholder="请输入银行账号">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell weui-cell_select weui-cell_select-after hide">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">信用卡开关</label>
+                        <label for="" class="weui-label">信用卡开关<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="credit_flag" required=""  placeholder="请输入信用卡开关">
+                        <select class="weui-select" name="credit_flag" required="" missingTips="请选择证件类型">
+                            <option value="1">开</option>
+                            <option value="0">关</option>
+                        </select>
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">信用卡单笔限额</label>
+                        <label class="weui-label">信用卡笔限额</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="credit_card_limit"   placeholder="请输入信用卡单笔限额">
+                        <input class="weui-input" type="text" name="credit_card_limit" placeholder="请输入信用卡笔限额">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">信用卡日限额</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="credit_date_limit"   placeholder="请输入信用卡日限额">
+                        <input class="weui-input" type="text" name="credit_date_limit" placeholder="请输入信用卡日限额">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">借记卡单笔限额</label>
+                        <label class="weui-label">借记卡笔限额</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="debit_card_limit"   placeholder="请输入借记卡单笔限额">
+                        <input class="weui-input" type="text" name="debit_card_limit" placeholder="请输入借记卡笔限额">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">借记卡日限额</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="debit_date_limit"   placeholder="请输入借记卡日限额">
+                        <input class="weui-input" type="text" name="debit_date_limit" placeholder="请输入借记卡日限额">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -177,23 +210,28 @@
                         <label class="weui-label">MCC</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mcc"   placeholder="请输入MCC">
+                        <input class="weui-input" type="text" name="mcc_nm" placeholder="请选择商户类别" id="mcc-select2">
+                        <input type="hidden" name="mcc">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">MCC18</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mcc18"   placeholder="请输入MCC18">
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" type="text" name="mcc18_nm" placeholder="请选择商户类别" id="mcc18-select2">
+                            <input type="hidden" name="mcc18">
+                        </div>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">借记卡手续费</label>
+                        <label class="weui-label">手续费<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="debit_card_fee"   placeholder="请输入借记卡手续费">
+                        <input class="weui-input" type="text" name="fee_nm" required="" placeholder="请选择手续费" id="fee-select2">
+                        <input type="hidden" name="fee">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -201,31 +239,37 @@
                         <label class="weui-label">贷记卡手续费</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="credit_card_fee"   placeholder="请输入贷记卡手续费">
+                        <input class="weui-input" type="text" name="credit_card_fee_nm" placeholder="请选择贷记卡手续费" id="credit-card-fee-select2">
+                        <input type="hidden" name="credit_card_fee">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_select weui-cell_select-after hide">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">参数状态<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="status" required="" missingTips="请选择参数状态">
+                            <option value="1">正常</option>
+                            <option value="0">注销</option>
+                        </select>
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">参数状态</label>
+                        <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="status"   placeholder="请输入参数状态">
+                        <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请选择拓展方" id="expand-inst-select2">
+                        <input type="hidden" name="expand_inst_id">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">拓展方</label>
+                        <label class="weui-label">拓展人<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_inst_id" required=""  placeholder="请输入拓展方">
-                    </div>
-                </div>
-                <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">拓展人</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_id"   placeholder="请输入拓展人">
+                        <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2">
+                        <input type="hidden" name="expand_id">
                     </div>
                 </div>
             </div>
@@ -235,122 +279,128 @@
             </div>
         </form>
     </div>
-    <div id="page3" class="page">
+    <div id="preview-page" class="page">
         <div class="weui-form-preview">
-                <div class="weui-form-preview__hd">
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">商户参数</label>
-                    </div>
-                </div>
-                <div class="weui-form-preview__bd">
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">商户参数ID</label>
-                        <span class="weui-form-preview__value" id="preview.mchnt_param_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">业务类型</label>
-                        <span class="weui-form-preview__value" id="preview.busi_type"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">商户号</label>
-                        <span class="weui-form-preview__value" id="preview.mchnt_cd"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">收单机构</label>
-                        <span class="weui-form-preview__value" id="preview.acq_inst_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">账户类型</label>
-                        <span class="weui-form-preview__value" id="preview.account_type"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">开户名称</label>
-                        <span class="weui-form-preview__value" id="preview.account_name"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">开户银行</label>
-                        <span class="weui-form-preview__value" id="preview.account_bank"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">开户银行省</label>
-                        <span class="weui-form-preview__value" id="preview.account_province"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">开户银行市</label>
-                        <span class="weui-form-preview__value" id="preview.account_city"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">开户支行</label>
-                        <span class="weui-form-preview__value" id="preview.account_bank_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">银行账号</label>
-                        <span class="weui-form-preview__value" id="preview.account_no"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">信用卡开关</label>
-                        <span class="weui-form-preview__value" id="preview.credit_flag"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">信用卡单笔限额</label>
-                        <span class="weui-form-preview__value" id="preview.credit_card_limit"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">信用卡日限额</label>
-                        <span class="weui-form-preview__value" id="preview.credit_date_limit"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">借记卡单笔限额</label>
-                        <span class="weui-form-preview__value" id="preview.debit_card_limit"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">借记卡日限额</label>
-                        <span class="weui-form-preview__value" id="preview.debit_date_limit"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">MCC</label>
-                        <span class="weui-form-preview__value" id="preview.mcc"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">MCC18</label>
-                        <span class="weui-form-preview__value" id="preview.mcc18"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">借记卡手续费</label>
-                        <span class="weui-form-preview__value" id="preview.debit_card_fee"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">贷记卡手续费</label>
-                        <span class="weui-form-preview__value" id="preview.credit_card_fee"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">参数状态</label>
-                        <span class="weui-form-preview__value" id="preview.status"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">拓展方</label>
-                        <span class="weui-form-preview__value" id="preview.expand_inst_id"></span>
-                    </div>
-                    <div class="weui-form-preview__item">
-                        <label class="weui-form-preview__label">拓展人</label>
-                        <span class="weui-form-preview__value" id="preview.expand_id"></span>
-                    </div>
+            <div class="weui-form-preview__hd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户参数</label>
                 </div>
             </div>
+            <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户参数ID</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_param_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">业务类型</label>
+                    <span class="weui-form-preview__value" id="preview-busi_type"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户号</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_cd"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">收单机构</label>
+                    <span class="weui-form-preview__value" id="preview-acq_inst_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">账户类型</label>
+                    <span class="weui-form-preview__value" id="preview-account_type"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">开户名称</label>
+                    <span class="weui-form-preview__value" id="preview-account_name"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">开户银行</label>
+                    <span class="weui-form-preview__value" id="preview-account_bank"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">开户银行省</label>
+                    <span class="weui-form-preview__value" id="preview-account_province"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">开户银行市</label>
+                    <span class="weui-form-preview__value" id="preview-account_city"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">开户支行</label>
+                    <span class="weui-form-preview__value" id="preview-account_bank_branch_cd"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">银行账号</label>
+                    <span class="weui-form-preview__value" id="preview-account_no"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">信用卡开关</label>
+                    <span class="weui-form-preview__value" id="preview-credit_flag"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">信用卡笔限额</label>
+                    <span class="weui-form-preview__value" id="preview-credit_card_limit"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">信用卡日限额</label>
+                    <span class="weui-form-preview__value" id="preview-credit_date_limit"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">借记卡笔限额</label>
+                    <span class="weui-form-preview__value" id="preview-debit_card_limit"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">借记卡日限额</label>
+                    <span class="weui-form-preview__value" id="preview-debit_date_limit"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">MCC</label>
+                    <span class="weui-form-preview__value" id="preview-mcc"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">MCC18</label>
+                    <span class="weui-form-preview__value" id="preview-mcc18"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">借记卡手续费</label>
+                    <span class="weui-form-preview__value" id="preview-fee"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">贷记卡手续费</label>
+                    <span class="weui-form-preview__value" id="preview-credit_card_fee"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">参数状态</label>
+                    <span class="weui-form-preview__value" id="preview-status"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">拓展方</label>
+                    <span class="weui-form-preview__value" id="preview-expand_inst_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">拓展人</label>
+                    <span class="weui-form-preview__value" id="preview-expand_id"></span>
+                </div>
+            </div>
+            <div class="weui-form-preview__ft">
+                <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
+                <!-- <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">编辑</button> -->
+            </div>
+        </div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
+    <script type="text/javascript" src="../js/param.js"></script>
     <script id="result-template" type="text/html">
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.mchnt_param_id}}{{row.busi_type}}</p>
+                <p>{{row.mchnt_name}}</p>
             </div>
-            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st}}</div>
+            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st_nm}}</div>
         </a>
         <div class="weui-media-box weui-media-box_text">
             <div class="weui-media-box__desc">{{row.mchnt_cd}}</div>
-            <div class="weui-media-box__desc">{{row.acq_inst_id}}</div>
+            <div class="weui-media-box__desc">{{row.acq_inst_nm}}</div>
+            <div class="weui-media-box__desc">{{row.account_bank_branch_nm}}</div>
             <div class="weui-media-box__desc">{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">{{row.created_time}}</li>
@@ -368,8 +418,9 @@
         {{/each}}
     </script>
     <script>
+    var query = $$.parseQueryString();
     var operateType;
-    var searchPage = weui.searchPage('#page1', {
+    var searchPage = weui.searchPage('#search-page', {
         resultTpl: '#result-template',
         loader: onSearch,
         onInput: function() {
@@ -380,7 +431,7 @@
             // weui.page.back();
             showActions(row);
         }
-    });
+    }).search();
 
     function onSearch(param, success, error) {
         $$.request('/action/bm/mchnt-param/search', param, {
@@ -388,9 +439,9 @@
                 if (data.errcode == 0) {
                     success(data.rows);
                 } else {
-                    weui.alert(data.errmsg, function () {
-                        error();
-                    }, { title: '提示' });
+                    weui.alert(data.errmsg, error, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {
@@ -399,13 +450,37 @@
         });
     }
 
+    function onPreview(param) {
+        weui.page.show('#preview-page');
+
+        $$.request('/action/bm/mchnt-param/view', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
+                    for (var name in data.data) {
+                        $('#preview-' + name).html(data.data[name]);
+                    }
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
     function onView(param) {
+        weui.page.show('#detail-page');
+
         $$.request('/action/bm/mchnt-param/view', param, {
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
                 } else {
-                    weui.alert(data.errmsg, { title: '提示' });
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {}
@@ -416,11 +491,13 @@
         $$.request('/action/bm/mchnt-param/delete', param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    weui.toast('操作成功', function () {
+                    weui.toast('操作成功', function() {
                         searchPage.search();
                     });
                 } else {
-                    weui.alert(data.errmsg, { title: '提示' });
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {}
@@ -428,32 +505,50 @@
     }
 
     function showActions(row) {
-        weui.actionSheet([{
+        var actions = [{
             label: '查看',
             onClick: function() {
                 console.log(this, arguments);
-                onView(row);
-                weui.page.show('#page2');
+                onPreview(row);
                 $('#back-btn').show().siblings().hide();
             }
-        }, {
-            label: '编辑',
-            onClick: function() {
-                console.log(this, arguments);
-                onView(row);
-                operateType = 'update';
-                weui.page.show('#page2');
-                $('#back-btn').show().siblings().show();
-            }
-        }, {
-            label: '删除',
-            onClick: function() {
-                console.log(this, arguments);
-                weui.confirm('确认要删除?', function() {
-                    onDelete(row);
-                });
-            }
-        }], [{
+        }]
+
+        if ($.inArray(row.proc_st, ['8', '9', 'A']) >= 0) {
+            actions.push({
+                label: '编辑',
+                onClick: function() {
+                    console.log(this, arguments);
+                    operateType = 'update';
+                    onView(row);
+                    $('#back-btn').show().siblings().show();
+                }
+            });
+        }
+
+        if (row.oper_in == 'I' && $.inArray(row.proc_st, ['9', 'A']) >= 0) {
+            actions.push({
+                label: '删除',
+                onClick: function() {
+                    console.log(this, arguments);
+                    weui.confirm('确认要删除?', function() {
+                        onDelete(row);
+                    });
+                }
+            });
+        }
+
+        // actions.push({
+        //         label: '终端管理',
+        //         onClick: function() {
+        //             console.log(this, arguments);
+        //             window.location.href = 'term-info.html?' + $.param({
+        //                 mchnt_id: row.mchnt_id
+        //             });
+        //         }
+        //     });
+
+        weui.actionSheet(actions, [{
             label: '取消',
             onClick: function() {
                 console.log(this, arguments);
@@ -461,33 +556,24 @@
         }]);
     }
 
-    var options = {
-        callback: function(error) {
-            console.log(this, arguments);
-        },
-        rules: {
-            idnum: function(value, args) {
-                return /(?:^\d{15}$)|(?:^\d{18}$)|^\d{17}[\dXx]$/.test(value);
-            }
-        }
-    };
-
     // 失去焦点时检测
-    weui.form.checkIfBlur('#form', options);
+    weui.form.checkIfBlur('#form', $$.rules);
 
     function onSubmit() {
-        if (!weui.form.validate('#form', options)) return;
+        if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
 
         $$.request('/action/bm/mchnt-param/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    weui.toast('操作成功', function () {
+                    weui.toast('操作成功', function() {
                         searchPage.search();
-                         weui.page.back();
+                        weui.page.back();
                     });
                 } else {
-                    weui.alert(data.errmsg, { title: '提示' });
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
                 }
             },
             error: function() {}
@@ -496,12 +582,111 @@
 
     function onClickAdd() {
         operateType = 'create';
-        weui.page.show('#page2');
+        weui.page.show('#detail-page');
+        weui.form.clear('#form');
+        weui.form.load('#form', {
+            mchnt_id: query.mchnt_id,
+            busi_type: 'SD',
+            busi_type_nm: '收单',
+            account_type: '1'
+        });
+        $('#back-btn').show().siblings().show();
     }
 
     $(function() {
         $('#add-btn').on('click', onClickAdd);
-        $('#submit-btn').on('click', onSubmit) ;
+        $('#submit-btn').on('click', onSubmit);
+        $('#busi-type-select2').on('change', function () {
+            var value = $(this).next().val();
+
+            if(value == 'DMF') {
+                $('#credit-card-fee-select2').closest('.weui-cell').addClass('hide');
+            } else {
+                $('#credit-card-fee-select2').closest('.weui-cell').removeClass('hide');
+            }
+        });
+
+        //init component
+        // $('#city-picker').on('focus', function() {
+        //     $$.showPicker(this, districtData);
+        // });
+
+        // $('#date-picker').on('focus', function() {
+        //     $$.showDatePicker(this);
+        // });
+
+        $('#busi-type-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                data: $$.param['busi_type']
+            });
+        });
+
+
+        $('#acq-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                 valueField: 'acq_inst_cd',
+                textField: 'acq_inst_nm',
+                url: '/action/bm/acq-inst/search'
+            });
+        });
+
+        $('#account-bank-branch-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                valueField: 'bank_branch_cd',
+                textField: 'bank_branch_nm',
+                url: '/action/bm/bank-branch/search'
+            });
+        });
+
+        $('#mcc-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                valueField: 'mcc',
+                textField: 'mcc_nm',
+                url: '/action/bm/mcc/search'
+            });
+        });
+
+        $('#mcc18-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                valueField: 'mcc',
+                textField: 'mcc_nm',
+                url: '/action/bm/mcc/search'
+            });
+        });
+
+        $('#fee-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    // debit_flag: '1'
+                }
+            });
+        });
+
+        $('#credit-card-fee-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    credit_flag: '1'
+                }
+            });
+        });
+
+        $('#expand-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand-inst/search'
+            });
+        });
+
+        $('#expand-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand/search'
+            });
+        });
     });
     </script>
 </body>

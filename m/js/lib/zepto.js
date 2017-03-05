@@ -2775,13 +2775,14 @@ window.$ === undefined && (window.$ = Zepto)
                     return item[opts.textField];
                 });
 
-                $target.val(text.join(' '));
+                $target.val(text.join(' ')).change();
 
                 var $temp = $target;
                 for(var i = 0; i < result.length; i++) {
                     $temp = $temp.next();
                     $temp.val(result[i][opts.valueField]);
-                }                
+                }
+                $target.change(); //触发change
             },
             id: $target.attr('id')
         }, options);
@@ -2824,6 +2825,7 @@ window.$ === undefined && (window.$ = Zepto)
             onClickItem: function(row) {
                 var opts = this.options;
                 $target.val(row[opts.textField]).next().val(row[opts.valueField]);
+                $target.change(); //触发change
             }
         }, options);
 
