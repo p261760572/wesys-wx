@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>菜单</title>
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+</head>
+
+<body>
+    <div class="page page_active" style="width:500px; overflow: hidden;">
+        <div id="search-dg-tb">
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="onAdd(this)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm',onSuccess:addSuccess">新增子菜单</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="onView(this)" data-options="plain:true,iconCls:'icon-view',tree:'#tt',form:'#detail-fm',onSuccess:viewSuccess">查看详情</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="onEdit(this)" data-options="plain:true,iconCls:'icon-edit',tree:'#tt',form:'#detail-fm',onSuccess:editSuccess">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.submitNode(this)" data-options="plain:true,iconCls:'icon-remove',tree:'#tt',url:'/action/admin/menu-info/delete',onSuccess:onDeleteSubmitSuccess">删除</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$('#dlg').dialog('center').dialog('open')" data-options="plain:true,iconCls:'icon-application'">功能集分配</a>
+        </div>
+        <div style="height: 100%; overflow: auto;">
+            <ul id="tt" data-options="idField:'menu_id'" style="padding-bottom: 50px;"></ul>
+        </div>
+    </div>
+    <div id="detail-dlg" class="easyui-dialog" title="菜单" data-options="modal:true,closed:true" style="padding:5px;">
+        <form id="detail-fm" class="form form_detail" action="/action/admin/menu-info/view" method="post">
+            <table class="form__table">
+                <tbody>
+                    <tr class="readonly">
+                        <td>
+                            <label>菜单ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="menu_id">
+                        </td>
+                        <td>
+                            <label>父菜单ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" id="menu-pid" name="menu_pid">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>菜单名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="menu_name" class="easyui-validatebox" data-options="required:true">
+                            <label class="required">*</label>
+                        </td>
+                        <td>
+                            <label>菜单图标：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="icon" class="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>URL：</label>
+                        </td>
+                        <td colspan="3" class="td80">
+                            <input name="url" type="text" style="width:450px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>是否显示：</label>
+                        </td>
+                        <td>
+                            <select name="display" class="easyui-validatebox" data-options="required:true">
+                                <option value="0">否</option>
+                                <option value="1">是</option>
+                            </select>
+                            <label class="required">*</label>
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div style="margin:5px;"></div>
+                            <a href="javascript:void" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/admin/menu-info/create',onSuccess:onAddSubmit" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a> &nbsp;&nbsp;
+                            <a href="javascript:void" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/admin/menu-info/update',onSuccess:onEditSubmit" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <div id="dlg" class="easyui-dialog" title="功能分配" data-options="modal:true,closed:true,buttons:'#dlg-btn',onBeforeOpen:onClickAssign" style="width:920px;height:420px; padding:5px;">
+        <span style="font-size:12px;font-weight:bold;padding:5px;linheight:30px;">
+      <label>菜单名称：</label>
+      <label id="menu_name"></label>
+    </span>
+        <form action="/action/admin/menu-info/exist-fun-set" method="post">
+            <table>
+                <tr>
+                    <td>
+                        <label>功能集名称：</label>
+                    </td>
+                    <td>
+                        <input name="flag" type="hidden" value="0">
+                        <input id="menu_id" name="menu_id" type="hidden" value="">
+                        <input type="text" name="fun_set_name" id="fun_set_name">
+                    </td>
+                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="datagrid:'#fun-set-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <table>
+            <tr>
+                <td>
+                    <table id="fun-set-dg" class="easyui-datagrid" title="待选功能集" data-options="rownumbers:true,pagination:true,singleSelect:false,onDblClickRow:onFunSetMoveRight" style="width:440px; height:260px;">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'fun_set_id',width:100">功能集ID</th>
+                                <th data-options="field:'fun_set_name',width:150">功能集名称</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+                <td>
+                    <a id="movright-btn" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-right',from:'#fun-set-dg',to:'#selected-fun-set-dg'" onclick="$$.move(this)"></a>
+                    <br>
+                    <a id="movleft-btn" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-left',to:'#fun-set-dg',from:'#selected-fun-set-dg'" onclick="$$.move(this)"></a>
+                </td>
+                <td>
+                    <table id="selected-fun-set-dg" class="easyui-datagrid" title="已选功能集" data-options="pagination:false,rownumbers:true,singleSelect:false,onDblClickRow:onFunSetMoveLeft" style="width:400px; height:260px;">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'fun_set_id',width:100">功能集ID</th>
+                                <th data-options="field:'fun_set_name',width:150">功能集名称</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div id="dlg-btn">
+            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:0 5px;" onclick="onClickAssignSubmit(this)"> 确定 </a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" style="padding:0 5px;" onClick="$('#dlg').dialog('close')"> 关闭 </a>
+        </div>
+    </div>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/district.js"></script>
+    <script>
+    var formDefaults = {
+        display: '1'
+    };
+
+    $(function() {
+        initMenuTree();
+    });
+
+    function initMenuTree() {
+        $$.request('/action/admin/menu-info/list', {}, function(data) {
+            $('#tt').tree({
+                dnd: true,
+                data: $$.genEasyuiTreeData(data.rows, {
+                    id: 'menu_id',
+                    pid: 'menu_pid',
+                    text: 'menu_name'
+                }),
+                onDrop: onDropMenu
+            });
+        });
+    }
+
+    function onDeleteSubmitSuccess() {
+        var opts = $.parser.parseOptions(this);
+        var tree = $(opts.tree);
+        var selected = tree.tree('getSelected');
+        tree.tree('remove', selected.target);
+        $$.info('操作成功');
+    }
+
+
+    function onAdd(target) {
+        var node = $('#tt').tree('getSelected');
+        if (node) {
+            $('#detail-dlg').dialog('open');
+            $$.add(target);
+        } else {
+            $$.showInfo('没有选择结点');
+            return false;
+        }
+    }
+
+    function onAddSuccess(clear) {
+        var node = $('#tt').tree('getSelected');
+        if (node) {
+            $('#inst-pid').val(node.id);
+        }
+    }
+
+    function onView(target) {
+        if ($$.viewNode(target) != false) {
+            $('#detail-dlg').dialog('open');
+        }
+    }
+
+    function onEdit(target) {
+        if ($$.viewNode(target, 'update') != false) {
+            $('#detail-dlg').dialog('open');
+        }
+    }
+
+
+    function addSuccess(clear) {
+        var opts = $.parser.parseOptions(this);
+        var fm = $(opts.form);
+        var node = $('#tt').tree('getSelected');
+
+        if (window.formDefaults) {
+            fm.form('load', formDefaults);
+        }
+
+        if (node) {
+            $('#detail-dlg').dialog('open');
+            $('#menu-pid').val(node.id);
+        } else {
+            $.messager.confirm('确认', '确认要新增根级菜单吗？', function(r) {
+                if (r) {
+                    $('#detail-dlg').dialog('open');
+                    $('#menu-pid').val('0');
+                }
+            });
+        }
+    }
+
+    function viewSuccess() {
+        $('#detail-dlg').dialog('open');
+    }
+
+    function editSuccess() {
+        $('#detail-dlg').dialog('open');
+    }
+
+    function onAddSubmit(request, response) {
+        var selected = $('#tt').tree('getSelected');
+        $('#tt').tree('append', {
+            parent: selected ? selected.target : null,
+            data: [{
+                id: response.data.menu_id,
+                text: request.menu_name
+            }]
+        });
+        $('#detail-dlg').dialog('close');
+    }
+
+    function onEditSubmit(request, response) {
+        var selected = $('#tt').tree('getSelected');
+        if (selected) {
+            $('#tt').tree('update', {
+                target: selected.target,
+                text: request.menu_name
+            });
+        }
+        $('#detail-dlg').dialog('close');
+    }
+
+    function onDropMenu(target, source, point) {
+        var targetNode = $('#tt').tree('getNode', target);
+        var pointMap = {
+            'append': 'inner',
+            'top': 'prev',
+            'bottom': 'next'
+        };
+        var sendData = {};
+        sendData.menu_id = source.id;
+        sendData.menu_pid = targetNode.id;
+        sendData.type = pointMap[point];
+
+        $$.request('/action/admin/menu-info/drop', sendData, $.noop, function(data) {
+            $.error($$.errmsg(data), function() {
+                initMenuTree();
+            });
+        });
+    }
+
+    function onFunSetMoveRight() {
+        $('#movright-btn').click();
+    }
+
+    function onFunSetMoveLeft() {
+        $('#movleft-btn').click();
+    }
+
+    function onClickAssign() {
+        var selected = $('#tt').tree('getSelected');
+        if (selected) {
+            $('#menu_name').html(selected.text);
+            $('#menu_id').val(selected.id);
+            $('#fun-set-dg').datagrid('loadData', {
+                total: 0,
+                rows: []
+            });
+            $('#selected-fun-set-dg').datagrid('loadData', {
+                total: 0,
+                rows: []
+            });
+
+            var data = {
+                menu_id: selected.id
+            };
+            data.flag = '0';
+            $('#fun-set-dg').datagrid({
+                url: '/action/admin/menu-info/exist-fun-set',
+                queryParams: data
+
+            });
+            data.flag = '1';
+            $('#selected-fun-set-dg').datagrid({
+                url: '/action/admin/menu-info/exist-fun-set',
+                queryParams: data,
+                pageSize: 1000
+            });
+        } else {
+            return false;
+        }
+    }
+
+    function onClickAssignSubmit() {
+        var selected = $('#tt').tree('getSelected');
+        var rows = $('#selected-fun-set-dg').datagrid('getRows');
+
+        $$.request('/action/admin/menu-info/assign-fun-set', {
+            menu_id: selected.id,
+            rows: rows
+        }, function(data, textStatus, jqXHR) {
+            $('#dlg').dialog('close');
+        });
+    }
+    </script>
+</body>
+
+</html>

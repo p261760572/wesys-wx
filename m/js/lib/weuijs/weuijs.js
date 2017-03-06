@@ -166,74 +166,6 @@
 })();
 
 (function() {
-
-    /**
-     * 确认弹窗
-     * @param {string} content 弹窗内容
-     * @param {function=} yes 点击确定按钮的回调
-     * @param {function=} no  点击取消按钮的回调
-     * @param {object=} options 配置项
-     * @param {string=} options.title 弹窗的标题
-     * @param {string=} options.className 自定义类名
-     * @param {array=} options.buttons 按钮配置项，详情参考dialog
-     *
-     * @example
-     * weui.confirm('普通的confirm');
-     * weui.confirm('自定义标题的confirm', { title: '自定义标题' });
-     * weui.confirm('带回调的confirm', function(){ console.log('yes') }, function(){ console.log('no') });
-     * var confirmDom = weui.confirm('手动关闭的confirm', function(){
-     *     return false; // 不关闭弹窗，可用confirmDom.hide()来手动关闭
-     * });
-     * weui.confirm('带回调的自定义标题的confirm', function(){ console.log('yes') }, function(){ console.log('no') }, {
-     *     title: '自定义标题'
-     * });
-     * weui.confirm('自定义按钮的confirm', {
-     *     title: '自定义按钮的confirm',
-     *     buttons: [{
-     *         label: 'NO',
-     *         type: 'default',
-     *         onClick: function(){ console.log('no') }
-     *     }, {
-     *         label: 'YES',
-     *         type: 'primary',
-     *         onClick: function(){ console.log('yes') }
-     *     }]
-     * });
-     */
-    function confirm(content, yes, no, options) {
-        yes = yes || $.noop;
-        no = no || $.noop;
-
-        if (typeof yes === 'object') {
-            options = yes;
-            yes = $.noop;
-        } else if(typeof no === 'object'){
-            options = no;
-            no = $.noop;
-        }
-
-        options = $.extend({
-            content: content,
-            buttons: [{
-                label: '取消',
-                type: 'default',
-                onClick: no
-            }, {
-                label: '确定',
-                type: 'primary',
-                onClick: yes
-            }]
-        }, options);
-
-        return weui.dialog(options);
-    }
-
-    window.weui = window.weui || {};
-    window.weui.confirm = confirm;
-
-})();
-
-(function() {
     var _sington;
     var tpl = '<div class="{{className}}"><div class="weui-mask"></div><div class="weui-dialog {{if isAndroid}} weui-skin_android{{/if}}">{{if title}}<div class="weui-dialog__hd"><strong class="weui-dialog__title">{{title}}</strong></div>{{/if}}<div class="weui-dialog__bd">{{content}}</div><div class="weui-dialog__ft">{{each buttons as button}}<a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_{{button.type}}">{{button.label}}</a>{{/each}}</div></div></div>';
 
@@ -320,6 +252,74 @@
 
     window.weui = window.weui || {};
     window.weui.dialog = dialog;
+
+})();
+
+(function() {
+
+    /**
+     * 确认弹窗
+     * @param {string} content 弹窗内容
+     * @param {function=} yes 点击确定按钮的回调
+     * @param {function=} no  点击取消按钮的回调
+     * @param {object=} options 配置项
+     * @param {string=} options.title 弹窗的标题
+     * @param {string=} options.className 自定义类名
+     * @param {array=} options.buttons 按钮配置项，详情参考dialog
+     *
+     * @example
+     * weui.confirm('普通的confirm');
+     * weui.confirm('自定义标题的confirm', { title: '自定义标题' });
+     * weui.confirm('带回调的confirm', function(){ console.log('yes') }, function(){ console.log('no') });
+     * var confirmDom = weui.confirm('手动关闭的confirm', function(){
+     *     return false; // 不关闭弹窗，可用confirmDom.hide()来手动关闭
+     * });
+     * weui.confirm('带回调的自定义标题的confirm', function(){ console.log('yes') }, function(){ console.log('no') }, {
+     *     title: '自定义标题'
+     * });
+     * weui.confirm('自定义按钮的confirm', {
+     *     title: '自定义按钮的confirm',
+     *     buttons: [{
+     *         label: 'NO',
+     *         type: 'default',
+     *         onClick: function(){ console.log('no') }
+     *     }, {
+     *         label: 'YES',
+     *         type: 'primary',
+     *         onClick: function(){ console.log('yes') }
+     *     }]
+     * });
+     */
+    function confirm(content, yes, no, options) {
+        yes = yes || $.noop;
+        no = no || $.noop;
+
+        if (typeof yes === 'object') {
+            options = yes;
+            yes = $.noop;
+        } else if(typeof no === 'object'){
+            options = no;
+            no = $.noop;
+        }
+
+        options = $.extend({
+            content: content,
+            buttons: [{
+                label: '取消',
+                type: 'default',
+                onClick: no
+            }, {
+                label: '确定',
+                type: 'primary',
+                onClick: yes
+            }]
+        }, options);
+
+        return weui.dialog(options);
+    }
+
+    window.weui = window.weui || {};
+    window.weui.confirm = confirm;
 
 })();
 
@@ -1961,6 +1961,13 @@ $.fn.scroll = function(options) {
         var $searchForm = $searchBar.children('form');
         var $searchBarResult = $ele.children('.searchbar-result');
 
+        var _obj = {
+            clear: clear,
+            loaded: loaded,
+            search: search,
+            options: options
+        }
+
         if (mode == 'local') {
             weui.searchBar($searchBar, $.noop, function(q) {
                 _clear();
@@ -2053,13 +2060,6 @@ $.fn.scroll = function(options) {
             return _obj;
         }
 
-        var _obj = {
-            clear: clear,
-            loaded: loaded,
-            search: search,
-            options: options
-        }
-
         return _obj;
     }
 
@@ -2071,7 +2071,7 @@ $.fn.scroll = function(options) {
 (function() {
 
     var searchTpl = '<div class="select2"><div class="weui-search-bar"><a href="javascript:" class="search-bar__btn select2__back-btn">返回</a><form class="weui-search-bar__form" method="post" action=""><div class="weui-search-bar__box"><i class="weui-icon-search"></i><input type="search" class="weui-search-bar__input" name="q" placeholder="{{title}}"><a href="javascript:" class="weui-icon-clear"></a></div><label class="weui-search-bar__label"><i class="weui-icon-search"></i><span>{{title}}</span> </label></form><a href="javascript:" class="weui-search-bar__cancel-btn">取消</a></div><div class="weui-cells searchbar-result"></div></div>';
-    var resultTpl = '{{each rows as row i}}<div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}"><div class="weui-cell__bd weui-cell_primary"><p>{{row[textField]}}</p></div><div class="weui-cell__ft"></div></div>{{/each}}';
+    var resultTpl = '{{each rows as row i}}<div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}"><div class="weui-cell__bd weui-cell_primary"><p>{{formatter(row)}}</p></div><div class="weui-cell__ft"></div></div>{{/each}}';
 
     var _sington;
 
@@ -2126,10 +2126,24 @@ $.fn.scroll = function(options) {
             onClickItem: $.noop,
             //修改默认配置
             resultTpl: resultTpl,
+            formatter: function(row) {
+                return row[options.textField];
+            },
             filter: function(q, row) {
                 return row[options.textField].indexOf(q) >= 0;
             }
         }, options);
+
+        _sington = {
+            search: search,
+            hide: hide,
+            options: options
+        }
+
+        var formatter = options.formatter;
+        options.formatter = function(row) {
+            return formatter.call(_sington, row);
+        }
 
         //点击
         var onClickItem = options.onClickItem;
@@ -2165,11 +2179,6 @@ $.fn.scroll = function(options) {
             return _sington;
         }
 
-        _sington = {
-            search: search,
-            hide: hide,
-            options: options
-        }
         return _sington;
     }
 

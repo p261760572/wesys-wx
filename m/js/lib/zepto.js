@@ -2805,7 +2805,7 @@ window.$ === undefined && (window.$ = Zepto)
             queryParams: {},
             rowsName: 'rows',
             loader: function(param, success, error) {
-                var queryParams = $.extend(options.queryParams, param);
+                var queryParams = $.extend(param, options.queryParams);
 
                 $$.request(options.url, queryParams, {
                     success: function(data) {
@@ -2824,12 +2824,12 @@ window.$ === undefined && (window.$ = Zepto)
             },
             onClickItem: function(row) {
                 var opts = this.options;
-                $target.val(row[opts.textField]).next().val(row[opts.valueField]);
+                $target.val(opts.formatter.call(this,row)).next().val(row[opts.valueField]);
                 $target.change(); //触发change
             }
         }, options);
 
-        return weui.select2(options).search($target.val());
+        return weui.select2(options); //.search($target.val());
     }
 
     $$.showDatePicker = function(target, format, options) {

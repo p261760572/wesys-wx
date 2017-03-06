@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>系统参数</title>
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+</head>
+
+<body>
+    <div class="page page_active" id="search-page">
+        <div>
+            <form id="search-fm" class="form form_search" action="/action/admin/parameter/search" method="post">
+                <table class="form__table">
+                    <caption>查询系统参数</caption>
+                    <tr>
+                        <td>
+                            <label>参数类型：</label>
+                        </td>
+                        <td>
+                            <input id="parameter-type" class="easyui-combobox" name="parameter_type" data-options="valueField:'parameter_type',textField:'parameter_type_name'" />
+                        </td>
+                        <td>
+                            <label>参数值：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="parameter_value">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>参数名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="parameter_name">
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="center">
+                                <div style="margin:5px;"></div>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </form>
+        </div>
+        <br>
+        <div id="search-dg-tb">
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.add(this,event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm'">新增</a>
+            <a href="#detail-page" class="easyui-linkbutton" style="" onClick="$$.view(this,event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
+            <a href="#detail-page" class="easyui-linkbutton" style="" onClick="$$.view(this,event,'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'">编辑</a>
+            <!--<a href="javascript:void(0)" class="easyui-linkbutton action" onClick="onClickDeleteSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/admin/parameter/delete'">删除</a>-->
+        </div>
+        <table id="search-dg" title="系统参数" class="easyui-datagrid" style="width:880px;" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:myTransition">
+            <thead>
+                <tr>
+                    <!-- <th data-options="field:'chk',checkbox:true"></th> -->
+                    <th data-options="field:'parameter_type_name',width:120">参数类型</th>
+                    <th data-options="field:'parameter_value',width:120">参数值</th>
+                    <th data-options="field:'parameter_name',width:120">参数名称</th>
+                    <th data-options="field:'inuse',width:120,formatter:formatInuse">状态</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="page" id="detail-page">
+        <form id="detail-fm" class="form form_detail" action="/action/admin/parameter/view" method="post">
+            <table class="form__table">
+                <caption>系统参数</caption>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label>参数类型：</label>
+                        </td>
+                        <td>
+                            <input type="hidden" name="rec_id">
+                            <input id="parameter-type2" class="easyui-combobox" name="parameter_type" data-options="valueField:'parameter_type',textField:'parameter_type_name'" style="width: 200px;"> <span class="required">*</span>
+                        </td>
+                        <td>
+                            <label>参数值：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="parameter_value" class="easyui-validatebox" data-options="required:true"><span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>参数名称：</label>
+                        </td>
+                        <td colspan="3">
+                            <input type="text" name="parameter_name" class="easyui-validatebox" data-options="required:true" style="width:500px;"><span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>状态：</label>
+                        </td>
+                        <td>
+                            <select class="easyui-combobox" name="inuse" data-options="panelHeight:'auto',required:true">
+                                <option value="0">停用</option>
+                                <option value="1">启用</option>
+                            </select>
+                            <span class="required">*</span></td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div style="margin:5px;"></div>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/admin/parameter/create',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/admin/parameter/update',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/district.js"></script>
+    <script>
+    var formDefaults = {
+        inuse: '1'
+    };
+
+    var myTransition = [{
+        oper_in: '0',
+        proc_st: '0',
+        action: 'update'
+    }, {
+        oper_in: '0',
+        proc_st: '0',
+        action: 'delete'
+    }];
+
+    function formatInuse(value, rowData, rowIndex) {
+        if (value == '1') {
+            return '启用';
+        }
+        return '停用';
+    }
+
+    function initCombobox() {
+        $$.request('/action/admin/parameter-type/all', {}, function(data) {
+            $('#parameter-type').combobox('loadData', data.rows);
+            $('#parameter-type2').combobox('loadData', data.rows);
+        });
+    }
+
+    $(function() {
+        initCombobox();
+    });
+    </script>
+</body>
+
+</html>

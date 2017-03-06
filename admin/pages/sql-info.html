@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>SQL信息</title>
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+</head>
+
+<body>
+    <div class="page page_active" id="search-page">
+        <form id="search-fm" class="form form_search" action="/action/admin/sql-info/search" method="post">
+            <table class="form__table">
+                <caption>查询SQL信息</caption>
+                <tr>
+                    <td>
+                        <label>SQL：</label>
+                    </td>
+                    <td>
+                        <input type="text" name="sql_id">
+                    </td>
+                    <td>
+                        <label>SQL名称：</label>
+                    </td>
+                    <td>
+                        <input type="text" name="sql_name">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>SQL配置：</label>
+                    </td>
+                    <td>
+                        <input type="text" name="sql_stmt">
+                    </td>
+                    <td>&nbsp;
+                    </td>
+                    <td>&nbsp;
+                    </td>
+                </tr>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="center">
+                            <div style="margin:5px;"></div>
+                            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
+                            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+        <br>
+        <div id="search-dg-tb">
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.add(this,event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm'">新增</a>
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this,event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this,event,'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/admin/sql-info/delete'">删除</a>
+        </div>
+        <table id="search-dg" title="SQL信息" class="easyui-datagrid" data-options="rownumbers:true,pagination:true,toolbar:'#search-dg-tb',onDblClickRow:function(rowIndex, rowData){$('#view-btn').click();},idField:'sql_id'">
+            <thead>
+                <tr>
+                    <th data-options="field:'chk',checkbox:true"></th>
+                    <th data-options="field:'sql_id',width:200">SQL</th>
+                    <th data-options="field:'sql_name',width:200">SQL名称</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="page" id="detail-page">
+        <form id="detail-fm" class="form form_detail" action="/action/admin/sql-info/view" method="post" data-options="onLoad:onLoadDetail">
+            <table class="form__table">
+                <caption>SQL信息</caption>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label>SQL：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="sql_id" class="edit easyui-validatebox" data-options="required:true" style="width:200px;">
+                            <span class="required">*</span>
+                        </td>
+                        <td>
+                            <label>SQL名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="sql_name" class="easyui-validatebox" data-options="required:true" style="width:200px;">
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>SQL配置：</label>
+                        </td>
+                        <td colspan="3">
+                            <div>
+                                <a href="javascript:void(0)" onclick="beautifySqlStmt('#sql-stmt')">格式化</a>
+                            </div>
+                            <textarea id="sql-stmt" name="sql_stmt" class="easyui-validatebox" data-options="required:true" style="width:700px; height:500px; overflow:auto;"></textarea>
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div style="margin:5px;"></div>
+                            <a href="#" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/admin/sql-info/create',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
+                            <a href="#" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/admin/sql-info/update',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript" src="../lib/beautify.js"></script>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script>
+    function beautifySqlStmt(id) {
+        var text = $(id).val()
+        $(id).val(js_beautify(text));
+    }
+
+    function onLoadDetail(data) {
+        data.data.sql_stmt = js_beautify(data.data.sql_stmt);
+    }
+
+    function initCombobox() {
+        $$.request('/action/admin/op-info/list', {}, function(data) {
+            $('#op_id').combobox('loadData', data.rows);
+        });
+    }
+
+    $(function() {
+        initCombobox();
+    });
+    </script>
+</body>
+
+</html>

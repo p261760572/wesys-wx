@@ -334,7 +334,8 @@
     }).search();
 
     function onSearch(param, success, error) {
-        $$.request('/action/bm/term-info/search', param, {
+        var queryParams = $.extend(param, query);
+        $$.request('/action/bm/term-info/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
@@ -512,11 +513,15 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     $('#term-inves-select2').on('focus', function() {
-                        $$.showSelect2(this, data.term_inves);
+                        $$.showSelect2(this, data.term_inves, {
+                            title: '搜索终端投资方',
+                        });
                     });
 
                     $('#equi-type-select2').on('focus', function() {
-                        $$.showSelect2(this, data.equi_type);
+                        $$.showSelect2(this, data.equi_type, {
+                            title: '搜索机具类型',
+                        });
                     });
                 } else {
                     weui.alert(data.errmsg, {
@@ -528,12 +533,14 @@
 
         $('#expand-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索拓展方',
                 url: '/action/bm/expand-inst/search'
             });
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索拓展人',
                 url: '/action/bm/expand/search'
             });
         });

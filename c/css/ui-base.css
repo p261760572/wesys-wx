@@ -1,0 +1,215 @@
+/*全局默认*/
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    font: 400 12px/1.6 arial, "Hiragino Sans GB", "宋体", sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    border: 0;
+    vertical-align: middle
+}
+
+input[disabled],
+select[disabled],
+textarea[disabled],
+input[readonly],
+select[readonly],
+textarea[readonly] {
+    /*cursor: not-allowed;*/
+    background-color: #eeeeee;
+}
+
+input[type="radio"][disabled],
+input[type="checkbox"][disabled],
+input[type="radio"][readonly],
+input[type="checkbox"][readonly] {
+    background-color: transparent;
+}
+
+.page {
+    height: 100%;
+    overflow: auto;
+    display: none;
+}
+
+.page_active {
+    display: block;
+}
+
+.required {
+    color: red;
+}
+
+.shortcut {
+    float: right;
+    height: 28px;
+    line-height: 28px;
+    padding-right: 10px;
+}
+
+.shortcut__lnk {
+    padding-right: 10px;
+}
+
+.shortcut__lnk:hover {}
+
+.footer {
+    text-align: center;
+    height: 28px;
+    line-height: 28px;
+}
+
+.form {
+    font-size: 13px;
+}
+
+.form_search {
+    /*margin-top: 5px;*/
+    width: 980px;
+}
+
+.form_search input[readonly] {
+    background-color: #ffffff;
+}
+
+.form_detail {
+    /*margin-top: 5px;*/
+    width: 980px;
+}
+
+.form__table {
+    /*width: 980px;*/
+    width: 100%;
+    border-collapse: collapse;
+    /*font-size: 13px;*/
+    /*table-layout:fixed;*/
+}
+
+.form__table caption {
+    background-color: #E2EEFA;
+    text-align: left;
+    font-weight: bold;
+    color: #0E2D5F;
+    border-color: #95B8E7;
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    line-height: 25px;
+    height: 25px;
+    padding-left: 5px;
+}
+
+
+/*.form__table thead th {
+    border: 1px solid #95B8E7;
+    background-color: #E0ECFF;
+    margin: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}*/
+
+.form__table tbody td {
+    border: 1px solid #95B8E7;
+    background-color: #E0ECFF;
+    margin: 0;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.form__table tfoot td {
+    text-align: center;
+}
+
+.form__table tbody td label {
+    float: right;
+}
+
+.icon-sys {
+    background: url('icons/admin.gif') no-repeat center center;
+}
+
+.icon-user {
+    background: url('icons/user.gif') no-repeat center center;
+}
+
+.icon-users {
+    background: url('icons/users.gif') no-repeat center center;
+}
+
+.icon-group {
+    background: url('icons/group.gif') no-repeat center center;
+}
+
+.icon-view {
+    background: url('icons/view.gif') no-repeat center center;
+}
+
+.icon-left {
+    background: url('icons/left.gif') no-repeat center center;
+}
+
+.icon-right {
+    background: url('icons/right.gif') no-repeat center center;
+}
+
+.icon-return {
+    background: url('icons/return.gif') no-repeat center center;
+}
+
+.icon-rule {
+    background: url('icons/rule.gif') no-repeat center center;
+}
+
+.icon-rules {
+    background: url('icons/rules.gif') no-repeat center center;
+}
+
+.icon-sql {
+    background: url('icons/sql.gif') no-repeat center center;
+}
+
+.icon-application {
+    background: url('icons/application.gif') no-repeat center center;
+}
+
+.icon-add2 {
+    background: url('icons/add.png') no-repeat center center;
+}
+
+.icon-remove2 {
+    background: url('icons/remove.png') no-repeat center center;
+}
+
+.icon-check1 {
+    background: url('icons/view.gif') no-repeat center center;
+}
+
+.icon-check2 {
+    background: url('icons/view.gif') no-repeat center center;
+}
+
+.icon-history {
+    background: url('icons/history.gif') no-repeat center center;
+}
+
+.icon-import {
+    background: url('icons/import.png') no-repeat center center;
+}
+
+.icon-export {
+    background: url('icons/export.png') no-repeat center center;
+}
+
+.icon-upload {
+    background: url('icons/upload.png') no-repeat center center;
+}

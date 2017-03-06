@@ -85,7 +85,7 @@
                         <input class="weui-input" type="text" name="term_id" required=""  placeholder="请输入终端号">
                     </div>
                 </div>
-                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                <div class="weui-cell weui-cell_select weui-cell_select-after hide">
                     <div class="weui-cell__hd">
                         <label for="" class="weui-label">参数状态<span class="required">*</span></label>
                     </div>
@@ -129,13 +129,21 @@
                 </div>
             </div>
             <div class="weui-form-preview__bd">
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">终端参数ID</label>
                     <span class="weui-form-preview__value" id="preview-term_param_id"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">商户参数ID</label>
                     <span class="weui-form-preview__value" id="preview-mchnt_param_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户号</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_cd"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户名称</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_name"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">终端号</label>
@@ -147,11 +155,11 @@
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">拓展方</label>
-                    <span class="weui-form-preview__value" id="preview-expand_inst_id"></span>
+                    <span class="weui-form-preview__value" id="preview-expand_inst_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">拓展人</label>
-                    <span class="weui-form-preview__value" id="preview-expand_id"></span>
+                    <span class="weui-form-preview__value" id="preview-expand_nm"></span>
                 </div>
             </div>
              <div class="weui-form-preview__ft">
@@ -166,11 +174,12 @@
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.term_param_id}}{{row.mchnt_param_id}}</p>
+                <p>{{row.mchnt_name}}</p>
             </div>
-            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st}}</div>
+            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st_nm}}</div>
         </a>
         <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box__desc">{{row.mchnt_cd}}</div>
             <div class="weui-media-box__desc">{{row.term_id}}</div>
             <div class="weui-media-box__desc">{{row.status}}</div>
             <div class="weui-media-box__desc">{{row.checked_reason}}</div>
@@ -206,6 +215,7 @@
     }).search();
 
     function onSearch(param, success, error) {
+        var queryParams = $.extend(param, query);
         $$.request('/action/bm/term-param/search', param, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -379,25 +389,30 @@
         $('#mchnt-cd-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索商户参数',
-                url: '/action/bm/mchnt-param/list',
+                valueField: 'mchnt_param_id',
+                textField: 'mchnt_name',
+                formatter: function(row) {
+                    return row.mchnt_cd + ' ' + row.mchnt_name;
+                },
+                url: '/action/bm/mchnt-param/search',
                 queryParams: {
                     term_no: query.term_no
-                }
-            });
+                }                
+            }).search();
         });
 
         $('#expand-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索拓展方',
-                url: '/action/bm/expand-inst/list'
-            });
+                url: '/action/bm/expand-inst/search'
+            }).search();
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索拓展人',
-                url: '/action/bm/expand/list'
-            });
+                url: '/action/bm/expand/search'
+            }).search();
         });
     });
     </script>

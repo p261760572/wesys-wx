@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>导航页</title>
+    <link rel="stylesheet" type="text/css" href="lib/zTree/css/zTreeStyle/zTreeStyle.css" />
+    <link rel="stylesheet" type="text/css" href="lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="css/ui-base.css" />
+    <style type="text/css">
+    .noscroll {
+        overflow: hidden;
+    }
+    
+    .node_name {
+        font-size: 14px;
+    }
+    </style>
+</head>
+
+<body class="easyui-layout">
+    <div data-options="region:'north',border:false" style="height:30px;">
+        <div class="shortcut">
+            <a href="javascript:;" id="login-name" class="shortcut__lnk"></a>
+            <a href="javascript:;" class="shortcut__lnk" onclick="changePassword()">修改密码</a>
+            <a href="javascript:;" class="shortcut__lnk" onclick="logout()">退出</a>
+        </div>
+    </div>
+    <div data-options="region:'south'" style="height:30px;">
+        <div class="footer">xx公司</div>
+    </div>
+    <div data-options="region:'west',split:true" title="导航" style="width:200px;">
+        <ul id="nav-tree" class="ztree">
+        </ul>
+    </div>
+    <div data-options="region:'center'">
+        <div id="main-tabs" class="easyui-tabs" data-options="border:false,fit:true">
+            <div title="主页" style="padding:10px; height: 100%;">
+            </div>
+        </div>
+    </div>
+    <div id="dd" class="easyui-dialog" title="修改密码" data-options="closed:true,modal:true">
+        <form id="passwd-fm" class="form form_detail" style="margin:10px;" method="post" action="#">
+            <table class="form__table">
+                <tr>
+                    <td>
+                        <label>原密码:</label>
+                    </td>
+                    <td>
+                        <input name="login_pwd" class="easyui-validatebox" type="password" style="padding: 5px;" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>新密码:</label>
+                    </td>
+                    <td>
+                        <input name="new_login_pwd" class="easyui-validatebox" style="padding: 5px;" type="password" data-options="required:true,validType:['minLength[8]','password']">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>确认密码:</label>
+                    </td>
+                    <td>
+                        <input name="new_login_pwd2" class="easyui-validatebox" style="padding: 5px;" type="password" data-options="required:true">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>验证码:</label>
+                    </td>
+                    <td>
+                        <input name="captcha" class="easyui-validatebox" style="padding: 5px; width: 100px;" data-options="required:true" />
+                        <img id="captcha-img" src="javascript:void(0)" onclick="this.src='/action/user/captcha?t='+new Date().getTime()" style="width:100px; height:35px; vertical-align:middle;" />
+                    </td>
+                </tr>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            <br>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:0 5px;" onclick="changePasswdSubmit()">确认</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript" src="lib/md5.min.js"></script>
+    <script type="text/javascript" src="lib/des.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/zTree/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/base.js"></script>
+    <!-- <script type="text/javascript" src="js/home.js"></script> -->
+    <script type="text/javascript">
+    function logout() {
+        $$.request('/action/user/logout', {}, function() {
+            window.location.href = 'login.html';
+        });
+    }
+
+    function onClickNode(event, treeId, treeNode, clickFlag) {
+        event.preventDefault();
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        zTree.expandNode(treeNode, null, null, null, true);
+        if (treeNode.url) {
+            if ($('#main-tabs').tabs('getTab', treeNode.menu_name) == null) {
+                $('#main-tabs').tabs('add', {
+                    title: treeNode.menu_name,
+                    content: '<iframe  src="' + treeNode.url + '" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>',
+                    closable: true,
+                    // fit: true
+                    bodyCls: 'noscroll'
+                });
+            } else {
+                $('#main-tabs').tabs('select', treeNode.menu_name);
+            }
+        }
+    }
+
+    function changePassword() {
+        $('#captcha-img').click();
+        $('#passwd-fm').form('disableValidation');
+        $('#dd').dialog('open');
+    }
+
+    function des_ecb_encrypt(key, val) {
+        var ev, i;
+                      
+         ev = '';
+         for(i = 0; i < 32; i +=8) {
+            ev += des(key.substr(i, 8), val.substr(i,8), 1);
+         }
+         return stringToHex(ev).substr(2);
+    }
+
+    function changePasswdSubmit() {
+        var fm = $('#passwd-fm');
+        var data = fm.serializeObject();
+
+        if (fm.form('enableValidation').form('validate') != true) {
+            return false;
+        }
+
+        if (data.new_login_pwd != data.new_login_pwd2) {
+            $$.error('两次输入的密码不一致');
+            return false;
+        }
+
+        delete data.new_login_pwd2;
+
+        //data.login_pwd = md5(md5(g_login_name+data.login_pwd) + data.captcha);
+        data.login_pwd = md5(window.login_name + data.login_pwd);
+        data.new_login_pwd = md5(window.login_name + data.new_login_pwd);
+
+        data.new_login_pwd = des_ecb_encrypt(data.login_pwd, data.new_login_pwd)
+
+
+        data.login_pwd = md5(data.login_pwd + data.captcha);
+
+        $$.request('/action/user/password/change', data, function(data) {
+                $$.info('操作成功', function () { $('#dd').dialog('close'); });
+        });
+    }
+
+    $(function() {
+
+        $$.request('/action/user/view', {}, function(data) {
+            $('#login-name').html(data.data.login_name);
+            window.login_name = data.data.login_name;
+        }, function (data) {
+            if($$.errcode(data) == -11 || $$.errcode(data) == 5) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        $$.request('/action/user/menu', {}, function(data) {
+            var setting = {
+                data: {
+                    key: {
+                        name: 'menu_name'
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey: 'menu_id',
+                        pIdKey: 'menu_pid'
+                    }
+                },
+                callback: {
+                    onClick: onClickNode
+                }
+            };
+
+            for (var i = 0, l = data.rows.length; i < l; i++) {
+                if (data.rows[i].url) {
+                    //data.rows[i].target = 'content';
+                    // data.rows[i].attributes = {
+                    //     url: data.rows[i].url
+                    // }
+                }
+            }
+
+            $.fn.zTree.init($("#nav-tree"), setting, data.rows);
+            $.fn.zTree.getZTreeObj('nav-tree').expandAll(true);
+        }, $.noop);
+    });
+    </script>
+</body>
+
+</html>

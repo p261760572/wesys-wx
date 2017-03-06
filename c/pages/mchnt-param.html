@@ -1,0 +1,404 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>商户参数</title>
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+</head>
+
+<body>
+    <div class="page page_active" id="search-page">
+        <div>
+            <form id="search-fm" class="form form_search" action="/action/bm/mchnt-param/search" method="post">
+                <table class="form__table">
+                    <caption>查询商户参数</caption>                    
+                    <tr>                
+                        <td>
+                            <label>商户参数ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_param_id">
+                        </td>
+                                    
+                        <td>
+                            <label>业务类型：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="busi_type">
+                        </td></tr>
+                    <tr>                
+                        <td>
+                            <label>收单机构：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="acq_inst_id">
+                        </td>
+                                    
+                        <td>
+                            <label>商户号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_cd">
+                        </td></tr>
+                                        
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="center">
+                                <div style="margin:5px;"></div>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </form>
+        </div>
+        <br>
+        <div id="search-dg-tb">
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.add(this, event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm',onSuccess:$$.addSuccess">新增</a>
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event, 'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'" data-action="update">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/bm/mchnt-param/batch-delete',onSuccess:$$.batchSubmitSuccess" data-actions="delete">删除</a>
+        </div>
+        <table id="search-dg" title="商户参数" class="easyui-datagrid" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:$$.st.transition[typeId]||[]">
+            <thead>
+                <tr>
+                    <th data-options="field:'chk',checkbox:true"></th>
+                    <th data-options="field:'mchnt_param_id',width:100">商户参数ID</th>
+                    <th data-options="field:'busi_type',width:100">业务类型</th>
+                    <th data-options="field:'acq_inst_id',width:100">收单机构</th>
+                    <th data-options="field:'mchnt_cd',width:100">商户号</th>
+                    <th data-options="field:'mchnt_name',width:100">商户名称</th>
+                    <th data-options="field:'account_type',width:100">账户类型</th>
+                    <th data-options="field:'account_name',width:100">开户名称</th>
+                    <th data-options="field:'account_bank',width:100">开户银行</th>
+                    <th data-options="field:'account_province',width:100">开户银行省</th>
+                    <th data-options="field:'account_city',width:100">开户银行市</th>
+                    <th data-options="field:'account_bank_branch_cd',width:100">开户支行</th>
+                    <th data-options="field:'account_no',width:100">银行账号</th>
+                    <th data-options="field:'credit_flag',width:100">信用卡开关</th>
+                    <th data-options="field:'credit_card_limit',width:100">信用卡限额</th>
+                    <th data-options="field:'credit_date_limit',width:100">信用卡日限额</th>
+                    <th data-options="field:'debit_card_limit',width:100">借记卡限额</th>
+                    <th data-options="field:'debit_date_limit',width:100">借记卡日限额</th>
+                    <th data-options="field:'mcc',width:100">MCC</th>
+                    <th data-options="field:'mcc18',width:100">MCC18</th>
+                    <th data-options="field:'debit_card_fee',width:100">借记卡手续费</th>
+                    <th data-options="field:'credit_card_fee',width:100">贷记卡手续费</th>
+                    <th data-options="field:'fee',width:100">手续费(千分比)</th>
+                    <th data-options="field:'status',width:100">参数状态</th>
+                    <th data-options="field:'expand_inst_id',width:100">拓展方</th>
+                    <th data-options="field:'expand_id',width:100">拓展人</th>  
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="page" id="detail-page">
+        <form id="detail-fm" class="form form_detail" action="/action/bm/mchnt-param/view" method="post">
+            <table class="form__table">
+                <caption>商户参数</caption>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label>商户参数ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_param_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td>
+                    
+                        <td>
+                            <label>业务类型：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="busi_type" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>收单机构：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="acq_inst_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td>
+                    
+                        <td>
+                            <label>商户号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_cd" class="easyui-validatebox" data-options="">                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>商户名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_name" class="easyui-validatebox" data-options="">                            
+                        </td>
+                    
+                        <td>
+                            <label>账户类型：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_type" class="easyui-validatebox" data-options="required:true">
+                            <select name="account_type" class="easyui-validatebox" data-options="required:true">
+                                <option value="">--请选择--</option>
+                            </select>
+                            <span class="required">*</span>                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>开户名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_name" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td>
+                    
+                        <td>
+                            <label>开户银行：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_bank" class="easyui-validatebox" data-options="">                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>开户银行省：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_province" class="easyui-validatebox" data-options="">
+                            <select name="account_province" class="easyui-validatebox" data-options="">
+                                <option value="">--请选择--</option>
+                            </select>                            
+                        </td>
+                    
+                        <td>
+                            <label>开户银行市：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_city" class="easyui-validatebox" data-options="">
+                            <select name="account_city" class="easyui-validatebox" data-options="">
+                                <option value="">--请选择--</option>
+                            </select>                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>开户支行：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_bank_branch_cd" class="easyui-validatebox" data-options="">                            
+                        </td>
+                    
+                        <td>
+                            <label>银行账号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="account_no" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>信用卡开关：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="credit_flag" class="easyui-validatebox" data-options="required:true">
+                            <select name="credit_flag" class="easyui-validatebox" data-options="required:true">
+                                <option value="">--请选择--</option>
+                            </select>
+                            <span class="required">*</span>                            
+                        </td>
+                    
+                        <td>
+                            <label>信用卡限额：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="credit_card_limit" class="easyui-validatebox" data-options="">                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>信用卡日限额：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="credit_date_limit" class="easyui-validatebox" data-options="">                            
+                        </td>
+                    
+                        <td>
+                            <label>借记卡限额：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="debit_card_limit" class="easyui-validatebox" data-options="">                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>借记卡日限额：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="debit_date_limit" class="easyui-validatebox" data-options="">                            
+                        </td>
+                    
+                        <td>
+                            <label>MCC：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mcc" class="easyui-validatebox" data-options="">                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>MCC18：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mcc18" class="easyui-validatebox" data-options="">                            
+                        </td>
+                    
+                        <td>
+                            <label>借记卡手续费：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="debit_card_fee" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>贷记卡手续费：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="credit_card_fee" class="easyui-validatebox" data-options="">                            
+                        </td>
+                    
+                        <td>
+                            <label>手续费(千分比)：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="fee" class="easyui-validatebox" data-options="">                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>参数状态：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="status" class="easyui-validatebox" data-options="">
+                            <select name="status" class="easyui-validatebox" data-options="">
+                                <option value="">--请选择--</option>
+                            </select>                            
+                        </td>
+                    
+                        <td>
+                            <label>拓展方：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="expand_inst_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <label>拓展人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="expand_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>                            
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                     
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>记录编号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="rec_id">
+                        </td>
+                        <td>
+                            <label>操作标志/处理状态：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="oper_in" style="width: 100px;">
+                            <input type="text" name="proc_st" style="width: 100px;">
+                            <!-- <select name="oper_in">
+                            </select>
+                            <select name="proc_st">
+                            </select> -->
+                        </td>
+                    </tr>
+                    <tr class="readonly readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>创建人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="created_by">
+                        </td>
+                        <td>
+                            <label>创建时间：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="created_time">
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>最后修改人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_modified_by">
+                        </td>
+                        <td>
+                            <label>最后修改时间：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_modified_time">
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>最后审核人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_checked_by">
+                        </td>
+                        <td>
+                            <label>最后审核时间：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_checked_time">
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>审核通过或不通过原因：</label>
+                        </td>
+                        <td colspan="3" class="editable-check1">
+                            <input type="text" name="checked_reason" class="easyui-validatebox" style="width:100%;" data-options="">
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div style="margin:5px;"></div>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/bm/mchnt-param/create',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/bm/mchnt-param/update',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/st.js"></script>
+    <script type="text/javascript">
+        var typeId = $$.st.alias['mchnt_param'];
+    </script>
+</body>
+
+</html>

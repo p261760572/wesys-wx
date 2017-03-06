@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>资源</title>
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+</head>
+
+<body>
+    <div class="page page_active" id="search-page">
+        <div>
+            <form id="search-fm" class="form form_search" action="/action/admin/res-info/search" method="post">
+                <table class="form__table">
+                    <caption>查询资源</caption>
+                    <tr>
+                        <td>
+                            <label>资源代码：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="res_code">
+                        </td>
+                        <td>
+                            <label>资源名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="res_name">
+                        </td>
+                    </tr>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="center">
+                                <div style="margin:5px;"></div>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
+                        </tr>
+                    </tfoot>
+                </table>
+            </form>
+        </div>
+        <br>
+        <div id="search-dg-tb">
+            <a href="#detail-page" class="easyui-linkbutton action" onClick="$$.add(this,event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm'">新增</a>
+            <a href="#detail-page" class="easyui-linkbutton action" onClick="$$.view(this,event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
+            <a href="#detail-page" class="easyui-linkbutton action" onClick="$$.view(this,event,'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton action" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/admin/res-info/delete',onSuccess:$$.batchSubmitSuccess">删除</a>
+        </div>
+        <table id="search-dg" title="资源" class="easyui-datagrid" data-options="toolbar:'#search-dg-tb',idField:'res_code',transition:resInfoTransition">
+            <thead>
+                <tr>
+                    <th data-options="field:'chk',checkbox:true"></th>
+                    <th data-options="field:'res_code'">资源代码</th>
+                    <th data-options="field:'res_name'">资源名称</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="page" id="detail-page">
+        <form id="detail-fm" class="form form_detail" action="/action/admin/res-info/view" method="post">
+            <table class="form__table" style="width:800px;">
+                <caption>资源</caption>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label>资源代码：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="res_code" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                        <td>
+                            <label>资源名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="res_name" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>资源描述：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="res_desc" class="">
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div style="margin:5px;"></div>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/admin/res-info/create',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/admin/res-info/update',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/district.js"></script>
+    <script>
+    var resInfoTransition = [{
+        oper_in: '0',
+        proc_st: '0',
+        action: 'update'
+    }, {
+        oper_in: '0',
+        proc_st: '0',
+        action: 'delete'
+    }];
+    </script>
+</body>
+
+</html>

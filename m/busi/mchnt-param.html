@@ -17,7 +17,7 @@
     }
     
     .weui-cells {
-        /*font-size: 16px;*/
+        font-size: 16px;
     }
     
     .weui-cell__bd {
@@ -57,7 +57,7 @@
                         <label class="weui-label">客户号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_id" required=""  placeholder="请输入终端标识">
+                        <input class="weui-input" type="text" name="mchnt_id" required="" placeholder="请输入终端标识">
                     </div>
                 </div>
                 <div class="weui-cell hide">
@@ -67,14 +67,16 @@
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mchnt_param_id" required="" placeholder="请输入商户参数ID">
                     </div>
-                </div>
-                <div class="weui-cell">
+                </div>                
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">业务类型<span class="required">*</span></label>
+                        <label for="" class="weui-label">业务类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="busi_type_nm" required="" placeholder="请选择业务类型" id="busi-type-select2">
-                        <input type="hidden" name="busi_type">
+                        <select class="weui-select" name="busi_type" required="" missingTips="请选择业务类型" id="busi-type">
+                            <option value="SD">收单</option>
+                            <option value="DMF">当面付</option>
+                        </select>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -205,7 +207,7 @@
                         <input class="weui-input" type="text" name="debit_date_limit" placeholder="请输入借记卡日限额">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell" id="mcc-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">MCC</label>
                     </div>
@@ -225,22 +227,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide" id="debit-card-fee-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">手续费<span class="required">*</span></label>
+                        <label class="weui-label">借记卡手续费<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="fee_nm" required="" placeholder="请选择手续费" id="fee-select2">
-                        <input type="hidden" name="fee">
+                        <input class="weui-input" type="text" name="debit_card_fee_nm" required="" placeholder="请选择借记卡手续费" id="debit-card-fee-select2">
+                        <input type="hidden" name="debit_card_fee">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide" id="credit-card-fee-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">贷记卡手续费</label>
+                        <label class="weui-label">贷记卡手续费<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="credit_card_fee_nm" placeholder="请选择贷记卡手续费" id="credit-card-fee-select2">
+                        <input class="weui-input" type="text" name="credit_card_fee_nm" required="" placeholder="请选择贷记卡手续费" id="credit-card-fee-select2">
                         <input type="hidden" name="credit_card_fee">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_vcode hide" id="fee-cell">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">手续费<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input for_busi" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="请输入手续费千分比" invalidTips="请输入正确的手续费">
+                    </div>
+                    <div class="weui-cell__ft">
+                        <button class="weui-vcode-btn">‰</button>
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_select weui-cell_select-after hide">
@@ -287,85 +300,89 @@
                 </div>
             </div>
             <div class="weui-form-preview__bd">
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">商户参数ID</label>
                     <span class="weui-form-preview__value" id="preview-mchnt_param_id"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">业务类型</label>
-                    <span class="weui-form-preview__value" id="preview-busi_type"></span>
+                    <span class="weui-form-preview__value" id="preview-busi_type_nm"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">收单机构</label>
+                    <span class="weui-form-preview__value" id="preview-acq_inst_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">商户号</label>
                     <span class="weui-form-preview__value" id="preview-mchnt_cd"></span>
                 </div>
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">收单机构</label>
-                    <span class="weui-form-preview__value" id="preview-acq_inst_id"></span>
+                    <label class="weui-form-preview__label">商户名称</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_name"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">账户类型</label>
-                    <span class="weui-form-preview__value" id="preview-account_type"></span>
+                    <span class="weui-form-preview__value" id="preview-account_type_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">开户名称</label>
                     <span class="weui-form-preview__value" id="preview-account_name"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">开户银行</label>
                     <span class="weui-form-preview__value" id="preview-account_bank"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">开户银行省</label>
                     <span class="weui-form-preview__value" id="preview-account_province"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">开户银行市</label>
                     <span class="weui-form-preview__value" id="preview-account_city"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">开户支行</label>
-                    <span class="weui-form-preview__value" id="preview-account_bank_branch_cd"></span>
+                    <span class="weui-form-preview__value" id="preview-account_bank_branch_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">银行账号</label>
                     <span class="weui-form-preview__value" id="preview-account_no"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">信用卡开关</label>
                     <span class="weui-form-preview__value" id="preview-credit_flag"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">信用卡笔限额</label>
                     <span class="weui-form-preview__value" id="preview-credit_card_limit"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">信用卡日限额</label>
                     <span class="weui-form-preview__value" id="preview-credit_date_limit"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">借记卡笔限额</label>
                     <span class="weui-form-preview__value" id="preview-debit_card_limit"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">借记卡日限额</label>
                     <span class="weui-form-preview__value" id="preview-debit_date_limit"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">MCC</label>
-                    <span class="weui-form-preview__value" id="preview-mcc"></span>
+                    <span class="weui-form-preview__value" id="preview-mcc_nm"></span>
                 </div>
-                <div class="weui-form-preview__item">
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">MCC18</label>
-                    <span class="weui-form-preview__value" id="preview-mcc18"></span>
+                    <span class="weui-form-preview__value" id="preview-mcc18_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">借记卡手续费</label>
-                    <span class="weui-form-preview__value" id="preview-fee"></span>
+                    <span class="weui-form-preview__value" id="preview-debit_card_fee_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">贷记卡手续费</label>
-                    <span class="weui-form-preview__value" id="preview-credit_card_fee"></span>
+                    <span class="weui-form-preview__value" id="preview-credit_card_fee_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">参数状态</label>
@@ -373,11 +390,11 @@
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">拓展方</label>
-                    <span class="weui-form-preview__value" id="preview-expand_inst_id"></span>
+                    <span class="weui-form-preview__value" id="preview-expand_inst_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">拓展人</label>
-                    <span class="weui-form-preview__value" id="preview-expand_id"></span>
+                    <span class="weui-form-preview__value" id="preview-expand_nm"></span>
                 </div>
             </div>
             <div class="weui-form-preview__ft">
@@ -434,6 +451,7 @@
     }).search();
 
     function onSearch(param, success, error) {
+        var queryParams = $.extend(param, query);
         $$.request('/action/bm/mchnt-param/search', param, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -456,7 +474,8 @@
         $$.request('/action/bm/mchnt-param/view', param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
+                    data.data.busi_type_nm = $$.formatField($$.param['busi_type'], data.data.busi_type);
+                    data.data.account_type_nm = $$.formatField($$.param['account_type'], data.data.account_type);
                     for (var name in data.data) {
                         $('#preview-' + name).html(data.data[name]);
                     }
@@ -477,6 +496,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
+                    $('#busi-type').change();
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -587,24 +607,15 @@
         weui.form.load('#form', {
             mchnt_id: query.mchnt_id,
             busi_type: 'SD',
-            busi_type_nm: '收单',
             account_type: '1'
         });
+        $('#busi-type').change();
         $('#back-btn').show().siblings().show();
     }
 
     $(function() {
         $('#add-btn').on('click', onClickAdd);
         $('#submit-btn').on('click', onSubmit);
-        $('#busi-type-select2').on('change', function () {
-            var value = $(this).next().val();
-
-            if(value == 'DMF') {
-                $('#credit-card-fee-select2').closest('.weui-cell').addClass('hide');
-            } else {
-                $('#credit-card-fee-select2').closest('.weui-cell').removeClass('hide');
-            }
-        });
 
         //init component
         // $('#city-picker').on('focus', function() {
@@ -615,77 +626,89 @@
         //     $$.showDatePicker(this);
         // });
 
-        $('#busi-type-select2').on('focus', function() {
-            $$.showSelect2(this, {
-                data: $$.param['busi_type']
-            });
+        $('#busi-type').on('change', function() {
+            var value = $(this).val();
+            $('#debit-card-fee-cell,#credit-card-fee-cell,#fee-cell').addClass('hide');
+            if (value == 'DMF') {
+                $('#fee-cell').removeClass('hide');
+            } else {
+                $('#debit-card-fee-cell,#credit-card-fee-cell').removeClass('hide');
+            }
         });
-
 
         $('#acq-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
-                 valueField: 'acq_inst_cd',
+                title: '搜索收单机构',
+                valueField: 'acq_inst_cd',
                 textField: 'acq_inst_nm',
                 url: '/action/bm/acq-inst/search'
-            });
+            }).search();
         });
 
         $('#account-bank-branch-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索开户支行',
                 valueField: 'bank_branch_cd',
                 textField: 'bank_branch_nm',
                 url: '/action/bm/bank-branch/search'
-            });
+            }).search();
         });
 
         $('#mcc-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索商户类别',
                 valueField: 'mcc',
                 textField: 'mcc_nm',
                 url: '/action/bm/mcc/search'
-            });
+            }).search();
         });
 
         $('#mcc18-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索商户类别',
                 valueField: 'mcc',
                 textField: 'mcc_nm',
                 url: '/action/bm/mcc/search'
-            });
+            }).search();
         });
 
-        $('#fee-select2').on('focus', function() {
+        $('#debit-card-fee-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索手续费',
                 valueField: 'fee_cd',
                 textField: 'fee_nm',
                 url: '/action/bm/fee/search',
                 queryParams: {
                     // debit_flag: '1'
                 }
-            });
+            }).search();
         });
 
         $('#credit-card-fee-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索手续费',
                 valueField: 'fee_cd',
                 textField: 'fee_nm',
                 url: '/action/bm/fee/search',
                 queryParams: {
                     credit_flag: '1'
                 }
-            });
+            }).search();
         });
 
         $('#expand-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索拓展方',
+
                 url: '/action/bm/expand-inst/search'
-            });
+            }).search();
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
+                title: '搜索拓展人',
                 url: '/action/bm/expand/search'
-            });
+            }).search();
         });
     });
     </script>
