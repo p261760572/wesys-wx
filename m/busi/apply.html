@@ -8,13 +8,15 @@
     <title>业务申请</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <style type="text/css">
-    body {
-        background-color: #f8f8f8;
-    }
-    
-    .weui-cell__bd {
-        position: relative;
-    }
+		body {
+			background-color: #f8f8f8;
+		}
+		.required {
+			color: red;
+		}
+		.weui-cell__bd {
+			position: relative;
+		}
     </style>
 </head>
 
@@ -33,7 +35,7 @@
                     </div>
                 </div>
                 <div class="weui-cell">
-                    <div class="weui-cell__hd">
+                    <div class="weui-cell__hd"> 
                         <label class="weui-label">手机号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
@@ -210,7 +212,7 @@
                 <div>
                     <label class="weui-cell weui-check__label" for="s11">
                         <div class="weui-cell__hd">
-                            <input type="checkbox" class="weui-check for_busi" id="s11" name="busi_type" value="105">
+                            <input type="checkbox" class="weui-check for_busi" id="s11" name="busi_type" value="ACQ">
                             <i class="weui-icon-checked"></i>
                         </div>
                         <div class="weui-cell__bd">
@@ -248,7 +250,7 @@
                 <div>
                     <label class="weui-cell weui-check__label" for="s12">
                         <div class="weui-cell__hd">
-                            <input type="checkbox" class="weui-check for_busi" name="busi_type" id="s12" value="109">
+                            <input type="checkbox" class="weui-check for_busi" name="busi_type" id="s12" value="DMF">
                             <i class="weui-icon-checked"></i>
                         </div>
                         <div class="weui-cell__bd">
@@ -260,7 +262,7 @@
                             <label for="" class="weui-label">手续费</label>
                         </div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input for_busi" name="dmf_fee_algo" type="text" placeholder="请输入手续费千分比">
+                            <input class="weui-input for_busi" name="fee" type="text" placeholder="请输入手续费千分比">
                         </div>
                         <div class="weui-cell__ft">
                             <button class="weui-vcode-btn">‰</button>
@@ -464,7 +466,7 @@
                     </div>
                     <div class="weui-form-preview__item">
                         <label class="weui-form-preview__label">当面付</label>
-                        <span class="weui-form-preview__value" name="dmf_fee_algo"></span>
+                        <span class="weui-form-preview__value" name="fee"></span>
                     </div>
                 </div>
             </div>
@@ -557,13 +559,13 @@
 				errorFunc("你的浏览器不支持获取地理位置信息。");
 		}
 	}
-	
+	/*
 	$(function(){
 		getLocation(function(){
 			console.log(arguments);
 			$('#addr').val(addComp.province + addComp.city + addComp.district + addComp.street);
 		});
-	});
+	}); */
 	function serializeDetail() {
 		var data = {};
 		var base_info = {};
@@ -582,7 +584,7 @@
 			$('#flow').find('.for_busi').each(function(i, ele){
 				var ele_packet = {};
 				var tag = $(ele).attr('name')||$(ele).attr('id');
-				ele_packet[tag] = $(element).val();
+				ele_packet[tag] = $(ele).val();
 				$.extend(busi_type, ele_packet);
 			});
 			busi_type[busi_tag] = $(this).val();
@@ -593,12 +595,11 @@
 		var elec_info = [];
 		$('#flow').find('.weui-uploader__files').each(function(i, element) {
 			var type = $(element).attr('id');
-
-			var container = $(element).children('input[type="file"]').each(function(i, element) {
-				var fileData = $(element).data('file');
-				elec_info.push($.extend(fileData, {
-					'elec_info_type': type
-				}));
+			var container = $(element).children('.weui-uploader__file').each(function(i, ele) {
+				var fileData = $(ele).prop('file');
+				alert(JSON.stringify(fileData));
+				fileData['elec_info_type'] = type;
+				elec_info.push(fileData);
 			});
 		});
 
@@ -612,7 +613,7 @@
 		if (!weui.form.validate('#flow', $$.rules)) return;
 		var param = serializeDetail();
 
-		$$.request('/action/bm/mchnt-base-info/', param, {
+		$$.request('/action/bm/base-busi/create', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					weui.toast('操作成功');
@@ -650,7 +651,7 @@
             $(this).closest('.weui-cell').siblings().hide().find('input').val("");
         }
     });
-		
+	
 	$('#district').on('click', function() {
 		$$.showPicker(this, districtData);
 	});
@@ -665,32 +666,47 @@
 			}
 		});
 		
-		$$.request('/action/admin/parameter/list', {
-				debit_fee_algo: '1',
-				credit_fee_algo: '1',
-				account_bank: '1',
-				acq_inst_id: '1'
-			}, function(data) {
-				if (data.errcode == 0) {
-					$('#debit_fee_algo').on('click', function() {
-						$$.showPicker(this, data.debit_fee_algo);
-					});
-					
-					$('#credit_fee_algo').on('click', function() {
-						$$.showPicker(this, data.credit_fee_algo);
-					});
-					
-					$('#subbranch_name').on('click', function() {
-						$$.showSelect2(this, data.subbranch_name);
-					});
-					
-					$('#acq_inst_id').on('click', function() {
-						$$.showSelect2(this, data.acq_inst_id);
-					});
-				}
-			
-				
-		}); 
+		$('#acq_inst_id').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索收单机构',
+                valueField: 'acq_inst_cd',
+                textField: 'acq_inst_nm',
+                url: '/action/bm/acq-inst/search'
+            }).search();
+        });
+
+        $('#subbranch_name').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索开户支行',
+                valueField: 'bank_branch_cd',
+                textField: 'bank_branch_nm',
+                url: '/action/bm/bank-branch/search'
+            }).search();
+        });
+		
+		$('#debit_card_fee').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索手续费',
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    debit_flag: '1'
+                }
+            }).search();
+        });
+
+        $('#credit_card_fee').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索手续费',
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    credit_flag: '1'
+                }
+            }).search();
+        });
 	})
 	
 	$('.weui-uploader').each(function(i, element) {
@@ -718,7 +734,17 @@
 					return false;
 				}
 				// return false; // 阻止文件上传
-			}
+			},
+			onSuccess: function (ret) {
+		        console.log(this, ret);
+				var data = {};
+				data.status = '1';
+            	data.serverid = ret.serverid;
+				$(this).data('file', data);
+		    },
+		    onError: function(err){
+		        console.log(this, err);
+		    }
 		}, options);
 		return weui.ajaxUploader(target, options);
 	}
