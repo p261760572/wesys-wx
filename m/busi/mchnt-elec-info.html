@@ -1,0 +1,392 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商户电子资料</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <style type="text/css">
+    .hide {
+        display: none;
+    }
+    
+    .required {
+        color: red;
+    }
+    
+    .weui-cells {
+        /*font-size: 16px;*/
+    }
+    
+    .weui-cell__bd {
+        position: relative;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="search-page" class="page page_show">
+        <div class="weui-search-bar">
+            <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索商户电子资料</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
+        </div>
+    </div>
+    <div id="detail-page" class="page">
+        <div class="weui-cells weui-cells_form" id="uploader">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">图片上传</p>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <ul class="weui-uploader__files" id="uploaderFiles"></ul>
+                            <div class="weui-uploader__input-box">
+                                <input id="uploader-input" class="weui-uploader__input hide" type="file" accept="image/*" capture="camera">
+                                <input id="uploader-btn" class="weui-uploader__input" type="button">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="weui-btn-area btn-area">
+            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
+            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+        </div>
+    </div>
+    <div id="preview-page" class="page">
+        <div class="weui-form-preview">
+            <div class="weui-form-preview__hd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户电子资料</label>
+                </div>
+            </div>
+            <div class="weui-form-preview__bd">
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">文件名</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_id"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">服务端ID</label>
+                    <span class="weui-form-preview__value" id="preview-serverid"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">影印件类型</label>
+                    <span class="weui-form-preview__value" id="preview-elec_info_type"></span>
+                </div>
+                <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">是否有效</label>
+                    <span class="weui-form-preview__value" id="preview-status"></span>
+                </div>
+            </div>
+            <div class="weui-form-preview__ft">
+                <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
+                <!-- <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">编辑</button> -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/lib/zepto.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
+    <script id="result-template" type="text/html">
+        {{each rows as row i}}
+        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>{{row.mchnt_id}}{{row.serverid}}</p>
+            </div>
+            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st}}</div>
+        </a>
+        <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box__desc">{{row.elec_info_type}}</div>
+            <div class="weui-media-box__desc">{{row.status}}</div>
+            <div class="weui-media-box__desc">{{row.checked_reason}}</div>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">{{row.created_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.created_by}}</li>
+            </ul>
+            <ul class="weui-media-box__info" style="margin-top: 0px;">
+                <li class="weui-media-box__info__meta">{{row.last_modified_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_modified_by}}</li>
+            </ul>
+            <ul class="weui-media-box__info" style="margin-top: 0px;">
+                <li class="weui-media-box__info__meta">{{row.last_checked_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_checked_by}}</li>
+            </ul>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+    var query = $$.parseQueryString();
+    var operateType;
+    var searchPage = weui.searchPage('#search-page', {
+        resultTpl: '#result-template',
+        loader: onSearch,
+        onInput: function() {
+            console.log(this, arguments);
+        },
+        onClickItem: function(row) {
+            console.log(this, arguments);
+            // weui.page.back();
+            showActions(row);
+        }
+    }).search();
+
+    function onSearch(param, success, error) {
+        $$.request('/action/bm/mchnt-elec-info/search', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+                    weui.alert(data.errmsg, error, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {
+                error();
+            }
+        });
+    }
+
+    function onPreview(param) {
+        weui.page.show('#preview-page');
+
+        $$.request('/action/bm/mchnt-elec-info/view', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
+                    for (var name in data.data) {
+                        $('#preview-' + name).html(data.data[name]);
+                    }
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function onView(param) {
+        weui.page.show('#detail-page');
+
+        $$.request('/action/bm/mchnt-elec-info/view', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.form.load('#form', data.data);
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function onDelete(param) {
+        $$.request('/action/bm/mchnt-elec-info/delete', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功', function() {
+                        searchPage.search();
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function showActions(row) {
+        var actions = [{
+            label: '查看',
+            onClick: function() {
+                console.log(this, arguments);
+                onPreview(row);
+                $('#back-btn').show().siblings().hide();
+            }
+        }]
+
+        if ($.inArray(row.proc_st, ['8', '9', 'A']) >= 0) {
+            actions.push({
+                label: '编辑',
+                onClick: function() {
+                    console.log(this, arguments);
+                    operateType = 'update';
+                    onView(row);
+                    $('#back-btn').show().siblings().show();
+                }
+            });
+        }
+
+        if (row.oper_in == 'I' && $.inArray(row.proc_st, ['9', 'A']) >= 0) {
+            actions.push({
+                label: '删除',
+                onClick: function() {
+                    console.log(this, arguments);
+                    weui.confirm('确认要删除?', function() {
+                        onDelete(row);
+                    });
+                }
+            });
+        }
+
+        // actions.push({
+        //         label: '终端管理',
+        //         onClick: function() {
+        //             console.log(this, arguments);
+        //             window.location.href = 'term-info.html?' + $.param({
+        //                 mchnt_id: row.mchnt_id
+        //             });
+        //         }
+        //     });
+
+        weui.actionSheet(actions, [{
+            label: '取消',
+            onClick: function() {
+                console.log(this, arguments);
+            }
+        }]);
+    }
+
+    // 失去焦点时检测
+    weui.form.checkIfBlur('#form', $$.rules);
+
+    function onSubmit() {
+
+        $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
+            var id = parseInt($(item).attr('data-id'));
+            data.images.push(uploaderData[id]);
+        });
+
+        $$.request('/action/bm/mchnt-elec-info/' + operateType, param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功', function() {
+                        searchPage.search();
+                        weui.page.back();
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function onClickAdd() {
+        operateType = 'create';
+        weui.page.show('#detail-page');
+        weui.form.clear('#form');
+        weui.form.load('#form', {
+            //mchnt_id: query.mchnt_id
+        });
+        $('#back-btn').show().siblings().show();
+    }
+
+
+    var current_elec_info_type;
+    var uploaderData = [];
+    $(function() {
+        $('#add-btn').on('click', onClickAdd);
+        $('#submit-btn').on('click', onSubmit);
+
+        $('#uploader-btn').on('click', function() {
+            var select2 = weui.select2({
+                data: [{
+                    value: '营业执照',
+                    text: '营业执照'
+                }],
+                onClickItem: function(row, target) {
+                    console.log(this, arguments);
+                    current_elec_info_type = row;
+                    $('#uploader-input').click();
+                }
+            });
+        });
+
+        //init component
+        $('#city-picker').on('focus', function() {
+            $$.showPicker(this, districtData);
+        });
+
+        $('#date-picker').on('focus', function() {
+            $$.showDatePicker(this);
+        });
+
+        $('#expand-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand-inst/search'
+            });
+        });
+
+        $('#expand-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                url: '/action/bm/expand/search'
+            });
+        });
+
+
+        var uploader = weui.ajaxUploader('#uploader', {
+            url: '/action/upload',
+            auto: true,
+            type: 'file',
+            fileVal: 'file',
+            compress: {
+                width: 1600,
+                height: 1600,
+                quality: 0.92
+            },
+            onBeforeSend: function(data, headers) {
+                console.log(this, arguments);
+                // $.extend(data, { test: 1 }); // 可以扩展此对象来控制上传参数
+                // $.extend(headers, { Origin: 'http://127.0.0.1' }); // 可以扩展此对象来控制上传头部
+
+                // return false; // 阻止文件上传
+            },
+            onProgress: function(procent) {
+                console.log(this, arguments);
+                // return true; // 阻止默认行为，不使用默认的进度显示
+            },
+            onSuccess: function(ret) {
+                console.log(this, arguments);
+                if (ret.errcode == 0) {
+                    uploaderData[this.id] = {
+                        serverid: ret.serverid,
+                        elec_info_type: current_elec_info_type
+                    };
+                } else {
+                    return true; // 阻止默认行为，不使用默认的成功态    
+                }
+            },
+            onError: function(err) {
+                console.log(this, arguments);
+                // return true; // 阻止默认行为，不使用默认的失败态
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>
