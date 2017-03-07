@@ -2570,6 +2570,8 @@ window.$ === undefined && (window.$ = Zepto)
 (function() {
     window.$$ = {};
 
+    $$.ERROR_INVALID_SESSION = 5;
+
     $$.wrapUrl = function(url) {
         return window.basedir ? window.basedir + url : url;
     }
@@ -2591,6 +2593,15 @@ window.$ === undefined && (window.$ = Zepto)
             },
             complete: function(xhr, status) {
                 if (loading) loading.hide();
+                if (xhr.status == 200) {
+                  var contentType = xhr.getResponseHeader('Content-Type');
+                  if (contentType && contentType.indexOf('application/json') >= 0) {
+                      var data = JSON.parse(xhr.responseText || '{}');
+                      if (data.errcode == 5) {
+                          window.location.href = '/m/login.html';
+                      }
+                  }
+              }
             }
         }, options);
 

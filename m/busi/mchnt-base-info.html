@@ -522,6 +522,16 @@
             }
         });
 
+        actions.push({
+            label: '电子资料',
+            onClick: function() {
+                console.log(this, arguments);
+                window.location.href = 'mchnt-elec-info.html?' + $.param({
+                    mchnt_id: row.mchnt_id
+                });
+            }
+        });
+
         weui.actionSheet(actions, [{
             label: '取消',
             onClick: function() {
