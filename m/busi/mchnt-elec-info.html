@@ -319,8 +319,9 @@
                     text: '营业执照'
                 }],
                 onClickItem: function(row, target) {
+                    opts = this.options;
                     console.log(this, arguments);
-                    current_elec_info_type = row;
+                    current_elec_info_type = row[opts.valueField];
                     $('#uploader-input').click();
                 }
             });
@@ -347,9 +348,8 @@
             });
         });
 
-
         var uploader = weui.ajaxUploader('#uploader', {
-            url: '/action/upload',
+            url: $$.wrapUrl('/action/upload'),
             auto: true,
             type: 'file',
             fileVal: 'file',
