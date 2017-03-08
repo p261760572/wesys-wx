@@ -10,35 +10,12 @@ body {
     /*font-size: 12px;*/
 }
 
-span.required {
-    color: red;
-}
-
-.badge {
-    background-color: #3879d9;
-    color: #fff;
-    z-index: 1;
-    display: inline-block;
-    padding: 3px 8px;
-    min-width: 10px;
-    border-radius: 10px;
-    vertical-align: baseline;
-    text-align: center;
-    white-space: nowrap;
-    font-size: 12px;
-    line-height: 14px;
-}
-
-.badge_warn {
-    background-color: #ef473a;
-}
-
 .weui-cells {
     font-size: 14px;
 }
 
 
-/*图标*/
+/* 图标 */
 
 [class^="icon-"],
 [class*=" icon-"] {
@@ -84,7 +61,7 @@ span.required {
 .icon-my {
     width: 28px;
     height: 28px;
-    background-image: url('我的.svg');
+    background-image: url('my.svg');
 }
 
 .icon-user {
@@ -96,13 +73,7 @@ span.required {
 .icon-home {
     width: 28px;
     height: 28px;
-    background-image: url('住房.svg');
-}
-
-.icon-list {
-    width: 28px;
-    height: 28px;
-    background-image: url('列表.svg');
+    background-image: url('home.svg');
 }
 
 .icon-list {
@@ -152,4 +123,3 @@ span.required {
     height: 28px;
     background-image: url('历史B.svg');
 }
-
