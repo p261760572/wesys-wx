@@ -402,6 +402,8 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
+                } else if(data.errcode == 5) {
+                    window.location.href = $$.wrapUrl('/m/login.html');
                 } else {
                     weui.alert(data.errmsg, error, {
                         title: '提示'

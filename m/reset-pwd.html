@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <div class="weui-cells__title" style="margin: 1em auto; text-align: center; font-size: 18px; color: #000;">找回密码</div>
+    <!-- <div class="weui-cells__title" style="margin: 1em auto; text-align: center; font-size: 18px; color: #000;">找回密码</div> -->
     <form action="" method="post" id="form">
         <input type="hidden" name="pubkey" id="pubkey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDL24wh6/WKW/7TkrNHiDKc0RUTIAdqWDvhlxlb4Az3n8v5hXqIsGV6b2Aol8Zn/ga7NIPz+cw2vsMh8fqQMMyc+VNAL548D4FEU/LG8MFoaRceGJFGCorEGaugUiq8L7rJXoHOUgsgnmvrFkzCSbnYe0XUG+WKfG5LSVakqr+JrwIDAQAB">
         <div class="weui-cells weui-cells_form">
@@ -36,7 +36,7 @@
                     <input class="weui-input" type="number" required="" pattern="^\d{4}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
                 </div>
                 <div class="weui-cell__ft">
-                    <img class="weui-vcode-img" src="/m/action/user/vcode" onclick="this.src='/m/action/user/vcode?t='+new Date().getTime()">
+                    <img class="weui-vcode-img" src="/p/m/action/user/vcode" onclick="this.src='/p/m/action/user/vcode?t='+new Date().getTime()">
                 </div>
             </div>
             <div class="weui-cell weui-cell_vcode">
@@ -86,21 +86,15 @@
         }
 
         var data = $('#form').serializeObject();
-        $.ajax({
-            url: '/m/action/notify/mobilecode/reset-pwd',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                mobile: data.mobile,
-                vcode: data.vcode
-            },
-            error: function() {
-                console.log(arguments);
-            },
+
+        $$.required('/m/action/notify/mobilecode/reset-pwd', {
+            mobile: data.mobile,
+            vcode: data.vcode
+        }, {
             success: function(data) {
                 console.log(arguments);
 
-                if(data.errcode == 0) {
+                if (data.errcode == 0) {
                     var secord = 180;
                     $(target).addClass('btn_plain-disabled').text(secord + '秒后重发');
                     var timer = setInterval(function() {
@@ -137,7 +131,7 @@
             success: function(data) {
                 console.log(arguments);
 
-                if(data.errcode == 0) {
+                if (data.errcode == 0) {
                     weui.toast('操作成功');
                 } else {
                     weui.topTips(data.errmsg);

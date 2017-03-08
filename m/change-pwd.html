@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="weui-cells__title" style="margin: 1em auto; text-align: center; font-size: 18px; color: #000;">修改密码</div>
+    <!-- <div class="weui-cells__title" style="margin: 1em auto; text-align: center; font-size: 18px; color: #000;">修改密码</div> -->
     <form action="" method="post" id="form">
         <input type="hidden" name="pubkey" id="pubkey" value="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDL24wh6/WKW/7TkrNHiDKc0RUTIAdqWDvhlxlb4Az3n8v5hXqIsGV6b2Aol8Zn/ga7NIPz+cw2vsMh8fqQMMyc+VNAL548D4FEU/LG8MFoaRceGJFGCorEGaugUiq8L7rJXoHOUgsgnmvrFkzCSbnYe0XUG+WKfG5LSVakqr+JrwIDAQAB">
         <div class="weui-cells weui-cells_form">
@@ -46,7 +46,7 @@
                     <input class="weui-input" type="number" required="" pattern="^\d{6}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
                 </div>
                 <div class="weui-cell__ft">
-                    <img class="weui-vcode-img" src="/m/action/user/vcode" onclick="this.src='/m/action/user/vcode?t='+new Date().getTime()">
+                    <img class="weui-vcode-img" src="/p/m/action/user/vcode" onclick="this.src='/p/m/action/user/vcode?t='+new Date().getTime()">
                 </div>
             </div>
         </div>
@@ -76,24 +76,18 @@
     function changePwd() {
         if (!weui.form.validate('#form', regexp)) return;
 
-        var loading = weui.loading('提交中...');
-
         var data = $('#form').serializeObject();
         data.login_pwd = encryptPassword(data.login_pwd);
 
-        $.ajax({
-            url: '/m/action/user/change-pwd',
-            type: "POST",
-            dataType: "json",
-            data: data,
-            error: function() {
-                console.log(arguments);
-            },
+        $$.request('/m/action/user/change-pwd', data, {
             success: function(data) {
-                console.log(arguments);
-            },
-            complete: function() {
-                loading.hide();
+                if(data.errcode == 0) {
+                    weui.toast('修改成功', function () {
+                        window.history.back(-1);
+                    });
+                } else {
+                    weui.topTips(data.errmsg);
+                }
             }
         });
     }

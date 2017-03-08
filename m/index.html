@@ -26,12 +26,12 @@
                     </div>
                     <p class="weui-grid__label">新商户入网</p>
                 </a>
-                <a href="javascript:;" class="weui-grid">
+                <!-- <a href="javascript:;" class="weui-grid">
                     <div class="weui-grid__icon">
                         <img src="images/icon_nav_icons.png" alt="">
                     </div>
                     <p class="weui-grid__label">存量开通业务</p>
-                </a>
+                </a> -->
                 <a href="busi/mchnt-base-info.html" class="weui-grid">
                     <div class="weui-grid__icon">
                         <img src="images/icon_nav_button.png" alt="">
@@ -56,6 +56,12 @@
                     </div>
                     <p class="weui-grid__label">&nbsp;</p>
                 </a>
+                <a href="javascript:;" class="weui-grid">
+                    <div class="weui-grid__icon">
+                        <img src="images/icon_nav_actionSheet.png" alt="">
+                    </div>
+                    <p class="weui-grid__label">&nbsp;</p>
+                </a>
             </div>
         </div>
         <div class="weui-tabbar">
@@ -65,11 +71,13 @@
                 <p class="weui-tabbar__label">首页</p>
             </a>
             <a href="javascript:;" class="weui-tabbar__item">
-                <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon">
+                <!-- <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon"> -->
+                <i class="icon-friend"></i>
                 <p class="weui-tabbar__label">通讯录</p>
             </a>
             <a href="javascript:;" class="weui-tabbar__item">
-                <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon">
+                <!-- <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon"> -->
+                <i class="icon-search"></i>
                 <p class="weui-tabbar__label">发现</p>
             </a>
             <a href="my.html" class="weui-tabbar__item">
@@ -83,6 +91,21 @@
     <script type="text/javascript" src="js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript">
+    $(function() {
+        $$.request('/action/user/view', {}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    // success(data.rows);
+                } else if (data.errcode == 5) {
+                    window.location.href = $$.wrapUrl('/m/login.html');
+                } else {
+                    weui.alert(data.errmsg, error, {
+                        title: '提示'
+                    });
+                }
+            }
+        })
+    });
     </script>
 </body>
 

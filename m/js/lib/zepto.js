@@ -2862,3 +2862,5 @@ window.$ === undefined && (window.$ = Zepto)
         weui.datePicker(options);
     }
 })();
+
+window.basedir = '/p';

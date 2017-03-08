@@ -85,7 +85,7 @@ body {
 .icon-friend {
     width: 28px;
     height: 28px;
-    background-image: url('社交.svg');
+    background-image: url('friend.svg');
 }
 
 .icon-merchant {
@@ -123,3 +123,10 @@ body {
     height: 28px;
     background-image: url('历史B.svg');
 }
+
+.icon-search {
+    width: 28px;
+    height: 28px;
+    background-image: url('search.svg');
+}
+

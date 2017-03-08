@@ -59,6 +59,29 @@
                 <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon">
                 <p class="weui-tabbar__label">发现</p>
             </a>
+            <a href="javascript:;" class="weui-tabbar__item">
+                <!-- <img src="images/icon_nav_button.png" alt="" 
+                class="weui-tabbar__icon"> -->
+                <i class="icon-my"></i>
+                <p class="weui-tabbar__label">我</p>
+            </a>
+        </div>
+        <div class="weui-tabbar">
+            <a href="index.html" class="weui-tabbar__item weui-bar__item_on">
+                <!-- <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon"> -->
+                <i class="icon-home"></i>
+                <p class="weui-tabbar__label">首页</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item">
+                <!-- <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon"> -->
+                <i class="icon-friend"></i>
+                <p class="weui-tabbar__label">通讯录</p>
+            </a>
+            <a href="javascript:;" class="weui-tabbar__item">
+                <!-- <img src="images/icon_nav_button.png" alt="" class="weui-tabbar__icon"> -->
+                <i class="icon-search"></i>
+                <p class="weui-tabbar__label">发现</p>
+            </a>
             <a href="javascript:;" class="weui-tabbar__item weui-bar__item_on">
                 <!-- <img src="images/icon_nav_button.png" alt="" 
                 class="weui-tabbar__icon"> -->
@@ -71,12 +94,32 @@
     <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript">
     function logout() {
-        $$.request('/action/user/logout', {}, function(data) {
-            if (data.errcode == 0) {
-                window.location.href = '../login.html';
+        $$.request('/action/user/logout', {}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    window.location.href = 'login.html';
+                }
             }
         });
     }
+
+    $(function() {
+        $$.request('/action/user/view', {}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    for (var name in data.data) {
+                        $('#' + name).html(data.data[name]);
+                    }
+                } else if (data.errcode == 5) {
+                    window.location.href = $$.wrapUrl('/m/login.html');
+                } else {
+                    weui.alert(data.errmsg, error, {
+                        title: '提示'
+                    });
+                }
+            }
+        })
+    });
     </script>
 </body>
 

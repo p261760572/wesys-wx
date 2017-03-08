@@ -2,5 +2,9 @@
     "copy": {
         "src": ["../weuijs/dist/**"],
         "dest": ["m/js/lib", "../wxapp-v2/app/js/lib"]
+    },
+    "zepto": {
+        "src": ["m/js/lib/zepto.js", "m/js/basedir.js"],
+        "dest": "m/js/lib"
     }
 }
