@@ -2570,8 +2570,6 @@ window.$ === undefined && (window.$ = Zepto)
 (function() {
     window.$$ = {};
 
-    $$.ERROR_INVALID_SESSION = 5;
-
     $$.wrapUrl = function(url) {
         return window.basedir ? window.basedir + url : url;
     }
@@ -2592,16 +2590,7 @@ window.$ === undefined && (window.$ = Zepto)
                 loading = weui.loading('加载中...');
             },
             complete: function(xhr, status) {
-                if (loading) loading.hide();
-                if (xhr.status == 200) {
-                  var contentType = xhr.getResponseHeader('Content-Type');
-                  if (contentType && contentType.indexOf('application/json') >= 0) {
-                      var data = JSON.parse(xhr.responseText || '{}');
-                      if (data.errcode == 5) {
-                          window.location.href = '/m/login.html';
-                      }
-                  }
-              }
+                if (loading) loading.hide();                
             }
         }, options);
 
@@ -2646,7 +2635,7 @@ window.$ === undefined && (window.$ = Zepto)
             for (var k in o) {
                 var re = new RegExp("(" + k + ")")
                 var arr = re.exec(format);
-                if(arr !== null) {
+                if (arr !== null) {
                     var val = dateString.substr(arr.index, arr[0].length);
                     if (k == "M+") {
                         date[o[k]](val - 1);
@@ -2770,13 +2759,13 @@ window.$ === undefined && (window.$ = Zepto)
     $$.showPicker = function(target, items, options) {
         options = options || {}
         $target = $(target);
-        var defaultValue = [];              
+        var defaultValue = [];
         var depth = weui.depthOf(items[0]);
         var $temp = $target;
-        for(var i = 0; i < depth; i++) {
+        for (var i = 0; i < depth; i++) {
             $temp = $temp.next();
             defaultValue.push($temp.val());
-        }        
+        }
         options = $.extend({
             defaultValue: defaultValue,
             onChange: function(result) {},
@@ -2789,7 +2778,7 @@ window.$ === undefined && (window.$ = Zepto)
                 $target.val(text.join(' ')).change();
 
                 var $temp = $target;
-                for(var i = 0; i < result.length; i++) {
+                for (var i = 0; i < result.length; i++) {
                     $temp = $temp.next();
                     $temp.val(result[i][opts.valueField]);
                 }
@@ -2835,7 +2824,7 @@ window.$ === undefined && (window.$ = Zepto)
             },
             onClickItem: function(row) {
                 var opts = this.options;
-                $target.val(opts.formatter.call(this,row)).next().val(row[opts.valueField]);
+                $target.val(opts.formatter.call(this, row)).next().val(row[opts.valueField]);
                 $target.change(); //触发change
             }
         }, options);
