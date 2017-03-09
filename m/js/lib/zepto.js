@@ -2720,7 +2720,7 @@ window.$ === undefined && (window.$ = Zepto)
                 return /^(https?|ftp):\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/.test(value);
             },
             length: function(value, param) {
-                var len = $.trim(_44).length;
+                var len = $.trim(value).length;
                 return len >= param[0] && len <= param[1];
             },
             remote: function(value, param) {
@@ -2734,6 +2734,9 @@ window.$ === undefined && (window.$ = Zepto)
                     }
                 });
                 return errcode == 0;
+            },
+            equal: function(value, param) {
+                return value == $(param[0]).val();
             },
             mobile: function(value) {
                 return /^1[34578]{1}\d{9}$/.test(value);

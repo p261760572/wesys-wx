@@ -35,7 +35,7 @@
                     <label class="weui-label">确认新密码</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="password" required="" pattern="REG_equal_pwd" placeholder="请输入新密码" notMatchTips="两次输入的密码不一致" name="new_login_pwd2">
+                    <input class="weui-input" type="password" required="" validType="equal['#new-login-pwd']" placeholder="请输入新密码" invalidTips="两次输入的密码不一致" name="new_login_pwd2">
                 </div>
             </div>
             <div class="weui-cell weui-cell_vcode">
@@ -43,7 +43,7 @@
                     <label class="weui-label">验证码</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="number" required="" pattern="^\d{6}$" placeholder="请输入验证码" notMatchTips="请输入正确的验证码" name="vcode">
+                    <input class="weui-input" type="number" required="" pattern="^\d{4}$" placeholder="请输入验证码" invalidTips="请输入正确的验证码" name="vcode">
                 </div>
                 <div class="weui-cell__ft">
                     <img class="weui-vcode-img" src="/p/m/action/user/vcode" onclick="this.src='/p/m/action/user/vcode?t='+new Date().getTime()">
@@ -74,10 +74,11 @@
     }
 
     function changePwd() {
-        if (!weui.form.validate('#form', regexp)) return;
+        if (!weui.form.validate('#form', $$.rules)) return;
 
         var data = $('#form').serializeObject();
         data.login_pwd = encryptPassword(data.login_pwd);
+        data.new_login_pwd = encryptPassword(data.new_login_pwd);
 
         $$.request('/m/action/user/change-pwd', data, {
             success: function(data) {
@@ -93,7 +94,7 @@
     }
 
     $(function() {
-        weui.form.checkIfBlur('#form', regexp);
+        weui.form.checkIfBlur('#form', $$.rules);
 
         // $('#view-pwd').on('change', function() {
         //     if ($(this).prop('checked')) {

@@ -38,6 +38,8 @@
                 <div class="weui-cell__ft"><span id="inst_name"></span></div>
             </div>
         </div>
+        <br>
+        <a href="javascript:;" class="weui-btn weui-btn_default" onclick="window.history.back(-1)">返回</a>
     </div>
     <div class="page" id="nickname-page">
         <form id="nickname-form" method="post" action="/action/user/update-nickname">
@@ -47,7 +49,7 @@
                         <label class="weui-label">昵称</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input validate" type="text" name="nickname" placeholder="请输入昵称" required="required">
+                        <input class="weui-input" type="text" name="nickname" placeholder="请输入昵称" required="required">
                     </div>
                 </div>
             </div>
@@ -82,12 +84,14 @@
     }
 
     function onView() {
-        $$.request('/action/user/view', {}, function(data) {
-            for (var name in data.data) {
-                $('#' + name).html(data.data[name]);
-            }
+        $$.request('/action/user/view', {}, {
+            success: function(data) {
+                for (var name in data.data) {
+                    $('#' + name).html(data.data[name]);
+                }
 
-            weui.form.load('#nickname-form', data.data);
+                weui.form.load('#nickname-form', data.data);
+            }
         });
     }
 
