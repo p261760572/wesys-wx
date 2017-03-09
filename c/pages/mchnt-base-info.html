@@ -95,7 +95,7 @@
             </thead>
         </table>
     </div>
-    <div class="page1" id="detail-page">
+    <div class="page" id="detail-page">
         <form id="detail-fm" class="form form_detail" action="/action/bm/mchnt-base-info/view" method="post">
             <table class="form__table">
                 <caption>商户信息</caption>
@@ -104,9 +104,9 @@
                         <td>
                             <label>客户号：</label>
                         </td>
-                        <td>
-                            <input type="text" name="mchnt_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
+                        <td class="readonly">
+                            <input type="text" name="mchnt_id" class="easyui-validatebox" data-options="">
+                            <!-- <span class="required">*</span> -->
                         </td>
                         <td>
                             <label>联系人：</label>
@@ -244,22 +244,26 @@
                         </td>
                     </tr>
                     <tr>
-                      <td><label>备注：</label></td>
-                      <td colspan="3"><input type="text" name="remark" class="easyui-validatebox" style="width: 90%;" data-options=""></td>
+                        <td>
+                            <label>备注：</label>
+                        </td>
+                        <td colspan="3">
+                            <input type="text" name="remark" class="easyui-validatebox" style="width: 90%;" data-options="">
+                        </td>
                     </tr>
                     <tr>
                         <td>
                             <label>拓展方：</label>
                         </td>
                         <td>
-                            <input type="text" name="expand_inst_id" class="easyui-combobox" data-options="required:true">
+                            <input type="text" name="expand_inst_id" class="easyui-combobox" style="width: 173px;" data-options="required:true">
                             <span class="required">*</span>
                         </td>
                         <td>
                             <label>拓展人：</label>
                         </td>
                         <td>
-                            <input type="text" name="expand_id" class="easyui-combobox" data-options="required:true">
+                            <input type="text" name="expand_id" class="easyui-combobox" style="width: 173px;" data-options="required:true">
                             <span class="required">*</span>
                         </td>
                     </tr>
