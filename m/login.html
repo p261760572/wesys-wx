@@ -46,6 +46,8 @@
     <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
     <script type="text/javascript">
+    var query = $$.parseQueryString();
+
     function encryptPassword(password) {
         //加密密码
         var crypt = new JSEncrypt();
@@ -63,7 +65,8 @@
             success: function(data) {
                 if(data.errcode == 0) {
                     weui.toast('登录成功', function () {
-                        window.history.back(-1);
+                        // window.history.back(-1);
+                        window.location.href = query.goto_page || $$.wrapUrl('/m/index.html');
                     });
                 } else {
                     weui.topTips(data.errmsg);
