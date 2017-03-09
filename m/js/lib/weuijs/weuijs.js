@@ -818,6 +818,66 @@
 })();
 
 (function() {
+    var _sington;
+    var tpl = '<div class="weui-loading_toast {{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-loading weui-icon_toast"></i><p class="weui-toast__content">{{content}}</p></div></div>';
+
+    /**
+     * loading
+     * @param {string} content loading的文字
+     * @param {object=} options 配置项
+     * @param {string=} options.className 自定义类名
+     *
+     * @example
+     * var loading = weui.loading('loading', {
+     *     className: 'custom-classname'
+     * });
+     * setTimeout(function () {
+     *     loading.hide();
+     * }, 3000);
+     */
+    function loading(content, options) {
+        if (_sington) return _sington;
+
+        options = options || {};
+
+        options = $.extend({
+            content: content,
+            className: ''
+        }, options);
+
+        var $loadingWrap = $($.render(tpl, options));
+        var $loading = $loadingWrap.find('.weui-toast');
+        var $mask = $loadingWrap.find('.weui-mask');
+
+        function _hide() {
+            _hide = $.noop; // 防止二次调用导致报错
+
+            $mask.addClass('weui-animate-fade-out');
+            $loading
+                .addClass('weui-animate-fade-out')
+                .on('animationend webkitAnimationEnd', function() {
+                    $loadingWrap.remove();
+                    _sington = false;
+                });
+        }
+
+        function hide() { _hide(); }
+
+        $('body').append($loadingWrap);
+        $loading.addClass('weui-animate-fade-in');
+        $mask.addClass('weui-animate-fade-in');
+
+        _sington = $loadingWrap[0];
+        _sington.hide = hide;
+        return _sington;
+    }
+
+    window.weui = window.weui || {};
+    window.weui.loading = loading;
+
+})();
+
+(function() {
     var tpl = '<div class="{{className}}" style="display: none;"><div class="weui-footer" style="margin:1.5em auto;"><p class="weui-footer__links"><a href="javascript:void(0);" class="weui-footer__link">加载更多数据</a></p></div><div class="weui-loadmore"><i class="weui-loading"></i><span class="weui-loadmore__tips">正在加载</span></div><div class="weui-loadmore weui-loadmore_line"><span class="weui-loadmore__tips">暂无更多数据</span></div></div>';
 
     /**
@@ -893,66 +953,6 @@
 
     window.weui = window.weui || {};
     window.weui.loadmore = loadmore;
-
-})();
-
-(function() {
-    var _sington;
-    var tpl = '<div class="weui-loading_toast {{className}}"><div class="weui-mask_transparent"></div><div class="weui-toast"><i class="weui-loading weui-icon_toast"></i><p class="weui-toast__content">{{content}}</p></div></div>';
-
-    /**
-     * loading
-     * @param {string} content loading的文字
-     * @param {object=} options 配置项
-     * @param {string=} options.className 自定义类名
-     *
-     * @example
-     * var loading = weui.loading('loading', {
-     *     className: 'custom-classname'
-     * });
-     * setTimeout(function () {
-     *     loading.hide();
-     * }, 3000);
-     */
-    function loading(content, options) {
-        if (_sington) return _sington;
-
-        options = options || {};
-
-        options = $.extend({
-            content: content,
-            className: ''
-        }, options);
-
-        var $loadingWrap = $($.render(tpl, options));
-        var $loading = $loadingWrap.find('.weui-toast');
-        var $mask = $loadingWrap.find('.weui-mask');
-
-        function _hide() {
-            _hide = $.noop; // 防止二次调用导致报错
-
-            $mask.addClass('weui-animate-fade-out');
-            $loading
-                .addClass('weui-animate-fade-out')
-                .on('animationend webkitAnimationEnd', function() {
-                    $loadingWrap.remove();
-                    _sington = false;
-                });
-        }
-
-        function hide() { _hide(); }
-
-        $('body').append($loadingWrap);
-        $loading.addClass('weui-animate-fade-in');
-        $mask.addClass('weui-animate-fade-in');
-
-        _sington = $loadingWrap[0];
-        _sington.hide = hide;
-        return _sington;
-    }
-
-    window.weui = window.weui || {};
-    window.weui.loading = loading;
 
 })();
 

@@ -2778,7 +2778,7 @@ window.$ === undefined && (window.$ = Zepto)
                     return item[opts.textField];
                 });
 
-                $target.val(text.join(' ')).change();
+                $target.val(text.join(' '));
 
                 var $temp = $target;
                 for (var i = 0; i < result.length; i++) {
