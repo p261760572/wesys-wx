@@ -7,29 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>商户参数</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
     <style type="text/css">
-    .hide {
-        display: none;
-    }
-    
-    .required {
-        color: red;
-    }
-    
-    .weui-cells {
-        font-size: 16px;
-    }
-    
-    .weui-cell__bd {
-        position: relative;
-    }
+
     </style>
 </head>
 
 <body>
     <div id="search-page" class="page page_show">
         <div class="weui-search-bar">
-            <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
+            <a id="add-btn" href="javascript:" class="search-bar__btn hide">新增</a>
             <form class="weui-search-bar__form" method="post" action="">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
@@ -67,7 +54,7 @@
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mchnt_param_id" required="" placeholder="请输入商户参数ID">
                     </div>
-                </div>                
+                </div>
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
                         <label for="" class="weui-label">业务类型<span class="required">*</span></label>
@@ -452,7 +439,7 @@
 
     function onSearch(param, success, error) {
         var queryParams = $.extend(param, query);
-        $$.request('/action/bm/mchnt-param/search', param, {
+        $$.request('/action/bm/mchnt-param/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
@@ -558,15 +545,15 @@
             });
         }
 
-        // actions.push({
-        //         label: '终端管理',
-        //         onClick: function() {
-        //             console.log(this, arguments);
-        //             window.location.href = 'term-info.html?' + $.param({
-        //                 mchnt_id: row.mchnt_id
-        //             });
-        //         }
-        //     });
+        actions.push({
+            label: '终端参数',
+            onClick: function() {
+                console.log(this, arguments);
+                window.location.href = 'term-param.html?' + $.param({
+                    mchnt_param_id: row.mchnt_param_id
+                });
+            }
+        });
 
         weui.actionSheet(actions, [{
             label: '取消',
@@ -614,7 +601,9 @@
     }
 
     $(function() {
-        $('#add-btn').on('click', onClickAdd);
+        if (query.mchnt_id) {
+            $('#add-btn').removeClass('hide').on('click', onClickAdd);
+        }
         $('#submit-btn').on('click', onSubmit);
 
         //init component

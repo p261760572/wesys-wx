@@ -7,29 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>终端信息</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
     <style type="text/css">
-    .hide {
-        display: none;
-    }
-    
-    .required {
-        color: red;
-    }
-    
-    .weui-cells {
-        /*font-size: 16px;*/
-    }
-    
-    .weui-cell__bd {
-        position: relative;
-    }
     </style>
 </head>
 
 <body>
     <div id="search-page" class="page page_show">
         <div class="weui-search-bar">
-            <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
+            <a id="add-btn" href="javascript:" class="search-bar__btn hide">新增</a>
             <form class="weui-search-bar__form" method="post" action="">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
@@ -116,7 +102,7 @@
                         <label class="weui-label">详细地址<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="addr" required="" placeholder="请输入详细地址">
+                        <input class="weui-input" type="text" name="addr" required="" placeholder="请输入详细地址" id="addr">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -285,6 +271,7 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script type="text/javascript" src="../js/district.js"></script>
@@ -490,10 +477,67 @@
             mchnt_id: query.mchnt_id
         });
         $('#back-btn').show().siblings().show();
+
+        getLocation(function (addr) {
+            setPickerValues('#city-picker', districtData, [addr.province,addr.city,addr.district]);
+            $('#addr').val(addr.street+addr.streetNumber);
+        });
+    }
+
+    function setPickerValues(target, items, arr) {
+        var result = [];
+        
+        function getValue(items, depth) {
+            for (var i = 0; i < items.length; i++) {
+                if(items[i].text == arr[depth]) {
+                    result[depth] = items[i].value;
+                    if(items[i].children && items[i].children.length) {
+                        getValue(items[i].children, depth+1);   
+                    }
+                    break;
+                }
+            }
+        }
+
+        getValue(items, 0);
+
+        var $target = $(target);
+        var $temp = $target;
+        for (var i = 0; i < result.length; i++) {
+            $temp = $temp.next();
+            $temp.val(result[i]);
+        }
+        $target.val(arr.join(' ')).change(); //触发change
+
+        return result;
+    }
+
+    function getLocation(success) {
+        var geolocation = new BMap.Geolocation();
+        geolocation.getCurrentPosition(function(r) {
+            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                
+                var geoc = new BMap.Geocoder();
+                var pt = r.point;
+
+                geoc.getLocation(pt, function(rs) {
+                    console.log(this, arguments);
+                    // var addComp = rs.addressComponents;
+                    // alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+                    if(success) success(rs.addressComponents);
+                });
+            } else {
+                console.log(this, arguments);
+            }
+        }, {
+            enableHighAccuracy: true
+        });
     }
 
     $(function() {
-        $('#add-btn').on('click', onClickAdd);
+        if(query.mchnt_id) {
+            $('#add-btn').removeClass('hide').on('click', onClickAdd);
+        }
         $('#submit-btn').on('click', onSubmit);
 
         //init component
@@ -535,14 +579,14 @@
             $$.showSelect2(this, {
                 title: '搜索拓展方',
                 url: '/action/bm/expand-inst/search'
-            });
+            }).search();
         });
 
         $('#expand-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索拓展人',
                 url: '/action/bm/expand/search'
-            });
+            }).search();
         });
     });
     </script>

@@ -14,6 +14,18 @@ body {
     font-size: 14px;
 }
 
+.weui-cell__bd {
+    position: relative;
+}
+
+.hide {
+    display: none;
+}
+
+.required {
+    color: red;
+}
+
 
 /* 图标 */
 
@@ -129,4 +141,3 @@ body {
     height: 28px;
     background-image: url('search.svg');
 }
-

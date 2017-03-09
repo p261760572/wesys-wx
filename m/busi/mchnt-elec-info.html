@@ -7,29 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>商户电子资料</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
     <style type="text/css">
-    .hide {
-        display: none;
-    }
-    
-    .required {
-        color: red;
-    }
-    
-    .weui-cells {
-        /*font-size: 16px;*/
-    }
-    
-    .weui-cell__bd {
-        position: relative;
-    }
+
     </style>
 </head>
 
 <body>
     <div id="search-page" class="page page_show">
         <div class="weui-search-bar">
-            <a id="add-btn" href="javascript:" class="search-bar__btn">新增</a>
+            <a id="add-btn" href="javascript:" class="search-bar__btn">上传</a>
             <form class="weui-search-bar__form" method="post" action="">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
@@ -106,11 +93,11 @@
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.mchnt_id}}{{row.serverid}}</p>
+                <p>{{row.elec_info_type_nm}}</p>
             </div>
-            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st}}</div>
+            <div class="weui-cell__ft">{{row.created_time}}</div>
         </a>
-        <div class="weui-media-box weui-media-box_text">
+        <!-- <div class="weui-media-box weui-media-box_text">
             <div class="weui-media-box__desc">{{row.elec_info_type}}</div>
             <div class="weui-media-box__desc">{{row.status}}</div>
             <div class="weui-media-box__desc">{{row.checked_reason}}</div>
@@ -126,7 +113,7 @@
                 <li class="weui-media-box__info__meta">{{row.last_checked_time}}</li>
                 <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_checked_by}}</li>
             </ul>
-        </div>
+        </div> -->
         {{/each}}
     </script>
     <script>
@@ -146,7 +133,8 @@
     }).search();
 
     function onSearch(param, success, error) {
-        $$.request('/action/bm/mchnt-elec-info/search', param, {
+        var queryParams = $.extend(param, query);
+        $$.request('/action/bm/mchnt-elec-info/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
@@ -163,40 +151,51 @@
     }
 
     function onPreview(param) {
-        weui.page.show('#preview-page');
-
-        $$.request('/action/bm/mchnt-elec-info/view', param, {
-            success: function(data) {
-                if (data.errcode == 0) {
-                    //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
-                    for (var name in data.data) {
-                        $('#preview-' + name).html(data.data[name]);
-                    }
-                } else {
-                    weui.alert(data.errmsg, {
-                        title: '提示'
-                    });
+        var gallery = weui.gallery($$.wrapUrl('/action/uploads/' + param.serverid), {
+            deletable: false,
+            onDelete: function() {
+                if (confirm('确定删除该图片？')) {
+                    console.log('删除');
                 }
-            },
-            error: function() {}
+                gallery.hide();
+            }
         });
+
+        // weui.page.show('#preview-page');
+
+        // $$.request('/action/bm/mchnt-elec-info/view', param, {
+        //     success: function(data) {
+        //         if (data.errcode == 0) {
+        //             //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
+        //             for (var name in data.data) {
+        //                 $('#preview-' + name).html(data.data[name]);
+        //             }
+        //         } else {
+        //             weui.alert(data.errmsg, {
+        //                 title: '提示'
+        //             });
+        //         }
+        //     },
+        //     error: function() {}
+        // });
     }
 
     function onView(param) {
-        weui.page.show('#detail-page');
+        // weui.page.show('#detail-page');
 
-        $$.request('/action/bm/mchnt-elec-info/view', param, {
-            success: function(data) {
-                if (data.errcode == 0) {
-                    weui.form.load('#form', data.data);
-                } else {
-                    weui.alert(data.errmsg, {
-                        title: '提示'
-                    });
-                }
-            },
-            error: function() {}
-        });
+        // $$.request('/action/bm/mchnt-elec-info/view', param, {
+        //     success: function(data) {
+        //         if (data.errcode == 0) {
+        //             weui.form.load('#form', data.data);
+        //         } else {
+        //             weui.alert(data.errmsg, {
+        //                 title: '提示'
+        //             });
+        //         }
+        //     },
+        //     error: function() {}
+        // });
+
     }
 
     function onDelete(param) {
@@ -222,7 +221,7 @@
             onClick: function() {
                 console.log(this, arguments);
                 onPreview(row);
-                $('#back-btn').show().siblings().hide();
+                // $('#back-btn').show().siblings().hide();
             }
         }]
 
@@ -273,12 +272,17 @@
 
     function onSubmit() {
 
+        var data = {
+            mchnt_id: query.mchnt_id,
+            images: []
+        };
+
         $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
             data.images.push(uploaderData[id]);
         });
 
-        $$.request('/action/bm/mchnt-elec-info/' + operateType, param, {
+        $$.request('/action/bm/mchnt-elec-info/' + operateType, data, {
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
@@ -312,41 +316,50 @@
         $('#add-btn').on('click', onClickAdd);
         $('#submit-btn').on('click', onSubmit);
 
-        $('#uploader-btn').on('click', function() {
-            var select2 = weui.select2({
-                data: [{
-                    value: '营业执照',
-                    text: '营业执照'
-                }],
-                onClickItem: function(row, target) {
-                    opts = this.options;
-                    console.log(this, arguments);
-                    current_elec_info_type = row[opts.valueField];
-                    $('#uploader-input').click();
+        $$.request('/action/bm/parameter/list', {
+            elec_info_type: '1'
+        }, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    $('#uploader-btn').on('click', function() {
+                        var select2 = weui.select2({
+                            data: data.elec_info_type,
+                            onClickItem: function(row, target) {
+                                opts = this.options;
+                                console.log(this, arguments);
+                                current_elec_info_type = row[opts.valueField];
+                                $('#uploader-input').click();
+                            }
+                        });
+                    });
+                } else {
+                    weui.alert(data.errmsg, error, {
+                        title: '提示'
+                    });
                 }
-            });
+            }
         });
 
-        //init component
-        $('#city-picker').on('focus', function() {
-            $$.showPicker(this, districtData);
-        });
+        // //init component
+        // $('#city-picker').on('focus', function() {
+        //     $$.showPicker(this, districtData);
+        // });
 
-        $('#date-picker').on('focus', function() {
-            $$.showDatePicker(this);
-        });
+        // $('#date-picker').on('focus', function() {
+        //     $$.showDatePicker(this);
+        // });
 
-        $('#expand-inst-select2').on('focus', function() {
-            $$.showSelect2(this, {
-                url: '/action/bm/expand-inst/search'
-            });
-        });
+        // $('#expand-inst-select2').on('focus', function() {
+        //     $$.showSelect2(this, {
+        //         url: '/action/bm/expand-inst/search'
+        //     });
+        // });
 
-        $('#expand-select2').on('focus', function() {
-            $$.showSelect2(this, {
-                url: '/action/bm/expand/search'
-            });
-        });
+        // $('#expand-select2').on('focus', function() {
+        //     $$.showSelect2(this, {
+        //         url: '/action/bm/expand/search'
+        //     });
+        // });
 
         var uploader = weui.ajaxUploader('#uploader', {
             url: $$.wrapUrl('/action/upload'),
