@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
 </head>
 
-<body>
+<body style="padding: 5px 5px 5px 5px">
     <div class="page page_active" id="search-page">
         <div>
             <form id="search-fm" class="form form_search" action="/action/bm/mchnt-base-info/search" method="post">
@@ -80,23 +80,26 @@
             <thead>
                 <tr>
                     <th data-options="field:'chk',checkbox:true"></th>
-                    <th data-options="field:'mchnt_id',width:100">客户号</th>
-                    <th data-options="field:'linkman',width:100">联系人</th>
-                    <th data-options="field:'mobile',width:100">手机</th>
-                    <th data-options="field:'mchnt_abbr',width:100">商户简称</th>
-                    <th data-options="field:'telno',width:100">联系电话</th>
-                    <th data-options="field:'district_name',width:100">所在地区</th>
-                    <th data-options="field:'addr',width:100">详细地址</th>
-                    <th data-options="field:'mchnt_name',width:100">商户名称</th>
-                    <th data-options="field:'license_no',width:100">营业执照号</th>
-                    <th data-options="field:'expand_inst_id',width:100">拓展方</th>
-                    <th data-options="field:'expand_id',width:100">拓展人</th>
+                    <th data-options="field:'mchnt_id'">客户号</th>
+                    <th data-options="field:'linkman'">联系人</th>
+                    <th data-options="field:'mobile'">手机</th>
+                    <th data-options="field:'mchnt_abbr'">商户简称</th>
+                    <!-- <th data-options="field:'telno'">联系电话</th> -->
+                    <th data-options="field:'district_name'">所在地区</th>
+                    <th data-options="field:'addr'">详细地址</th>
+                    <th data-options="field:'mchnt_name'">商户名称</th>
+                    <th data-options="field:'license_no'">营业执照号</th>
+                    <th data-options="field:'expand_inst_nm'">拓展方</th>
+                    <th data-options="field:'expand_nm'">拓展人</th>
+                    <th data-options="field:'oper_in',formatter:formatOperIn">操作标志</th>
+                    <th data-options="field:'proc_st',formatter:formatProcSt">处理状态</th>
+                    <th data-options="field:'op',formatter:formatOp">操作</th>
                 </tr>
             </thead>
         </table>
     </div>
     <div class="page" id="detail-page">
-        <form id="detail-fm" class="form form_detail" action="/action/bm/mchnt-base-info/view" method="post">
+        <form id="detail-fm" class="form form_detail" action="/action/bm/mchnt-base-info/view" method="post" data-options="onLoad:onLoad">
             <table class="form__table">
                 <caption>商户信息</caption>
                 <tbody>
@@ -207,8 +210,7 @@
                             <label>证件类型：</label>
                         </td>
                         <td>
-                            <select name="cert_type" class="easyui-validatebox" data-options="required:true">
-                                <option value="">--请选择--</option>
+                            <select name="cert_type" class="easyui-validatebox" data-options="required:true" id="cert_type">
                             </select>
                             <span class="required">*</span>
                         </td>
@@ -256,14 +258,14 @@
                             <label>拓展方：</label>
                         </td>
                         <td>
-                            <input type="text" name="expand_inst_id" class="easyui-combobox" style="width: 173px;" data-options="required:true">
+                            <input type="text" name="expand_inst_id" class="easyui-combobox" style="width: 173px;" data-options="required:true" id="expand_inst_id">
                             <span class="required">*</span>
                         </td>
                         <td>
                             <label>拓展人：</label>
                         </td>
                         <td>
-                            <input type="text" name="expand_id" class="easyui-combobox" style="width: 173px;" data-options="required:true">
+                            <input type="text" name="expand_id" class="easyui-combobox" style="width: 173px;" data-options="required:true" id="expand_id">
                             <span class="required">*</span>
                         </td>
                     </tr>
@@ -353,10 +355,13 @@
     <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript" src="../js/select2.js"></script>
     <script type="text/javascript" src="../js/base.js"></script>
     <script type="text/javascript" src="../js/st.js"></script>
+    <script type="text/javascript" src="../js/param.js"></script>
     <script type="text/javascript" src="../js/district.js"></script>
     <script type="text/javascript">
+    var query = $$.parseQueryString();
     var typeId = $$.st.alias['mchnt_base_info'];
     var provinceData = xProvinceCityDistrict['province'];
     var cityData = xProvinceCityDistrict['city']['43'];
@@ -371,9 +376,52 @@
     function onChangeCity(newValue, oldValue) {
         if (newValue) {
             var province = $('#province').combobox('getValue');
-            $('#district').combobox('clear').combobox('loadData', xProvinceCityDistrict['district'][province + newValue]);
+            if (province) {
+                $('#district').combobox('clear').combobox('loadData', xProvinceCityDistrict['district'][province + newValue]);
+            }
         }
     }
+
+    function onLoad(data) {
+        $('#province').combobox('clear').combobox('setValue', data.data.province);
+        $('#city').combobox('clear').combobox('setValue', data.data.city);
+        $('#district').combobox('clear').combobox('setValue', data.data.district);
+    }
+
+    function formatOperIn(value, rowData, rowIndex) {
+        return $$.formatField($$.st.operIn[typeId], value);
+    }
+
+    function formatProcSt(value, rowData, rowIndex) {
+        return $$.formatField($$.st.procSt[typeId], value);
+    }
+
+    function formatOp(value, rowData, rowIndex) {
+        var queryString = $.param({
+            mchnt_id: rowData.mchnt_id
+        }).replace(/\+/g, '%20');
+
+        var s = '<a href="mchnt-param.html?' + queryString + '" target="_blank">商户参数</a>';
+        s += '&nbsp;|&nbsp;<a href="term-info.html?' + queryString + '" target="_blank">终端管理</a>';
+        s += '&nbsp;|&nbsp;<a href="mchnt-elec-info.html?' + queryString + '" target="_blank">电子资料</a>';
+
+        return s;
+    }
+
+    function initCombobox() {
+        $$.request('/action/bm/expand-inst/list', {}, function(data) {
+            $('#expand_inst_id').combobox('loadData', data.rows);
+        });
+
+        $$.request('/action/bm/expand/list', {}, function(data) {
+            $('#expand_id').combobox('loadData', data.rows);
+        });
+    }
+
+    $(function() {
+        $('#cert_type').select2().select2('loadData', $$.param['cert_type']);
+        initCombobox();
+    });
     </script>
 </body>
 

@@ -67,12 +67,13 @@
                 <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-group'" onClick="$('#data-role-dlg').dialog('center').dialog('open')">数据角色分配</a>
                 <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/admin/userinfo/batch-delete',onSuccess:$$.batchSubmitSuccess" onClick="$$.batchSubmit(this)">删除</a>
             </div>
-            <table id="search-dg" class="easyui-datagrid" title="用户信息列表" data-options="toolbar:'#search-dg-tb',idField:'userid',transition:userinfoTransition">
+            <table id="search-dg" class="easyui-datagrid" title="用户信息列表" data-options="fitColumns:true,toolbar:'#search-dg-tb',idField:'userid',transition:userinfoTransition">
                 <thead>
                     <tr>
                         <th data-options="field:'chk',checkbox:true"></th>
                         <th data-options="field:'userid'">用户ID</th>
                         <th data-options="field:'login_name'">登录名</th>
+                        <th data-options="field:'mobile'">手机号</th>
                         <th data-options="field:'full_name'">用户姓名</th>
                         <th data-options="field:'fun_role_name'">功能角色</th>
                         <th data-options="field:'data_role_name'">数据角色</th>
@@ -236,7 +237,7 @@
                 <input class="reset" name="userid" type="hidden" value="">
                 <label>角色名称：</label>
                 <input type="text" name="role_name" id="role_name">&nbsp;
-                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="datagrid:'#fun-role-dg'" style="padding:0 5px;" onclick="search(this)">查询</a> &nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" style="padding:0 5px;" onclick="reset(this)">重置</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="datagrid:'#fun-role-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp; <a href="javascript:void(0)" class="easyui-linkbutton" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
             </form>
         </div>
         <div>
@@ -371,7 +372,7 @@
 
             row.flag = '0';
             $('#fun-role-dg').datagrid({
-                url: '/action/admin/userinfo/exist-fun-role',
+                url: $$.wrapUrl('/action/admin/userinfo/exist-fun-role'),
                 queryParams: row,
                 onLoadSuccess: function() {
                     //$(target).removeAttr('disabled');
@@ -383,7 +384,7 @@
 
             row.flag = '1';
             $('#selected-fun-role-dg').datagrid({
-                url: '/action/admin/userinfo/exist-fun-role',
+                url: $$.wrapUrl('/action/admin/userinfo/exist-fun-role'),
                 queryParams: row,
                 onLoadSuccess: function() {
                     //$(target).removeAttr('disabled');

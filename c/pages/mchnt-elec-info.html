@@ -70,7 +70,7 @@
         </div>
         <br>
         <div>
-            <form id="search-fm" class="form form_search" action="/action/bm/mchnt-elec-info/search" method="post">
+            <form id="search-fm" class="form form_search" action="/action/bm/mchnt-elec-info/search" method="post" data-options="onSerialize:onSerialize">
                 <input type="hidden" name="mchnt_id">
                 <table class="form__table">
                     <caption>查询商户电子资料</caption>
@@ -92,7 +92,7 @@
                         <tr>
                             <td colspan="4" class="center">
                                 <div style="margin:5px;"></div>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-search',datagrid: '#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-search',datagrid: '#search-dg'" style="padding:0 5px;" onclick="$$.search(this)" id="search-btn">查询</a> &nbsp;&nbsp;
                                 <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-clear',datagrid: '#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
                             </td>
                         </tr>
@@ -111,10 +111,10 @@
             <thead>
                 <tr>
                     <th data-options="field: 'chk',checkbox:true"></th>
-                    <th data-options="field: 'mchnt_id',width:100">文件名</th>
-                    <!-- <th data-options="field: 'serverid',width:100">服务端ID</th> -->
-                    <th data-options="field: 'elec_info_type',width:100">影印件类型</th>
-                    <th data-options="field: 'status',width:100">是否有效</th>
+                    <th data-options="field: 'filename',formatter:formatFilename">文件名</th>
+                    <!-- <th data-options="field: 'serverid'">服务端ID</th> -->
+                    <th data-options="field: 'elec_info_type',formatter:formatElecInfoType">影印件类型</th>
+                    <th data-options="field: 'status'">是否有效</th>
                 </tr>
             </thead>
         </table>
@@ -247,6 +247,7 @@
     <script type="text/javascript" src="../lib/uploadify/jquery.uploadify.min.js"></script>
     <script type="text/javascript" src="../js/base.js"></script>
     <script type="text/javascript" src="../js/st.js"></script>
+    <script type="text/javascript" src="../js/param.js"></script>
     <script type="text/javascript">
     var query = $$.parseQueryString();
     var typeId = $$.st.alias['mchnt_elec_info'];
@@ -278,6 +279,10 @@
         });
     }
 
+    function onSerialize(data) {
+        $.extend(data, query);
+    }
+
     function onUpload() {
         if ($('#upload-fm').form('enableValidation').form('validate') != true) {
             return false;
@@ -302,6 +307,22 @@
         });
     }
 
+    function formatFilename(value, rowData, rowIndex) {
+        return $$.formatField($$.param['elec_info_type'], value);
+    }
+
+    function formatFilename(value, rowData, rowIndex) {
+        var url = $$.wrapUrl('/action/uploads/' + rowData.serverid);
+
+        var s = '<a href="'+url+'" target="_blank">'+value+'</a>';
+
+        return s;
+    }
+
+    function formatElecInfoType(value, rowData, rowIndex) {
+        return $$.formatField($$.param['elec_info_type'], value);
+    }
+
     function initCombobox() {
         $$.request('/action/bm/parameter/list', {
             elec_info_type: '1',
@@ -313,15 +334,14 @@
     }
 
     $(function() {
-        //init ui
-        if (query.mchnt_id) {
-            $('#upload-fm').removeClass('hide');
-        }
-
         initCombobox();
         initUpload();
 
-        $('#search-fm').form('load', query);
+        //init ui
+        if (query.mchnt_id) {
+            $('#upload-fm').removeClass('hide');
+            $('#search-btn').click();
+        }
     });
     </script>
 </body>

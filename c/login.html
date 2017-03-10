@@ -11,6 +11,7 @@
 <body style="background-color: #f3f3f4;">
     <div class="login">
         <form id="login-fm">
+            <input type="hidden" name="pubkey" id="pubkey" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwpSBCzntA06ceIathHYbN/RsrXey/L5nhhJmrT5z+qrfjz0+zKE/XwmerNnOMYKDt1YRXzmwD/ma+6mQN0yXMnqCIpNGy/QvOqHlQbVy7DJLHXVP7kHl1T4tkxzUbMmA9y7/B0cp1yorfF8oJbe3M2/p0qQ8zF74kXpGaum5FJkqoLTzl+v10qso2PQxp4TP5U1qPioLF1uJAJzlv1lb5Z0RBesOPj+FgG0oh/+bPvL0rJ4QCYnFqDsMcvi4jd9wD6+hyZVG4j+R92YhJHWNy+sgXboLXZTwdTE8sglfAtRK1+ITGKdcYo94Jlo65Kdlxrn0vEPrYSN4/nBwsfq7BQIDAQAB">
             <div class="login__title">
                 <h2>登录系统</h2>
             </div>
@@ -22,22 +23,29 @@
             <input type="password" class="login__text" name="login_pwd">
             <div class="login__label">验证码</div>
             <div>
-                <input type="text" class="login__text login__captcha" name="captcha" maxlength="6" autocomplete="off"><img class="login__captcha-img" alt="验证码" src="/action/user/captcha" onclick="this.src='/action/user/captcha?t='+new Date().getTime()" />
+                <input type="text" class="login__text login__captcha" name="captcha" maxlength="6" autocomplete="off"><img class="login__captcha-img" alt="验证码" src="/p/action/user/captcha" onclick="this.src='/p/action/user/captcha?t='+new Date().getTime()" />
             </div>
             <a href="javascript:;" id="login-btn" class="login__btn" onclick="login()">登  录</a>
         </form>
     </div>
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/md5.min.js"></script>
+    <script type="text/javascript" src="lib/jsencrypt.min.js"></script>
     <script type="text/javascript" src="js/base.js"></script>
     <!-- <script type="text/javascript" src="js/login.js"></script> -->
     <script type="text/javascript">
+    function encryptPassword(password) {
+        //加密密码
+        var crypt = new JSEncrypt();
+        crypt.setPublicKey($('#pubkey').val());
+        return crypt.encrypt(password);
+    }
+
     function login() {
         var fm = $('#login-fm');
         var btn = $('#login-btn');
         var data = fm.serializeObject();
 
-        data.login_pwd = md5(md5(data.login_name+data.login_pwd) + data.captcha);
+        data.login_pwd = encryptPassword(data.login_pwd);
 
         $$.request('/action/user/login', data, function(data) {
             //success

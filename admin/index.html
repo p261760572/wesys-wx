@@ -42,6 +42,7 @@
     </div>
     <div id="dd" class="easyui-dialog" title="修改密码" data-options="closed:true,modal:true">
         <form id="passwd-fm" class="form form_detail" style="margin:10px;" method="post" action="#">
+            <input type="hidden" name="pubkey" id="pubkey" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwpSBCzntA06ceIathHYbN/RsrXey/L5nhhJmrT5z+qrfjz0+zKE/XwmerNnOMYKDt1YRXzmwD/ma+6mQN0yXMnqCIpNGy/QvOqHlQbVy7DJLHXVP7kHl1T4tkxzUbMmA9y7/B0cp1yorfF8oJbe3M2/p0qQ8zF74kXpGaum5FJkqoLTzl+v10qso2PQxp4TP5U1qPioLF1uJAJzlv1lb5Z0RBesOPj+FgG0oh/+bPvL0rJ4QCYnFqDsMcvi4jd9wD6+hyZVG4j+R92YhJHWNy+sgXboLXZTwdTE8sglfAtRK1+ITGKdcYo94Jlo65Kdlxrn0vEPrYSN4/nBwsfq7BQIDAQAB">
             <table class="form__table">
                 <tr>
                     <td>
@@ -87,14 +88,21 @@
             </table>
         </form>
     </div>
-    <script type="text/javascript" src="lib/md5.min.js"></script>
-    <script type="text/javascript" src="lib/des.min.js"></script>
+    
     <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="lib/zTree/jquery.ztree.all.min.js"></script>
     <script type="text/javascript" src="lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="lib/jsencrypt.min.js"></script>
     <script type="text/javascript" src="js/base.js"></script>
     <!-- <script type="text/javascript" src="js/home.js"></script> -->
     <script type="text/javascript">
+    function encryptPassword(password) {
+        //加密密码
+        var crypt = new JSEncrypt();
+        crypt.setPublicKey($('#pubkey').val());
+        return crypt.encrypt(password);
+    }
+
     function logout() {
         $$.request('/action/user/logout', {}, function() {
             window.location.href = 'login.html';
@@ -126,15 +134,15 @@
         $('#dd').dialog('open');
     }
 
-    function des_ecb_encrypt(key, val) {
-        var ev, i;
+    // function des_ecb_encrypt(key, val) {
+    //     var ev, i;
                       
-         ev = '';
-         for(i = 0; i < 32; i +=8) {
-            ev += des(key.substr(i, 8), val.substr(i,8), 1);
-         }
-         return stringToHex(ev).substr(2);
-    }
+    //      ev = '';
+    //      for(i = 0; i < 32; i +=8) {
+    //         ev += des(key.substr(i, 8), val.substr(i,8), 1);
+    //      }
+    //      return stringToHex(ev).substr(2);
+    // }
 
     function changePasswdSubmit() {
         var fm = $('#passwd-fm');
@@ -149,16 +157,9 @@
             return false;
         }
 
-        delete data.new_login_pwd2;
-
-        //data.login_pwd = md5(md5(g_login_name+data.login_pwd) + data.captcha);
-        data.login_pwd = md5(window.login_name + data.login_pwd);
-        data.new_login_pwd = md5(window.login_name + data.new_login_pwd);
-
-        data.new_login_pwd = des_ecb_encrypt(data.login_pwd, data.new_login_pwd)
-
-
-        data.login_pwd = md5(data.login_pwd + data.captcha);
+        data.login_pwd = encryptPassword(data.login_pwd);
+        data.new_login_pwd = encryptPassword(data.new_login_pwd);
+        data.new_login_pwd2= encryptPassword(data.new_login_pwd2);
 
         $$.request('/action/user/password/change', data, function(data) {
                 $$.info('操作成功', function () { $('#dd').dialog('close'); });
