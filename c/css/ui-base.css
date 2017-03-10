@@ -37,6 +37,10 @@ input[type="checkbox"][readonly] {
     background-color: transparent;
 }
 
+.hide {
+    display: none;
+}
+
 .page {
     height: 100%;
     overflow: auto;

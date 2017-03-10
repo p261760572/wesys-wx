@@ -1,10 +1,9 @@
 var baseJs = (function() {
-    var $$;
-
-    $$ = {};
+    var $$ = {};
+    window.basedir = '/p';
 
     $$.wrapUrl = function(url) {
-        return url;
+        return window.basedir ? window.basedir + url : url;
     }
 
     $$.errcode = function(data) {
@@ -19,6 +18,23 @@ var baseJs = (function() {
         if (event) {
             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
         }
+    };
+
+    //解析查询字符串
+    $$.parseQueryString = function() {
+        var query = {};
+        var queryString = window.location.search.substr(1);
+        if (queryString.length > 0) {
+            var pairs = queryString.split('&');
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i].split('=');
+                if (pair.length < 2) {
+                    pair[1] = "";
+                }
+                query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1].replace(/\+/g, ' '));
+            }
+        }
+        return query;
     };
 
     //POST请求
@@ -199,7 +215,7 @@ $$.search = function(target) {
 
     $(target).linkbutton('disable');
     $(opts.datagrid).datagrid('clearSelections').datagrid({
-        url: url,
+        url: $$.wrapUrl(url),
         pageNumber: 1,
         queryParams: params,
         onLoadSuccess: function(data) {

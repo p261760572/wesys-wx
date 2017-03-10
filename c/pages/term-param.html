@@ -14,36 +14,47 @@
         <div>
             <form id="search-fm" class="form form_search" action="/action/bm/term-param/search" method="post">
                 <table class="form__table">
-                    <caption>查询终端参数</caption>                    
-                    <tr>                
+                    <caption>查询终端参数</caption>
+                    <!-- <tr>
                         <td>
                             <label>终端参数ID：</label>
                         </td>
                         <td>
                             <input type="text" name="term_param_id">
                         </td>
-                                    
                         <td>
                             <label>商户参数ID：</label>
                         </td>
                         <td>
                             <input type="text" name="mchnt_param_id">
-                        </td></tr>
-                    <tr>                
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td>
+                            <label>商户号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_cd">
+                        </td>
                         <td>
                             <label>终端号：</label>
                         </td>
                         <td>
                             <input type="text" name="term_id">
                         </td>
-                                    
+                    </tr>
+                    <!-- <tr>
                         <td>
                             <label>参数状态：</label>
                         </td>
                         <td>
                             <input type="text" name="status">
-                        </td></tr>
-                                        
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr> -->
                     <tfoot>
                         <tr>
                             <td colspan="4" class="center">
@@ -67,12 +78,12 @@
             <thead>
                 <tr>
                     <th data-options="field:'chk',checkbox:true"></th>
-                    <th data-options="field:'term_param_id',width:100">终端参数ID</th>
-                    <th data-options="field:'mchnt_param_id',width:100">商户参数ID</th>
+                    <!-- <th data-options="field:'term_param_id',width:100">终端参数ID</th>
+                    <th data-options="field:'mchnt_param_id',width:100">商户参数ID</th> -->
                     <th data-options="field:'term_id',width:100">终端号</th>
                     <th data-options="field:'status',width:100">参数状态</th>
                     <th data-options="field:'expand_inst_id',width:100">拓展方</th>
-                    <th data-options="field:'expand_id',width:100">拓展人</th>  
+                    <th data-options="field:'expand_id',width:100">拓展人</th>
                 </tr>
             </thead>
         </table>
@@ -82,31 +93,30 @@
             <table class="form__table">
                 <caption>终端参数</caption>
                 <tbody>
-                    <tr>
+                    <tr class="hide">
                         <td>
                             <label>终端参数ID：</label>
                         </td>
                         <td>
                             <input type="text" name="term_param_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>                            
+                            <span class="required">*</span>
                         </td>
-                    
                         <td>
                             <label>商户参数ID：</label>
                         </td>
                         <td>
                             <input type="text" name="mchnt_param_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>                            
-                        </td></tr>
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <label>终端号：</label>
                         </td>
                         <td>
                             <input type="text" name="term_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>                            
+                            <span class="required">*</span>
                         </td>
-                    
                         <td>
                             <label>参数状态：</label>
                         </td>
@@ -115,25 +125,25 @@
                             <select name="status" class="easyui-validatebox" data-options="required:true">
                                 <option value="">--请选择--</option>
                             </select>
-                            <span class="required">*</span>                            
-                        </td></tr>
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <label>拓展方：</label>
                         </td>
                         <td>
                             <input type="text" name="expand_inst_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>                            
+                            <span class="required">*</span>
                         </td>
-                    
                         <td>
                             <label>拓展人：</label>
                         </td>
                         <td>
                             <input type="text" name="expand_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>                            
-                        </td></tr>
-                     
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
                     <tr class="readonly invisible visible-view visible-check1">
                         <td>
                             <label>记录编号：</label>
@@ -222,7 +232,7 @@
     <script type="text/javascript" src="../js/base.js"></script>
     <script type="text/javascript" src="../js/st.js"></script>
     <script type="text/javascript">
-        var typeId = $$.st.alias['term_param'];
+    var typeId = $$.st.alias['term_param'];
     </script>
 </body>
 

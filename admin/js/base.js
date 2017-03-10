@@ -1,10 +1,9 @@
 var baseJs = (function() {
-    var $$;
-
-    $$ = {};
+    var $$ = {};
+    window.basedir = '/p';
 
     $$.wrapUrl = function(url) {
-        return url;
+        return window.basedir ? window.basedir + url : url;
     }
 
     $$.errcode = function(data) {

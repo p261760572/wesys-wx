@@ -43,6 +43,20 @@
                             <input type="text" name="mobile">
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label>门店名称：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="shop_name">
+                        </td>
+                        <td>
+                            <label>详细地址：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="addr">
+                        </td>
+                    </tr>
                     <tfoot>
                         <tr>
                             <td colspan="4" class="center">
@@ -62,7 +76,7 @@
             <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event, 'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'" data-action="update">编辑</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/bm/term-info/batch-delete',onSuccess:$$.batchSubmitSuccess" data-actions="delete">删除</a>
         </div>
-        <table id="search-dg" title="终端信息" class="easyui-datagrid" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:$$.st.transition[typeId]||[]">
+        <table id="search-dg" title="终端信息" class="easyui-datagrid" style="min-width: 1000px;" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:$$.st.transition[typeId]||[]">
             <thead>
                 <tr>
                     <th data-options="field:'chk',checkbox:true"></th>
@@ -71,16 +85,9 @@
                     <th data-options="field:'linkman',width:100">联系人</th>
                     <th data-options="field:'mobile',width:100">手机号</th>
                     <th data-options="field:'shop_name',width:100">门店名称</th>
-                    <th data-options="field:'telno',width:100">联系电话</th>
-                    <th data-options="field:'province',width:100">所在地区(省)</th>
-                    <th data-options="field:'city',width:100">所在地区(市)</th>
-                    <th data-options="field:'district',width:100">所在地区(区)</th>
+                    <th data-options="field:'district_name',width:100">所在地区</th>
                     <th data-options="field:'addr',width:100">详细地址</th>
                     <th data-options="field:'term_inves',width:100">终端投资方</th>
-                    <th data-options="field:'equi_type',width:100">机具类型</th>
-                    <th data-options="field:'installed_date',width:100">装机日期</th>
-                    <th data-options="field:'removed_date',width:100">撤机日期</th>
-                    <th data-options="field:'installed_by',width:100">装机人</th>
                     <th data-options="field:'maintained_by',width:100">维护人</th>
                     <th data-options="field:'term_status',width:100">终端状态</th>
                     <th data-options="field:'expand_inst_id',width:100">拓展方</th>
