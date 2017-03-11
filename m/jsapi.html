@@ -15,6 +15,8 @@
     <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testGetNetworkType()">wxGetNetworkType</a>
     <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testLocation()">wxLocation</a>
     <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testScanQRCode()">wxScanQRCode</a>
+    <a href="javascript:;" class="weui-btn weui-btn_primary" onclick="testOnMenuShareAppMessage()">wxOnMenuShareAppMessage</a>
+    
     <script type="text/javascript" src="js/jweixin-1.0.0.js"></script>
     <script type="text/javascript" src="js/lib/zepto.js"></script>
     <script type="text/javascript" src="js/lib/weuijs/weuijs.js"></script>
@@ -54,6 +56,12 @@
 
     function testScanQRCode() {
         wxScanQRCode({});
+    }
+
+    function testOnMenuShareAppMessage() {
+    	wxOnMenuShareAppMessage({
+    		title: 'wxOnMenuShareAppMessage'
+    	})
     }
     </script>
 </body>
