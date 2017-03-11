@@ -99,7 +99,7 @@ function wxScanQRCode(options) {
 }
 
 
-function wxOnMenuShareAppMessage(options) {
+function wxOnMenuShare(options) {
     options = $.extend({
         title: '', // 分享标题
         desc: '', // 分享描述
@@ -115,5 +115,9 @@ function wxOnMenuShareAppMessage(options) {
         }
     }, options);
 
+    wx.onMenuShareTimeline(options);
     wx.onMenuShareAppMessage(options);
+    wx.onMenuShareQQ(options);
+    wx.onMenuShareWeibo(options);
+    wx.onMenuShareQZone(options);
 }
