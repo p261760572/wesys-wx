@@ -90,9 +90,27 @@
             </a>
         </div>
     </div>
+    <script type="text/javascript" src="js/jweixin-1.0.0.js"></script>
     <script type="text/javascript" src="js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
+    <script type="text/javascript" src="js/wx.js"></script>
     <script type="text/javascript">
+    wxConfig({
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone'],
+        ready: function() {
+            share()
+        }
+    });
+
+    function share() {
+        if (curent_user) {
+            wxOnMenuShare({
+                title: '银信诺',
+                link: window.location.origin + '/p/m/register.html?code=' + curent_user.data.userid
+            });
+        }
+    }
+
     function logout() {
         $$.request('/action/user/logout', {}, {
             success: function(data) {
@@ -103,10 +121,13 @@
         });
     }
 
+    var curent_user;
     $(function() {
         $$.request('/action/user/view', {}, {
             success: function(data) {
                 if (data.errcode == 0) {
+                    curent_user = data;
+                    share();
                     for (var name in data.data) {
                         $('#' + name).html(data.data[name]);
                     }
