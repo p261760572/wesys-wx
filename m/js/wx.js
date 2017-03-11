@@ -1,6 +1,6 @@
 function wxConfig(options) {
 
-    $.get('/m/action/jsapi-signature', {
+    $.get('/p/m/action/jsapi-signature', {
         url: location.href
     }, function(data) {
         // data = JSON.parse(data);
