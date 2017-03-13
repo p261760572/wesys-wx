@@ -39,10 +39,16 @@ var InNetPages = [
 	}
 ];
 
-function SearchPageIndex(PageArr, match, value) {
-	if(!$.isString(match)) return;
+function SearchPageIndex(PageArr, match, value, index) {
+	if(!$.isArray(PageArr)) {
+		return false;
+	}
+	PageArr.sort(function (a, b) {
+		return a.step - b.step;
+	});
 	for(var i=0; i<PageArr.length; i++) {
-		if(PageArr[i][match] == value) {
+		if(PageArr[i][match] === value) {
+			index = i;
 			return PageArr[i];
 		}
 	}
@@ -50,83 +56,55 @@ function SearchPageIndex(PageArr, match, value) {
 }
 
 function _introForPage(targetElm) {
-    var introItems = [],self = this;
+    var introItems = [];
 
     if (true) {
       //use steps passed programmatically
-	  InNetPages.sort(function (a, b) {
-      	return a.step - b.step;
-      });
-	  var local_href = window.location.href.match('/(*[^\/])?$/');
-	  
-      for (var i = 0, stepsLength = InNetPages.length; i < stepsLength; i++) {
-        var currentItem = _cloneObject(InNetPages[i]);
-        //set the step
-        currentItem.step = InNetPages[i].step;
-        //use querySelector function only when developer used CSS selector
-        if (currentItem.url != null) {
-          introItems.push(currentItem);
-        }
-      }
+		var index;
+		var local_href = window.location.href.match('/[\w]+[\.](html)/');
+		SearchPageIndex(InNetPages, 'url', local_href, index);
+		for (var i = index, stepsLength = InNetPages.length; i < stepsLength; i++) {
+			var currentItem = _cloneObject(InNetPages[i]);
+			//set the step
+			currentItem.step = introItems.length;
+			//use querySelector function only when developer used CSS selector
+			if (currentItem.url !== null) {
+				introItems.push(currentItem);
+			}
+		}
     } else {
       //use steps from data-* annotations
-      var allIntroSteps = targetElm.querySelectorAll('*[data-intro]');
-      //if there's no element to intro
-      if (allIntroSteps.length < 1) {
-        return false;
-      }
+		var allIntroSteps = targetElm.querySelectorAll('*[data-intro]');
+		//if there's no element to intro
+		if (allIntroSteps.length < 1) {
+			return false;
+		}
 
-      //first add intro items with data-step
-      for (var i = 0, elmsLength = allIntroSteps.length; i < elmsLength; i++) {
-        var currentElement = allIntroSteps[i];
+		//first add intro items with data-step
+		for (var i = 0, elmsLength = allIntroSteps.length; i < elmsLength; i++) {
+			var currentElement = allIntroSteps[i];
+			// skip hidden elements
+			if (currentElement.style.display == 'none') {
+				continue;
+			}
+			var step = parseInt(currentElement.getAttribute('data-step'), 10);
 
-        // skip hidden elements
-        if (currentElement.style.display == 'none') {
-          continue;
-        }
+			if (step > 0) {
+			  introItems[step - 1] = {
+				  element: currentElement,
+				  step: parseInt(currentElement.getAttribute('data-step'), 10)-1
+			  };
+			}
+		}
+	}
+	/*	//Ok, sort all items with given steps
+	introItems.sort(function (a, b) {
+		return a.step - b.step;
+	});*/
 
-        var step = parseInt(currentElement.getAttribute('data-step'), 10);
-
-        if (step > 0) {
-          introItems[step - 1] = {
-            element: currentElement,
-            step: parseInt(currentElement.getAttribute('data-step'), 10)-1
-          };
-        }
-      }
-
-      //next add intro items without data-step
-      //todo: we need a cleanup here, two loops are redundant
-      var nextStep = 0;
-      for (var i = 0, elmsLength = allIntroSteps.length; i < elmsLength; i++) {
-        var currentElement = allIntroSteps[i];
-
-        if (currentElement.getAttribute('data-step') == null) {
-
-          while (true) {
-            if (typeof introItems[nextStep] == 'undefined') {
-              break;
-            } else {
-              nextStep++;
-            }
-          }
-
-          introItems[nextStep] = {
-            element: currentElement,
-            step: nextStep-1
-          };
-        }
-      }
-    }
-    //Ok, sort all items with given steps
-    introItems.sort(function (a, b) {
-      return a.step - b.step;
-    });
-
-    //set it to the introJs object
-    self._introItems = introItems;
-    //add overlay layer to the page
-    return false;
+	//set it to the introJs object
+	//add overlay layer to the page
+	return introItems;
 }
 
 function _cloneObject(object) {
@@ -139,32 +117,6 @@ function _cloneObject(object) {
 	}
 	return temp;
 }
-/**
-* Go to specific step of introduction
-*
-* @api private
-* @method _goToStep
-*/
-function _goToStep(step) {
-//because steps starts with zero
-	this._currentStep = step - 1;
-	if (typeof (this._introItems) !== 'undefined') {
-	  _nextStep.call(this);
-	}
-}
-
-/**
-* Go to the specific step of introduction with the explicit [data-step] number
-*
-* @api private
-* @method _goToStepNumber
-*/
-function _goToStepNumber(step) {
-	this._currentStepNumber = step-1;
-	if (typeof (this._introItems) !== 'undefined') {
-	  _nextStep.call(this);
-	}
-}
 
 /**
 * Go to next step on intro
@@ -172,41 +124,31 @@ function _goToStepNumber(step) {
 * @api private
 * @method _nextStep
 */
-function _nextStep() {
-	this._direction = 'forward';
-
-	if (typeof (this._currentStepNumber) !== 'undefined') {
-		for( var i = 0, len = this._introItems.length; i < len; i++ ) {
-			var item = this._introItems[i];
-			if( item.step === this._currentStepNumber ) {
-				this._currentStep = i - 1;
-				this._currentStepNumber = undefined;
-			}
-		}
-	}
-
-	if (typeof (this._currentStep) === 'undefined') {
-	  this._currentStep = 0;
-	} else {
-	  ++this._currentStep;
-	}
-
-	if ((this._introItems.length) <= this._currentStep) {
+function _nextStep(_introItems, step) {
+	var _direction = 'forward';
+	var index;
+	if (typeof (step) !== 'undefined') {
+		var _currentStep = SearchPageIndex(_introItems, 'step', step, index);
+	} else{
+	  step = 0;
+	} 
+	
+	if (_introItems.length <= index) {
 	  //end of the intro
 	  //check if any callback is defined
-	  if (typeof (this._introCompleteCallback) === 'function') {
-		this._introCompleteCallback.call(this);
+	  if (typeof (_currentStep._Complete) === 'function') {
+		_currentStep._Complete.call(_currentStep);
 	  }
-	  _exitIntro.call(this, this._targetElement);
+	  _exitIntro.call(_currentStep);
 	  return;
 	}
 
-	var nextStep = this._introItems[this._currentStep];
-	if (typeof (this._introBeforeChangeCallback) !== 'undefined') {
-	  this._introBeforeChangeCallback.call(this, nextStep.element);
+	var nextStep = _introItems[++index];
+	if (typeof (nextStep._BeforeChange) !== 'undefined') {
+	  nextStep._BeforeChange.call(nextStep);
 	}
 
-	_showElement.call(this, nextStep);
+	_showElement.call(nextStep);
 }
 
 /**
@@ -215,19 +157,19 @@ function _nextStep() {
 * @api private
 * @method _previousStep
 */
-function _previousStep() {
-	this._direction = 'backward';
+function _previousStep(_introItems, step) {
+	var _direction = 'backward';
 
-	if (this._currentStep === 0) {
+	if (step == 0) {
 	  return false;
 	}
 
-	var nextStep = this._introItems[--this._currentStep];
-	if (typeof (this._introBeforeChangeCallback) !== 'undefined') {
-	  this._introBeforeChangeCallback.call(this, nextStep.element);
+	var nextStep = _introItems[--this._currentStep];
+	if (typeof (nextStep._BeforeChange) !== 'undefined') {
+	  nextStep._BeforeChange.call(nextStep);
 	}
 
-	_showElement.call(this, nextStep);
+	_showElement.call(nextStep);
 }
 
 /**
@@ -237,15 +179,15 @@ function _previousStep() {
 * @method _exitIntro
 * @param {Object} targetElement
 */
-function _exitIntro(targetElement) {
+function _exitIntro(_currentStep) {
 //remove overlay layers from the page
 	//check if any callback is defined
-	if (this._introExitCallback != undefined) {
-	  this._introExitCallback.call(self);
+	if (_currentStep._Exit != undefined) {
+	  _currentStep._Exit.call(_currentStep);
 	}
 
 	//set the step to zero
-	this._currentStep = undefined;
+	_currentStep.step = undefined;
 }
 
 function _getProgress() {
@@ -255,13 +197,13 @@ function _getProgress() {
 }
 
 function _showElement(targetElement) {
-    if (typeof (this._introChangeCallback) !== 'undefined') {
-      this._introChangeCallback.call(this, targetElement.element);
+    if (typeof (this._Change) !== 'undefined') {
+      this._Change.call(this, targetElement.element);
     }
 	var self = this,
-	if (typeof (this._introAfterChangeCallback) !== 'undefined') {
-      this._introAfterChangeCallback.call(this, targetElement.element);
+	if (typeof (this._AfterChange) !== 'undefined') {
+      this._AfterChange.call(this, targetElement.element);
     }
-	window.location.href = ;
+	window.location.href = '';
 }
 	

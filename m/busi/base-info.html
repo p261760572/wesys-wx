@@ -77,6 +77,49 @@
             </div>
             <!-- 填写基本信息结束 -->
         </div>
+        <div class="weui-btn-area btn-area">
+			<a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
+			<a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+		</div>
      </form>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
+    <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
+	<script>
+		var query = $$.parseQueryString();
+		var operateType=query.operateType;
+		var step = query.step || 0;
+		if(operateType == 'create') {
+			var flow_tree = _introForPage();
+		}
+
+		function onSubmit() {
+			if (!weui.form.validate('#form', $$.rules)) return;
+			var param = $('#form').serializeObject();
+
+			$$.request('/action/bm/mchnt-base-info/' + operateType, param, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						weui.toast('操作成功', function() {
+							searchPage.search();
+							weui.page.back();
+						});
+					} else {
+						weui.alert(data.errmsg, {
+							title: '提示'
+						});
+					}
+				},
+				error: function() {}
+			});
+			if(flow_tree.length > 0) {
+				_goToStep(flow_tree, step);
+			}
+		}
+
+		$(function() {
+			$('#submit-btn').on('click', onSubmit);
+		}
+	</script>
 </body>
 </html>
