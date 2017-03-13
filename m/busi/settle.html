@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+	<div class="flow__step" title="填写结算信息">
+            <!-- 填写结算信息开始 -->
+		<div class="weui-cells__title">开通业务</div>
+		<div class="weui-cells weui-cells_checkbox">
+			<div>
+				<label class="weui-cell weui-check__label" for="s11">
+					<div class="weui-cell__hd">
+						<input type="checkbox" class="weui-check for_busi" id="s11" name="busi_type" value="SD">
+						<i class="weui-icon-checked"></i>
+					</div>
+					<div class="weui-cell__bd">
+						<p>银行卡收单</p>
+					</div>
+				</label>
+				<div class="weui-cell" style="display: none;">
+					<div class="weui-cell__hd">
+						<label for="" class="weui-label">借记卡手续费</label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input" type="text" id="debit_card_fee" name="debit_card_fee_text" placeholder="请选择借记卡手续费" readonly>
+						<input class="for_busi" type="hidden" name="debit_card_fee">
+					</div>
+				</div>
+				<div class="weui-cell" style="display: none;">
+					<div class="weui-cell__hd">
+						<label for="" class="weui-label">贷记卡手续费</label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input" type="text" id="credit_card_fee" name="credit_card_fee_text" placeholder="请选择贷记卡手续费" readonly>
+						<input class="for_busi" type="hidden" name="credit_card_fee">
+					</div>
+				</div>
+			</div>
+			<div>
+				<label class="weui-cell weui-check__label" for="s12">
+					<div class="weui-cell__hd">
+						<input type="checkbox" class="weui-check for_busi" name="busi_type" id="s12" value="DMF">
+						<i class="weui-icon-checked"></i>
+					</div>
+					<div class="weui-cell__bd">
+						<p>当面付</p>
+					</div>
+				</label>
+				<div class="weui-cell weui-cell_vcode" style="display: none;">
+					<div class="weui-cell__hd">
+						<label for="" class="weui-label">手续费</label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input for_busi" name="fee" type="number" placeholder="请输入手续费千分比">
+					</div>
+					<div class="weui-cell__ft">
+						<button class="weui-vcode-btn">‰</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="weui-cells__title">结算账户</div>
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell weui-cell_select weui-cell_select-after">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">账户类型<span class="required">*</span></label>
+				</div>
+				<div class="weui-cell__bd">
+					<select class="weui-select for_busi" name="account_type" id="account_type" value="1">
+						<option value="1">对公账户</option>
+						<option value="2">对私账户</option>
+					</select>
+				</div>
+			</div>
+			<div class="weui-cell">
+				<div class="weui-cell__bd">
+					<div class="weui-uploader">
+						<div class="weui-uploader__hd">
+							<p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
+						</div>
+						<div class="weui-uploader__bd">
+							<ul class="weui-uploader__files" id="16">
+								<!-- <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
+						<li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+							</ul>
+							<div class="weui-uploader__input-box">
+								<input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label class="weui-label">账户户名<span class="required">*</span></label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input for_busi" name="account_name" required="" type="text" placeholder="请输入账户户名">
+				</div>
+			</div>
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label class="weui-label">银行账号<span class="required">*</span></label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input for_busi" name="account_no" required="" type="number" placeholder="请输入银行账号">
+				</div>
+			</div>
+			<!--div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">开户银行</label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input" type="text" placeholder="请选择开户银行">
+				</div>
+			</div>
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">开户银行城市</label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input" type="text" placeholder="请选择开户银行城市">
+				</div>
+			</div-->
+			<div class="weui-cell">
+				<div class="weui-cell__hd">
+					<label for="" class="weui-label">开户支行<span class="required">*</span></label>
+				</div>
+				<div class="weui-cell__bd">
+					<input class="weui-input" type="text" required="" name="subbranch_name" id="subbranch_name" placeholder="请选择开户支行" readonly>
+					<input class="for_busi" type="hidden" name="account_bank_branch_cd">
+				</div>
+			</div>
+		</div>
+		<!-- 填写结算信息结束 -->
+	</div>
+</body>
+</html>

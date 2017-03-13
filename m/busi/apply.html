@@ -22,6 +22,7 @@
 
 <body>
    	<div id="flow">
+        <input name="rec_id" type="hidden">
         <div class="flow__step" title="填写基本信息">
             <!-- 填写基本信息开始 -->
             <div class="weui-cells__title">联系信息</div>
@@ -266,6 +267,15 @@
                         </div>
                         <div class="weui-cell__ft">
                             <button class="weui-vcode-btn">‰</button>
+                        </div>
+                    </div>
+                    <div class="weui-cell" style="display: none;">
+                        <div class="weui-cell__hd">
+                            <label for="" class="weui-label">接入机构</label>
+                        </div>
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" type="text" id="acq_inst_id2" placeholder="请选择接入机构" readonly>
+                            <input class="for_busi" type="hidden" name="plat_inst_id" value="48215500">
                         </div>
                     </div>
                 </div>
@@ -597,6 +607,53 @@
 		return data;
 	}
 	weui.form.checkIfBlur('#flow', $$.rules);
+	
+	function loadDetail() {
+		$('#flow').find('.weui-uploader__files').each(function(i, element) {
+			$(element).html('');
+		});
+
+		var images = data.images;
+		var itemTpl = '<li class="weui-uploader__file weui-uploader__file_status" data-id="{{id}}"><div class="weui-uploader__file-content"><i class="weui-loading" style="width: 30px;height: 30px;"></i></div></li>';
+		$.each(images, function(index, item) {
+			var file = $($.render(itemTpl, {
+				id: index
+			}));
+			$('#' + item.ei_type).append(file).data('file', item);
+			file.css({
+				backgroundImage: 'url("' + item.file_url + '")'
+			});
+		});
+
+		$('#flow').form('load', data.data);
+	}
+		
+	function saveDetail() {
+		var data = serializeDetail();
+		var busi = {};
+		var type;
+		if(data.busi_param.length > 1) {
+			for(var i=0; i<data.busi_param.length; i++) {
+				type += data.busi_param[i].busi_type+',';
+			}
+			type = type.substr(1, type.length-1);
+		}
+		for(var i=0; i<data.busi_param.length; i++) {
+			$.extend(busi, data.busi_param[i]);
+		}
+		busi.busi_type = type;
+		data.busi_param = busi;
+		$$.request('/action/bm/base-busi/save', data, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					weui.toast('操作成功');
+				} else {
+					weui.alert(data.errmsg, { title: '提示' });
+				}
+			},
+			error: function() {}
+		});
+	}
 		
 	function onSubmit() {
 		if (!weui.form.validate('#flow', $$.rules)) return;
@@ -620,6 +677,7 @@
         previousText: '上一步',
         onStepChanging: function(currentIndex, newIndex) {
             console.log(arguments);
+			saveDetail();
         },
         onStepChanged: function(newIndex, currentIndex) {
             console.log(arguments);
@@ -655,9 +713,9 @@
 			}
 		});
 		
-		$('#acq_inst_id').on('focus', function() {
+		$('#acq_inst_id,#acq_inst_id2').on('focus', function() {
             $$.showSelect2(this, {
-                title: '搜索收单机构',
+                title: '搜索',
                 valueField: 'acq_inst_id',
                 textField: 'acq_inst_nm',
                 url: '/action/bm/acq-inst/search'
