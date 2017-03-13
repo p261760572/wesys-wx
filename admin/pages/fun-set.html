@@ -196,13 +196,13 @@
 
             row.flag = '0';
             $('#fun-info-dg').datagrid({
-                url: '/action/admin/fun-set/exist-fun',
+                url: $$.wrapUrl('/action/admin/fun-set/exist-fun'),
                 queryParams: row
             });
 
             row.flag = '1';
             $('#selected-fun-info-dg').datagrid({
-                url: '/action/admin/fun-set/exist-fun',
+                url: $$.wrapUrl('/action/admin/fun-set/exist-fun'),
                 queryParams: row,
                 pageSize: 1000
             });

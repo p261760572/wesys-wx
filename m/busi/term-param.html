@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <link rel="stylesheet" href="../css/ui-base.css">
     <style type="text/css">
+
     </style>
 </head>
 
@@ -33,17 +34,25 @@
     </div>
     <div id="detail-page" class="page">
         <form id="form">
-          <input type="hidden" name="rec_id">
-          <input type="hidden" name="oper_in">
-          <input type="hidden" name="proc_st">
-          <div class="weui-cells__title">终端参数</div>
+            <input type="hidden" name="rec_id">
+            <input type="hidden" name="oper_in">
+            <input type="hidden" name="proc_st">
+            <div class="weui-cells__title">终端参数</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">终端标识<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="term_no" required=""  placeholder="请输入终端标识">
+                        <input class="weui-input" type="text" name="term_no" required="" placeholder="请输入终端标识" readonly="">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">门店名称<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="shop_name" required="" placeholder="请输入门店名称" readonly="">
                     </div>
                 </div>
                 <div class="weui-cell hide">
@@ -51,24 +60,24 @@
                         <label class="weui-label">终端参数ID<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="term_param_id" required=""  placeholder="请输入终端参数ID">
+                        <input class="weui-input" type="text" name="term_param_id" required="" placeholder="请输入终端参数ID">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户号<span class="required">*</span></label>
+                        <label class="weui-label">商户参数<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_cd" required=""  placeholder="请选择商户号" id="mchnt-cd-select2">
+                        <input class="weui-input" type="text" name="mchnt_cd" required="" placeholder="请选择商户参数" id="mchnt-cd-select2" readonly="">
                         <input type="hidden" name="mchnt_param_id">
                     </div>
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">终端号<span class="required">*</span></label>
+                        <label class="weui-label">终端号</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="term_id" required=""  placeholder="请输入终端号">
+                        <input class="weui-input" type="text" name="term_id" placeholder="请输入终端号">
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_select weui-cell_select-after hide">
@@ -82,7 +91,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="weui-cell">
+                <!-- <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
@@ -99,7 +108,7 @@
                         <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2">
                         <input type="hidden" name="expand_id">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="weui-btn-area btn-area">
                 <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
@@ -148,10 +157,10 @@
                     <span class="weui-form-preview__value" id="preview-expand_nm"></span>
                 </div>
             </div>
-             <div class="weui-form-preview__ft">
+            <div class="weui-form-preview__ft">
                 <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
                 <!-- <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">编辑</button> -->
-             </div>
+            </div>
         </div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
@@ -354,13 +363,16 @@
         weui.form.clear('#form');
         weui.form.load('#form', {
             term_no: query.term_no,
+            shop_name: current_term_info ? current_term_info.data.shop_name: '',
             status: '1'
         });
         $('#back-btn').show().siblings().show();
     }
 
+
+    var current_term_info;
     $(function() {
-        if(query.term_no) {
+        if (query.term_no) {
             $('#add-btn').removeClass('hide').on('click', onClickAdd);
         }
         $('#submit-btn').on('click', onSubmit);
@@ -385,7 +397,7 @@
                 url: '/action/bm/mchnt-param/search',
                 queryParams: {
                     term_no: query.term_no
-                }                
+                }
             }).search();
         });
 
@@ -402,6 +414,20 @@
                 url: '/action/bm/expand/search'
             }).search();
         });
+
+        if (query.term_no) {
+            $$.request('/action/bm/term-info/view', query, {
+                success: function(data) {
+                    if (data.errcode == 0) {
+                        current_term_info = data;
+                    } else {
+                        weui.alert(data.errmsg, {
+                            title: '提示'
+                        });
+                    }
+                }
+            });
+        }
     });
     </script>
 </body>

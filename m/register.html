@@ -66,10 +66,15 @@
             <a class="weui-btn weui-btn_primary" href="javascript:" id="register-btn">注册</a>
         </div>
     </form>
+    <div class="weui-cell weui-cell_link">
+        <a href="login.html" class="weui-cell__bd" style="text-align: left;">账户登录</a>
+        <a href="reset-pwd.html" class="weui-cell__bd" style="text-align: right;">忘记密码</a>
+    </div>
     <script type="text/javascript" src="js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
     <script type="text/javascript">
+    var query = $$.parseQueryString();
     function encryptPassword(password) {
         //加密密码
         var crypt = new JSEncrypt();
@@ -89,7 +94,7 @@
 
         $$.request('/m/action/notify/mobilecode/register', {
             mobile: data.mobile,
-            vcode: data.vcode
+            vcode: data.vcode            
         }, {
             success: function(data) {
                 console.log(arguments);
@@ -116,8 +121,8 @@
         if (!weui.form.validate('#form')) return;
 
         var data = $('#form').serializeObject();
-        data.login_pwd = encryptPassword(data.login_pwd);
-
+        data.login_pwd = encryptPassword(data.login_pwd);        
+        $.extend(data, query);
         $$.request('/m/action/user/register', data, {
             success: function(data) {
                 console.log(arguments);
