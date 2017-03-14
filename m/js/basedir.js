@@ -3,43 +3,39 @@ window.basedir = '/p';
 var InNetPages = [
 	{
 		url: 'base-info.html',
-		step: '1',
-		next: 'acq-busi.html',
-		pre: '',
-		before_call: '',
-		after_call: '',
+		step: '0',
+		_Complete: $.noop,
+		_BeforeChange: $.noop,
+		_Exit: $.noop,
 		key: ['mchnt_id']
 	},
 	{
 		url: 'busi-apply.html',
-		step: '',
-		next: 'credit.html',
-		pre: 'base-info.html',
-		before_call: '',
-		after_call: '',
-		key: []
+		step: '1',
+		_Complete: $.noop,
+		_BeforeChange: $.noop,
+		_Exit: $.noop,
+		key: ['busi_type']
 	},
 	{
 		url: 'credit.html',
 		step: '2',
-		next: 'settle.html',
-		pre: 'busi-apply.html',
-		before_call: '',
-		after_call: '',
+		_Complete: $.noop,
+		_BeforeChange: $.noop,
+		_Exit: $.noop,
 		key: ['mchnt_id', 'mchnt_param_id']
 	},
 	{
 		url: 'settle.html',
 		step: '3',
-		next: '',
-		pre: 'credit.html',
-		before_call: '',
-		after_call: '',
+		_Complete: $.noop,
+		_BeforeChange: $.noop,
+		_Exit: $.noop,
 		key: []
 	}
 ];
 
-function SearchPageIndex(PageArr, match, value, index) {
+function SearchPageIndex(PageArr, match, value) {
 	if(!$.isArray(PageArr)) {
 		return false;
 	}
@@ -47,28 +43,28 @@ function SearchPageIndex(PageArr, match, value, index) {
 		return a.step - b.step;
 	});
 	for(var i=0; i<PageArr.length; i++) {
-		if(PageArr[i][match] === value) {
-			index = i;
-			return PageArr[i];
+		if(PageArr[i][match] == value) {
+			return i;
 		}
 	}
 	return null;
 }
 
-function _introForPage(targetElm) {
+function _introForPage(targetElm, step) {
     var introItems = [];
-
+	if (typeof (step) == 'undefined') {
+	  step = 0;
+	} 
     if (true) {
       //use steps passed programmatically
-		var index;
-		var local_href = window.location.href.match('/[\w]+[\.](html)/');
-		SearchPageIndex(InNetPages, 'url', local_href, index);
-		for (var i = index, stepsLength = InNetPages.length; i < stepsLength; i++) {
+		var local_href = window.location.href.match(/[\w\-\_]+[\.](html)/)[0];
+		var index = SearchPageIndex(InNetPages, 'url', local_href);
+		for (var i = index-step, stepsLength = InNetPages.length; i < stepsLength; i++) {
 			var currentItem = _cloneObject(InNetPages[i]);
 			//set the step
 			currentItem.step = introItems.length;
 			//use querySelector function only when developer used CSS selector
-			if (currentItem.url !== null) {
+			if (currentItem.url != null) {
 				introItems.push(currentItem);
 			}
 		}
@@ -124,31 +120,25 @@ function _cloneObject(object) {
 * @api private
 * @method _nextStep
 */
-function _nextStep(_introItems, step) {
+function _nextStep(targetElm, step, option1, option2) {
+	var _currentStep = {}, nextStep = {};
+	option1 = option1 || {};
+	option2 = option2 || {};
+	step  = step || 0;
 	var _direction = 'forward';
-	var index;
-	if (typeof (step) !== 'undefined') {
-		var _currentStep = SearchPageIndex(_introItems, 'step', step, index);
-	} else{
-	  step = 0;
-	} 
-	
-	if (_introItems.length <= index) {
+	var _introItems = _introForPage(targetElm, step);
+	$.extend(_currentStep, _introItems[step], option1);
+	if (typeof (_currentStep._Complete) == 'function') {
+		var params = _currentStep._Complete(_currentStep);
+	}
+	if (_introItems.length <= step) {
 	  //end of the intro
 	  //check if any callback is defined
-	  if (typeof (_currentStep._Complete) === 'function') {
-		_currentStep._Complete.call(_currentStep);
-	  }
-	  _exitIntro.call(_currentStep);
-	  return;
+		_exitIntro(_currentStep);
+		return;
 	}
-
-	var nextStep = _introItems[++index];
-	if (typeof (nextStep._BeforeChange) !== 'undefined') {
-	  nextStep._BeforeChange.call(nextStep);
-	}
-
-	_showElement.call(nextStep);
+	$.extend(nextStep, _introItems[++step], option2);
+	_showElement(nextStep, params);
 }
 
 /**
@@ -157,19 +147,24 @@ function _nextStep(_introItems, step) {
 * @api private
 * @method _previousStep
 */
-function _previousStep(_introItems, step) {
+function _previousStep(targetElm, step, option1, option2) {
+	var _currentStep = {}, nextStep = {};
+	option1 = option1 || {};
+	option2 = option2 || {};
+	step = step || 0;
 	var _direction = 'backward';
-
+	var _introItems = _introForPage(targetElm, step);
+	$.extend(_currentStep, _introItems[step], option1);
 	if (step == 0) {
 	  return false;
 	}
-
-	var nextStep = _introItems[--this._currentStep];
-	if (typeof (nextStep._BeforeChange) !== 'undefined') {
-	  nextStep._BeforeChange.call(nextStep);
+	if (typeof (_currentStep._Complete) == 'function') {
+		var params = _currentStep._Complete(_currentStep);
 	}
+	
+	$.extend(nextStep, _introItems[--step], option2);
 
-	_showElement.call(nextStep);
+	_showElement(nextStep, params);
 }
 
 /**
@@ -183,27 +178,24 @@ function _exitIntro(_currentStep) {
 //remove overlay layers from the page
 	//check if any callback is defined
 	if (_currentStep._Exit != undefined) {
-	  _currentStep._Exit.call(_currentStep);
+	  _currentStep._Exit(_currentStep);
 	}
 
 	//set the step to zero
 	_currentStep.step = undefined;
 }
 
-function _getProgress() {
+function _getProgress(_introItems, step) {
 // Steps are 0 indexed
-	var currentStep = parseInt((this._currentStep + 1), 10);
-	return ((currentStep / this._introItems.length) * 100);
+	step = step || 0;
+	var currentStep = parseInt((step + 1), 10);
+	return ((currentStep / _introItems.length) * 100);
 }
 
-function _showElement(targetElement) {
-    if (typeof (this._Change) !== 'undefined') {
-      this._Change.call(this, targetElement.element);
-    }
-	var self = this,
-	if (typeof (this._AfterChange) !== 'undefined') {
-      this._AfterChange.call(this, targetElement.element);
-    }
-	window.location.href = '';
+function _showElement(targetElement, params) {
+	window.location.href = targetElement.url+(params?'?'+params:'');
+	if (typeof (targetElement._BeforeChange) != 'undefined') {
+		window.onload = targetElement._BeforeChange(targetElement);
+	}
 }
 	
