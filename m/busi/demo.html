@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>业务申请</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <style type="text/css">
+        body {
+            background-color: #f8f8f8;
+        }
+
+        .weui-cell__bd {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+<form method="post" action="">
+    <div class="weui-cells weui-cells_form" id="demo-form">
+        <!--
+        <div class="weui-cell weui-cell_select weui-cell_select-after">
+            <div class="weui-cell__hd">
+                <label for="" class="weui-label">账户类型</label>
+            </div>
+            <div class="weui-cell__bd">
+                <select class="weui-select" name="select2">
+                    <option value="1">对公账户</option>
+                    <option value="2">对私账户</option>
+                </select>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd">
+                <label class="weui-label">开户名称</label>
+            </div>
+            <div class="weui-cell__bd">
+                <input class="weui-input" type="text" placeholder="请输入开户名称">
+            </div>
+        </div>
+-->
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <div class="weui-uploader">
+                    <div class="weui-uploader__hd">
+                        <p class="weui-uploader__title">照片</p>
+                    </div>
+                    <div class="weui-uploader__bd">
+                        <ul class="weui-uploader__files">
+                            <!-- <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
+                        <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                        </ul>
+                        <div class="weui-uploader__input-box">
+                            <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*"
+                                   multiple>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="../js/lib/zepto.js"></script>
+<script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
+<script id="demo-input" type="text/html">
+    <div class="weui-cell weui-cell_access">
+        <div class="weui-cell__hd">
+            <label class="weui-label">
+                <%=$data.label%>
+            </label>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请输入<%=$data.label%>" name="<%=$data.name%>"
+            <%if($data.readonly){%>readonly<%}%>>
+        </div>
+        <%if(!$data.readonly){%>
+        <div class="weui-cell__ft">
+        </div>
+        <%}%>
+    </div>
+</script>
+<script id="demo-select" type="text/html">
+    <div class="weui-cell weui-cell_select weui-cell_select-after">
+        <div class="weui-cell__hd">
+            <label for="" class="weui-label">账户类型</label>
+        </div>
+        <div class="weui-cell__bd">
+            <select class="weui-select" name="select2">
+                <option value="1">对公账户</option>
+                <option value="2">对私账户</option>
+            </select>
+        </div>
+    </div>
+</script>
+<script id="demo" type="text/html">
+    <div class="weui-cells weui-cells_form">
+        <%for(var i = 0; i < fields.length; i++) { var field = fields[i];%>
+        <%=render(field)%>
+        <%}%>
+    </div>
+</script>
+<script>
+    $.template.helper('render', function (field) {
+        return $.template('demo-' + field.type, field);
+    });
+
+    var html = $.template('demo', {
+        fields: [{
+            label: '卡号',
+            name: 'cardno',
+            readonly: '1',
+            type: 'input'
+        }, {
+            label: '卡号1',
+            name: 'cardno1',
+            type: 'select'
+        }]
+    });
+
+    $('#demo-form').prepend(html);
+
+    weui.form.load('#demo-form', {
+        cardno: 'cardno',
+        cardno1: 'cardno1'
+    })
+</script>
+</body>
+
+</html>

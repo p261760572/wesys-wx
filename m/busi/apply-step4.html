@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>结算信息</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
+</head>
+
+<body>
+    <form id="form">
+        <!-- 填写结算信息开始 -->
+        <div class="weui-cells__title">结算账户</div>
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell weui-cell_select weui-cell_select-after">
+                <div class="weui-cell__hd">
+                    <label for="" class="weui-label">账户类型<span class="required">*</span></label>
+                </div>
+                <div class="weui-cell__bd">
+                    <select class="weui-select for_busi" name="account_type" id="account_type" value="1">
+                        <option value="1">对公账户</option>
+                        <option value="2">对私账户</option>
+                    </select>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <ul class="weui-uploader__files" id="16">
+                                <!-- <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
+                            <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                            </ul>
+                            <div class="weui-uploader__input-box">
+                                <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">账户户名<span class="required">*</span></label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input for_busi" name="account_name" required="" type="text" placeholder="请输入账户户名">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">银行账号<span class="required">*</span></label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input for_busi" name="account_no" required="" type="number" placeholder="请输入银行账号">
+                </div>
+            </div>
+            <!--div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">开户银行</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" placeholder="请选择开户银行">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">开户银行城市</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" placeholder="请选择开户银行城市">
+                    </div>
+                </div-->
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label for="" class="weui-label">开户支行<span class="required">*</span></label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" required="" name="subbranch_name" id="subbranch_name" placeholder="请选择开户支行" readonly>
+                    <input class="for_busi" type="hidden" name="account_bank_branch_cd">
+                </div>
+            </div>
+        </div>
+        <!-- 填写结算信息结束 -->
+        <div class="weui-btn-area btn-area">
+            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
+            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+        </div>
+    </form>
+    <!-- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script> -->
+    <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/basedir.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
+    <script>
+    var query = $$.parseQueryString();
+    var operateType = query.operateType;
+
+
+
+    function onSubmit() {
+        if (!weui.form.validate('#form', $$.rules)) return;
+        var param = $('#form').serializeObject();
+
+        // TODO ajax
+        var flow = flows.busi(query.busi_type, query.acq_inst_id);
+        flow.next();
+    }
+
+    $(function() {
+        $('#submit-btn').on('click', onSubmit);
+    });
+    </script>
+</body>
+
+</html>

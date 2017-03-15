@@ -43,31 +43,31 @@ body {
 .icon-balance {
     width: 28px;
     height: 28px;
-    background-image: url('余额.svg');
+    background-image: url('balance.svg');
 }
 
 .icon-bank-card {
     width: 28px;
     height: 28px;
-    background-image: url('银行卡.svg');
+    background-image: url('bank-card.svg');
 }
 
 .icon-income {
     width: 28px;
     height: 28px;
-    background-image: url('收益.svg');
+    background-image: url('income.svg');
 }
 
-.icon-other-income {
+.icon-income-b {
     width: 28px;
     height: 28px;
-    background-image: url('其他收入.svg');
+    background-image: url('income-b.svg');
 }
 
 .icon-setting {
     width: 28px;
     height: 28px;
-    background-image: url('设置.svg');
+    background-image: url('setting.svg');
 }
 
 .icon-my {
@@ -79,7 +79,7 @@ body {
 .icon-user {
     width: 60px;
     height: 60px;
-    background-image: url('用户.svg');
+    background-image: url('user.svg');
 }
 
 .icon-home {
@@ -91,7 +91,7 @@ body {
 .icon-list {
     width: 28px;
     height: 28px;
-    background-image: url('列表.svg');
+    background-image: url('list.svg');
 }
 
 .icon-friend {
@@ -100,40 +100,40 @@ body {
     background-image: url('friend.svg');
 }
 
-.icon-merchant {
+.icon-wealth {
     width: 28px;
     height: 28px;
-    background-image: url('财富A.svg');
+    background-image: url('wealth.svg');
 }
 
 .icon-business {
     width: 28px;
     height: 28px;
-    background-image: url('业务.svg');
+    background-image: url('business.svg');
 }
 
 .icon-edit {
     width: 28px;
     height: 28px;
-    background-image: url('编辑.svg');
+    background-image: url('edit.svg');
 }
 
 .icon-history {
     width: 28px;
     height: 28px;
-    background-image: url('历史.svg');
+    background-image: url('history.svg');
 }
 
 .icon-more {
     width: 28px;
     height: 28px;
-    background-image: url('更多.svg');
+    background-image: url('more.svg');
 }
 
 .icon-history-b {
     width: 28px;
     height: 28px;
-    background-image: url('历史B.svg');
+    background-image: url('history-b.svg');
 }
 
 .icon-search {
