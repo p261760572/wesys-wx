@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>开通业务</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
+</head>
+
+<body>
+    <div id="page1" class="page page_show">
+        <div class="weui-cells__title">选择业务类型</div>
+        <div class="weui-search-bar hide">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
+            <!-- <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__bd weui-cell_primary">
+                    <p>实时搜索文本</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <!-- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script> -->
+    <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
+    <script id="list-template" type="text/html">
+        {{each rows as row i}}
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>
+                    {{row.text}}
+                </p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+    var query = $$.parseQueryString();
+    var searchPage = weui.searchPage('#page1', {
+        resultTpl: '#list-template',
+        // data: {
+        //     rows: [{
+        //         text: '搜索文本'
+        //     }]
+        // },
+        // filter: function(q, row) {
+        //         return row['text'].indexOf(q) == 0;
+        // },
+        loader: function(param, success, error) {
+            console.log(arguments);
+            setTimeout(function() {
+                var rows = [{
+                    text: '收单',
+                    value: 'SD'
+                }, {
+                    text: '扫码',
+                    value: 'SM'
+                }];
+
+                success(rows);
+            }, 200);
+        },
+        onInput: function() {
+            console.log(arguments);
+        },
+        onClickItem: function(row) {
+            console.log(arguments);
+            var busiType = row.value;
+            var select2 = weui.select2({
+                title: '搜索收单机构',
+                data: [{
+                    value: '48215500',
+                    text: '湖南通联支付'
+                }],
+                loader: function(param, success, error) {
+                    // TODO ajax
+                    var i = param.total;
+                    success([{
+                        value: i,
+                        text: '搜索文本' + i
+                    }, {
+                        value: i++,
+                        text: '搜索文本' + i
+                    }]);
+                },
+                onClickItem: function(row, target) {
+                    console.log(this, arguments);
+                    var flow = flows.busi(busiType, row.value);
+                    flow.start();
+                }
+            });
+        }
+    }).search();
+
+    function showPage2() {
+        weui.page.show('#page2');
+        searchPage.search();
+    }
+    </script>
+</body>
+
+</html>

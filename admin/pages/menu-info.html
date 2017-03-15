@@ -311,13 +311,13 @@
             };
             data.flag = '0';
             $('#fun-set-dg').datagrid({
-                url: '/action/admin/menu-info/exist-fun-set',
+                url: $$.wrapUrl('/action/admin/menu-info/exist-fun-set'),
                 queryParams: data
 
             });
             data.flag = '1';
             $('#selected-fun-set-dg').datagrid({
-                url: '/action/admin/menu-info/exist-fun-set',
+                url: $$.wrapUrl('/action/admin/menu-info/exist-fun-set'),
                 queryParams: data,
                 pageSize: 1000
             });
