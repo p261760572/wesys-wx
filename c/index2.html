@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="lib/element-ui/theme-default/index.css">
+    <style type="text/css">
+    .layout-ceiling {
+        background: #464c5b;
+        padding: 10px 0;
+        overflow: hidden;
+    }
+    
+    .layout-ceiling-main {
+        float: right;
+        margin-right: 15px;
+        color: #9ba7b5;
+    }
+    
+    .layout-ceiling-main a {
+        color: #9ba7b5;
+        text-decoration: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="layout">
+        <el-row>
+            <el-col :span="24" class="layout-ceiling">
+                <div class="layout-ceiling-main">
+                    <a href="#">注册登录</a> |
+                    <a href="#">帮助中心</a> |
+                    <a href="#">安全中心</a> |
+                    <a href="#">服务大厅</a>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="5">
+                <el-menu>
+                    <template v-for="child in items">
+                        <submenu :child="child"></submenu>
+                    </template>
+                </el-menu>
+            </el-col>
+            <el-col :span="19">
+                <div class="layout-header"></div>
+                <div class="layout-content">
+                    <div class="layout-content-main">内容区域</div>
+                </div>
+                <div class="layout-copy">
+                    2017 &copy;
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+</body>
+<!-- 先引入 Vue -->
+<script src="lib/vue/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="lib/element-ui/index.js"></script>
+<script>
+Vue.component('submenu', {
+    props: ['child'],
+    template: '<el-submenu v-if="child.children" :index="child.id"> <template slot="title"><i class="el-icon-menu"></i>{{ child.text }}</template> <!-- submenu --> <template v-for="grandchild in child.children"> <submenu :child="grandchild"></submenu> </template> <!-- submenu --> </el-submenu> <el-menu-item v-else :index="child.id"><i class="el-icon-menu"></i>{{ child.text }}</el-menu-item>'
+});
+
+new Vue({
+    el: '#app',
+    data: {
+        visible: false,
+        items: [{
+            id: '1',
+            text: '菜单1',
+            children: [{
+                id: '1-1',
+                text: '菜单1-1'
+            }, {
+                id: '1-2',
+                text: '菜单1-2'
+            }]
+        }, {
+            id: '2',
+            text: '菜单2'
+        }]
+    },
+    methods: {
+        handleOpen(key, keyPath) {
+            console.log(key, keyPath);
+        },
+        handleClose(key, keyPath) {
+            console.log(key, keyPath);
+        }
+    }
+})
+</script>
+
+</html>
