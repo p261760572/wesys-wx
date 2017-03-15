@@ -131,7 +131,7 @@ function _nextStep(targetElm, step, option1, option2) {
 	if (typeof (_currentStep._Complete) == 'function') {
 		var params = _currentStep._Complete(_currentStep);
 	}
-	if (_introItems.length <= step+1) {
+	if (_introItems.length <= step) {
 	  //end of the intro
 	  //check if any callback is defined
 		_exitIntro(_currentStep);
