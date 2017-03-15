@@ -22,7 +22,7 @@
                                 <p class="weui-uploader__title">营业执照正面照片</p>
                             </div>
                             <div class="weui-uploader__bd">
-                                <ul class="weui-uploader__files">
+                                <ul class="weui-uploader__files" id="01">
                                 </ul>
                                 <div class="weui-uploader__input-box">
                                     <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
@@ -44,7 +44,7 @@
                         <label class="weui-label">营业执照号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照">
+                        <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照" onkeyup="this.value=this.value.toUpperCase()">
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                         <label for="" class="weui-label">证件类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <select class="weui-select" name="cert_type" required="" missingTips="请选择证件类型">
+                        <select class="weui-select" name="cert_type" required missingTips="请选择证件类型">
                             <option value="01">身份证</option>
                         </select>
                     </div>
@@ -67,7 +67,7 @@
                                 <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
                             </div>
                             <div class="weui-uploader__bd">
-                                <ul class="weui-uploader__files">
+                                <ul class="weui-uploader__files" id="03">
                                 </ul>
                                 <div class="weui-uploader__input-box">
                                     <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
@@ -83,7 +83,7 @@
                                 <p class="weui-uploader__title">身份证反面照片</p>
                             </div>
                             <div class="weui-uploader__bd">
-                                <ul class="weui-uploader__files">
+                                <ul class="weui-uploader__files" id="99">
                                 </ul>
                                 <div class="weui-uploader__input-box">
                                     <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
@@ -124,10 +124,11 @@
 
     var uploaderData = [];
 
-    function initUploader(selector, elec_info_type) {
-        var uploader = weui.ajaxUploader(selector, {
-            url: $$.wrapUrl('/action/upload'),
-            auto: true,
+    function initUploader(selector, options) {
+		options = options ||{};
+		options = $.extend({
+			url: $$.wrapUrl('/action/upload'),
+			auto: true,
             type: 'file',
             fileVal: 'file',
             compress: {
@@ -135,44 +136,61 @@
                 height: 1600,
                 quality: 0.92
             },
-            onBeforeSend: function(data, headers) {
-                console.log(this, arguments);
-                // $.extend(data, { test: 1 }); // 可以扩展此对象来控制上传参数
-                // $.extend(headers, { Origin: 'http://127.0.0.1' }); // 可以扩展此对象来控制上传头部
-
-                // return false; // 阻止文件上传
-            },
-            onProgress: function(procent) {
-                console.log(this, arguments);
-                // return true; // 阻止默认行为，不使用默认的进度显示
-            },
-            onSuccess: function(ret) {
-                console.log(this, arguments);
-                if (ret.errcode == 0) {
-                    uploaderData[this.id] = {
-                        serverid: ret.serverid,
-                        elec_info_type: elec_info_type
-                    };
-                } else {
-                    return true; // 阻止默认行为，不使用默认的成功态    
-                }
-            },
-            onError: function(err) {
-                console.log(this, arguments);
-                // return true; // 阻止默认行为，不使用默认的失败态
-            }
-        });
+			onBeforeSend: function(data, headers) {
+				console.log(this, arguments);
+				if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
+					weui.alert('请上传图片');
+					return false; // 阻止文件添加
+				}
+				if(this.size > max_size * 1024 * 1024){
+					weui.alert('请上传不超过10M的图片');
+					return false;
+				}
+				// return false; // 阻止文件上传
+			},
+			onSuccess: function (ret) {
+		        console.log(this, ret);;
+		    },
+		    onError: function(err){
+		        console.log(this, err);
+		    }
+		}, options);
+		return weui.ajaxUploader(selector, options);
     }
-
+	
+	$('.weui-uploader').each(function(i, element) {
+		initUploader(this, {
+			onSuccess: function (ret) {
+		        console.log(ret);
+				var elec_info_type = $(this).find('.weui-uploader__files').attr('id');
+				uploaderData.push({status:'1', serverid:ret.serverid, elec_info_type: elec_info_type});
+		    },
+		});
+	});
+		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
-
+		$.extend(param, {elec_info: uploaderData}, query);
+		$$.request('/action/bm/mchnt-base-busi-temp/update-base', param, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					var flow = flows.busi(query.busi_type, query.acq_inst_id);
+					flow.next({
+						mchnt_param_id: data.mchnt_param_id
+					});
+				} else {
+					weui.alert(data.errmsg, error, {
+						title: '提示'
+					});
+				}
+			},
+			error: function() {
+				error();
+			}
+		});
         // TODO ajax
-        var flow = flows.busi(query.busi_type, query.acq_inst_id);
-        flow.next({
-            mchnt_param_id: 123456
-        });
+        
     }
 
     $(function() {
