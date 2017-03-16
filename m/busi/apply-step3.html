@@ -172,7 +172,7 @@
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
 		$.extend(param, {elec_info: uploaderData}, query);
-		$$.request('/action/bm/mchnt-base-busi-temp/update-base', param, {
+		$$.request('/action/bm/mchnt-base-busi/update-base', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					var flow = flows.busi(query.busi_type, query.acq_inst_id);
