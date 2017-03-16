@@ -2872,20 +2872,20 @@ window.basedir = '/p';
 
     var flows = {
         sd: [{
-            url: 'steps/mchnt.html'
+            url: 'mchnt.html'
         }, {
-            url: 'steps/fee.html'
+            url: 'fee.html'
         }, {
-            url: 'steps/account.html'
+            url: 'account.html'
         }, {
             url: '../../index.html'
         }],
         dmf: [{
-            url: 'steps/mchnt.html'
+            url: 'mchnt.html'
         }, {
-            url: 'steps/fee.html'
+            url: 'fee.html'
         }, {
-            url: 'steps/account.html'
+            url: 'account.html'
         }, {
             url: '../../index.html'
         }]
