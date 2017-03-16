@@ -167,7 +167,7 @@
 
         param = $.extend({}, query, param);
 
-        $$.request('/action/bm/mchnt-param/save-mchnt', param, {
+        $$.request('/action/bm/mchnt-base-param/save-mchnt', param, {
             success: function(data) {
                 if (data.errcode == 0) {
                     flows.next({

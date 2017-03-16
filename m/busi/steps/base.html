@@ -105,7 +105,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-                        window.location.href = 'apply-step2.html?' + $.param({
+                        window.location.href = 'select-busi.html?' + $.param({
                             mchnt_id: data.data.mchnt_id
                         });
                     });
