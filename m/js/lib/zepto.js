@@ -3067,16 +3067,6 @@ window.basedir = '/p';
 
 (function() {
 
-    var flowConfig = [{
-        busi_type: 'SD',
-        acq_inst_id: '48215500',
-        flow: 'sd'
-    }, {
-        busi_type: 'SM',
-        acq_inst_id: '48215500',
-        flow: 'sm'
-    }];
-
     var flows = {
         sd: [{
             url: 'apply-step3.html'
@@ -3085,7 +3075,7 @@ window.basedir = '/p';
         }, {
             url: '../index.html'
         }],
-        sm: [{
+        dmf: [{
             url: 'apply-step3.html'
         }, {
             url: 'apply-step4.html'
@@ -3093,71 +3083,92 @@ window.basedir = '/p';
     };
 
 
+    function start(flowId, param) {
+        var flow = flows[flowId];
+        var step = 1;
+
+        var query = $$.parseQueryString();
+        $.extend(query, param || {});
+
+        if (flow.length >= step) {
+            window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step/' + flowId + '/' + step;
+        } else {
+            console.warn(flow);
+        }
+    }
+
+    function _go(diff, param) {
+        var hash = window.location.hash;
+
+        if (hash.substr(0, 6) == '#step/') {
+            var arr = hash.substr(6).split('/');
+            var flowId = parseInt(arr[0]);
+            var step = parseInt(arr[1]);
+            var flow = flows[flowId];
+
+            step += diff;
+
+            console.log(flow);
+
+            var query = $$.parseQueryString();
+            $.extend(query, param || {});
+
+            if (flow.length >= step) {
+                window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step/' + flowId + '/' + step;
+            } else {
+                console.warn(flow);
+            }
+        }
+    }
+
+    function next(param) {
+        _go(1, param);
+    }
+
+    function prev(param) {
+        _go(-1, param);
+    }
+
+    window.flows = {
+        start: start,
+        next: next,
+        prev: prev
+    };
+})();
+
+
+(function() {
+    var flowConfig = [{
+        busi_type: 'SD',
+        acq_inst_id: '48215500',
+        flow: 'sd'
+    }, {
+        busi_type: 'DMF',
+        acq_inst_id: '48215500',
+        flow: 'dmf'
+    }];
+
+
     function findFlow(busi_type, acq_inst_id) {
         for (var i = 0; i < flowConfig.length; i++) {
             var config = flowConfig[i];
             if (config.busi_type == busi_type && config.acq_inst_id == acq_inst_id) {
-                return flows[config.flow];
+                return config.flow;
             }
         }
 
         return null;
     }
 
-
-    function busi(busi_type, acq_inst_id) {
-        var query = $$.parseQueryString();
-        $.extend(query, {
+    function start(busi_type, acq_inst_id) {
+        var flowId = findFlow(busi_type, acq_inst_id);
+        flows.start(flowId, {
             busi_type: busi_type,
             acq_inst_id: acq_inst_id
         });
-
-        function start() {
-            var flow = findFlow(busi_type, acq_inst_id);
-            var step = 1;
-            if (flow.length >= step) {
-                window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step' + step;
-            } else {
-                console.warn(flow);
-            }
-        }
-
-        function _go(diff) {
-            var hash = window.location.hash;
-            var flow = findFlow(busi_type, acq_inst_id);
-            var step = 1;
-            console.log(flow);
-            if (hash.substr(0, 5) == '#step') {
-                step = parseInt(hash.substr(5));
-                step += diff;
-            }
-
-            if (flow.length >= step) {
-                window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step' + step;
-            } else {
-                console.warn(flow);
-            }
-        }
-
-        function next(param) {
-            param = param || {};
-            $.extend(query, param);
-            _go(1);
-        }
-
-        function prev(busi_type, acq_inst_id) {
-            _go(-1);
-        }
-
-        var _obj = {
-            start: start,
-            next: next,
-            prev: prev
-        }
-
-        return _obj;
     }
 
-    window.flows = window.flows || {};
-    window.flows.busi = busi;
+    window.flows.busi = {
+        start: start
+    };
 })();

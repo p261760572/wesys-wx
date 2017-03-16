@@ -125,10 +125,10 @@
     var uploaderData = [];
 
     function initUploader(selector, options) {
-		options = options ||{};
-		options = $.extend({
-			url: $$.wrapUrl('/action/upload'),
-			auto: true,
+        options = options || {};
+        options = $.extend({
+            url: $$.wrapUrl('/action/upload'),
+            auto: true,
             type: 'file',
             fileVal: 'file',
             compress: {
@@ -136,61 +136,69 @@
                 height: 1600,
                 quality: 0.92
             },
-			onBeforeSend: function(data, headers) {
-				console.log(this, arguments);
-				if(["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0){
-					weui.alert('请上传图片');
-					return false; // 阻止文件添加
-				}
-				if(this.size > max_size * 1024 * 1024){
-					weui.alert('请上传不超过10M的图片');
-					return false;
-				}
-				// return false; // 阻止文件上传
-			},
-			onSuccess: function (ret) {
-		        console.log(this, ret);;
-		    },
-		    onError: function(err){
-		        console.log(this, err);
-		    }
-		}, options);
-		return weui.ajaxUploader(selector, options);
+            onBeforeSend: function(data, headers) {
+                console.log(this, arguments);
+                if (["image/jpg", "image/jpeg", "image/png", "image/gif"].indexOf(this.type) < 0) {
+                    weui.alert('请上传图片');
+                    return false; // 阻止文件添加
+                }
+                if (this.size > max_size * 1024 * 1024) {
+                    weui.alert('请上传不超过10M的图片');
+                    return false;
+                }
+                // return false; // 阻止文件上传
+            },
+            onSuccess: function(ret) {
+                console.log(this, ret);;
+            },
+            onError: function(err) {
+                console.log(this, err);
+            }
+        }, options);
+        return weui.ajaxUploader(selector, options);
     }
-	
-	$('.weui-uploader').each(function(i, element) {
-		initUploader(this, {
-			onSuccess: function (ret) {
-		        console.log(ret);
-				var elec_info_type = $(this).find('.weui-uploader__files').attr('id');
-				uploaderData.push({status:'1', serverid:ret.serverid, elec_info_type: elec_info_type});
-		    },
-		});
-	});
-		
+
+    $('.weui-uploader').each(function(i, element) {
+        initUploader(this, {
+            onSuccess: function(ret) {
+                console.log(ret);
+                var elec_info_type = $(this).find('.weui-uploader__files').attr('id');
+                uploaderData.push({
+                    status: '1',
+                    serverid: ret.serverid,
+                    elec_info_type: elec_info_type
+                });
+            },
+        });
+    });
+
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
-		$.extend(param, {elec_info: uploaderData}, query);
-		$$.request('/action/bm/mchnt-base-busi/update-base', param, {
-			success: function(data) {
-				if (data.errcode == 0) {
-					var flow = flows.busi(query.busi_type, query.acq_inst_id);
-					flow.next({
-						mchnt_param_id: data.mchnt_param_id
-					});
-				} else {
-					weui.alert(data.errmsg, error, {
-						title: '提示'
-					});
-				}
-			},
-			error: function() {
-				error();
-			}
-		});
-        // TODO ajax
-        
+        var elec_info = [];
+
+        $('#form').find('.weui-uploader__file').forEach(function(item) {
+            var id = parseInt($(item).attr('data-id'));
+            elec_info.push(uploaderData[id]);
+        });
+
+        param.elec_info = elec_info;        
+        param.mchnt_id = query.mchnt_id;
+
+        $$.request('/action/bm/mchnt-base-busi/update-base', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    var flow = flows.busi(query.busi_type, query.acq_inst_id);
+                    flow.next({
+                        mchnt_param_id: data.mchnt_param_id
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            }
+        });
     }
 
     $(function() {

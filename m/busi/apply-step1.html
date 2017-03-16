@@ -93,9 +93,6 @@
     // var query = $$.parseQueryString();
     var operateType = 'create-base';
 
-    // 失去焦点时检测
-    weui.form.checkIfBlur('#form', $$.rules);
-
     function onBack() {
         window.history.back();
     }
@@ -175,6 +172,9 @@
     $(function() {
         $('#back-btn').on('click', onBack);
         $('#submit-btn').on('click', onSubmit);
+        
+        // 失去焦点时检测
+        weui.form.checkIfBlur('#form', $$.rules);
 
         getLocation(function(addr) {
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
