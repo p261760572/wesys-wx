@@ -155,7 +155,7 @@
 
         $('#form').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
-            elec_info.push(uploaderData[id]);
+            elec_info.push(uploaderData[id-1]);
         });
 
         param.elec_info = elec_info;
