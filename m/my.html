@@ -105,8 +105,8 @@
     function share() {
         if (curent_user) {
             wxOnMenuShare({
-                title: '银信诺',
-                link: window.location.origin + '/p/m/register.html?code=' + curent_user.data.userid
+                title: '分享',
+                link: window.location.origin + '/p/m/register.html?referral_id=' + curent_user.data.userid
             });
         }
     }
