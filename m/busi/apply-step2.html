@@ -141,7 +141,10 @@
                 $$.request(options.url, queryParams, {
                     success: function(data) {
                         if (data.errcode == 0) {
-                            success(data[options.rowsName]);
+							setTimeout(function() {
+								success(data[options.rowsName]);
+							}, 200);
+                           // success(data[options.rowsName]);
                         } else {
                             weui.alert(data.errmsg, error, {
                                 title: '提示'
@@ -172,6 +175,7 @@
                 valueField: 'acq_inst_id',
                 textField: 'acq_inst_nm',
                 url: '/action/bm/acq-inst/search',
+				queryParams: {type: busiType}
 				onClickItem: function(row, target) {
                     console.log(this, arguments);
                     var flow = flows.busi(busiType, row.value);

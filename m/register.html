@@ -61,6 +61,17 @@
                     <input class="weui-switch" type="checkbox" id="view-pwd">
                 </div>
             </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">推荐码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" required="" placeholder="请输入推荐码" name="referral_id" id="referral_id">
+                </div>
+                <div class="weui-cell__ft">
+                    <span id="full_name"></span>
+                </div>
+            </div>
         </div>
         <div class="weui-btn-area">
             <a class="weui-btn weui-btn_primary" href="javascript:" id="register-btn">注册</a>
@@ -137,11 +148,27 @@
             }
         });
     }
+		
+	function getRefName() {
+        var data = {};
+		data.userid = $('#referral_id').val();     
+        $$.request('/m/action/userinfo/detail', data, {
+            success: function(data) {
+                console.log(arguments);
+                if (data.errcode == 0) {
+                    $('#full_name').text(data.full_name);
+                } else {
+                    
+                }
+            }
+        });
+    }
 
     $(function() {
         weui.form.checkIfBlur('#form');
 
         $('#mobilecode-btn').on('click', getMobileCode);
+		$('#referral_id').on('blur', getRefName);
         $('#view-pwd').on('change', function() {
             if ($(this).prop('checked')) {
                 $('#login-pwd').prop('type', 'text');
