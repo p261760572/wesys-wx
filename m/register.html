@@ -61,6 +61,21 @@
                     <input class="weui-switch" type="checkbox" id="view-pwd">
                 </div>
             </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">推荐码</label>
+                </div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" required="" placeholder="请输入推荐码" name="referral_id" id="referral_id">
+                </div>
+            </div>
+            <div class="weui-cell" id="referral-cell">
+                <div class="weui-cell__hd">
+                    <label class="weui-label">推荐人信息</label>
+                </div>
+                <div class="weui-cell__bd weui-cell_warn">
+                </div>
+            </div>
         </div>
         <div class="weui-btn-area">
             <a class="weui-btn weui-btn_primary" href="javascript:" id="register-btn">注册</a>
@@ -75,6 +90,7 @@
     <script type="text/javascript" src="js/lib/jsencrypt.min.js"></script>
     <script type="text/javascript">
     var query = $$.parseQueryString();
+
     function encryptPassword(password) {
         //加密密码
         var crypt = new JSEncrypt();
@@ -94,7 +110,7 @@
 
         $$.request('/m/action/notify/mobilecode/register', {
             mobile: data.mobile,
-            vcode: data.vcode            
+            vcode: data.vcode
         }, {
             success: function(data) {
                 console.log(arguments);
@@ -121,18 +137,46 @@
         if (!weui.form.validate('#form')) return;
 
         var data = $('#form').serializeObject();
-        data.login_pwd = encryptPassword(data.login_pwd);        
+        data.login_pwd = encryptPassword(data.login_pwd);
         $.extend(data, query);
         $$.request('/m/action/user/register', data, {
             success: function(data) {
                 console.log(arguments);
 
                 if (data.errcode == 0) {
-                    weui.toast('注册成功', function () {
+                    weui.toast('注册成功', function() {
                         window.location.href = $$.wrapUrl('/m/login.html');
                     });
                 } else {
                     weui.topTips(data.errmsg);
+                }
+            }
+        });
+    }
+
+    function getReferral() {
+        $('#referral-cell').find('.weui-cell__bd').html('');
+
+        var referral_id = $('#referral_id').val();
+        if (!referral_id) return;
+
+        $$.request('/m/action/user/referral', {
+            referral_id: referral_id
+        }, {
+            beforeSend: function(xhr, settings) {},
+            success: function(data) {
+                if (data.errcode == 0) {
+                    var text = '';
+                    if (data.data.mobile) {
+                        text += '手机号:' + data.data.mobile;
+                    }
+                    if (data.data.nickname) {
+                        if (text.length) text += '<br>';
+                        text += '昵称:' + data.data.nickname;
+                    }
+                    $('#referral-cell').find('.weui-cell__bd').html(text);
+                } else {
+                    $('#referral-cell').find('.weui-cell__bd').html(data.errmsg);
                 }
             }
         });
@@ -149,7 +193,12 @@
                 $('#login-pwd').prop('type', 'password');
             }
         });
+        $('#referral_id').on('change', getReferral);
         $('#register-btn').on('click', register);
+
+        if (query.referral_id) {
+            $('#referral_id').attr('readonly', 'readonly').val(query.referral_id).change();
+        }
     });
     </script>
 </body>
