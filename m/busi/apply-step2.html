@@ -176,7 +176,7 @@
                 textField: 'acq_inst_nm',
                 url: '/action/bm/acq-inst/search',
 				queryParams: {type: busiType}
-				onClickItem: function(row, target) {
+				onClickItem: function(row) {
                     console.log(this, arguments);
                     var flow = flows.busi(busiType, row.value);
                     flow.start();
