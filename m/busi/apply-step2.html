@@ -130,7 +130,7 @@
         }
     }).search(); */
 	
-	var $$.showPage = function(target, options) {
+	var showPage = function(target, options) {
         options = options || {};
 		
         options = $.extend({
@@ -159,7 +159,7 @@
         return weui.searchPage(target, options); //.search($target.val());
     }
 	
-	$$.showPage('#page1', {
+	showPage('#page1', {
 		resultTpl: '#list-template',
 		url: '/action/bm/busi-type/search',
 		queryParams: {},
