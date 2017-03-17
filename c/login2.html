@@ -60,11 +60,11 @@
             <div class="ms-title">管理系统</div>
             <div class="ms-login">
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
-                    <el-form-item prop="username">
-                        <el-input v-model="ruleForm.username" placeholder="请输入手机号或账户名"></el-input>
+                    <el-form-item prop="login_name">
+                        <el-input v-model="ruleForm.login_name" placeholder="请输入手机号或账户名"></el-input>
                     </el-form-item>
-                    <el-form-item prop="password">
-                        <el-input type="password" placeholder="请输入登录密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                    <el-form-item prop="login_pwd">
+                        <el-input type="password" placeholder="请输入登录密码" v-model="ruleForm.login_pwd" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                     </el-form-item>
                     <div class="login-btn">
                         <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -74,71 +74,69 @@
             </div>
         </div>
     </div>
-</body>
-<!-- 先引入 Vue -->
-<script src="lib/vue/vue.js"></script>
-<!-- 引入组件库 -->
-<script src="lib/element-ui/index.js"></script>
-<script src="lib/axios/axios.js"></script>
-<script src="js/base2.js"></script>
-<script src="lib/jsencrypt.min.js"></script>
-<script>
-function encryptPassword(password) {
-    //加密密码
-    var crypt = new JSEncrypt();
-    crypt.setPublicKey('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwpSBCzntA06ceIathHYbN/RsrXey/L5nhhJmrT5z+qrfjz0+zKE/XwmerNnOMYKDt1YRXzmwD/ma+6mQN0yXMnqCIpNGy/QvOqHlQbVy7DJLHXVP7kHl1T4tkxzUbMmA9y7/B0cp1yorfF8oJbe3M2/p0qQ8zF74kXpGaum5FJkqoLTzl+v10qso2PQxp4TP5U1qPioLF1uJAJzlv1lb5Z0RBesOPj+FgG0oh/+bPvL0rJ4QCYnFqDsMcvi4jd9wD6+hyZVG4j+R92YhJHWNy+sgXboLXZTwdTE8sglfAtRK1+ITGKdcYo94Jlo65Kdlxrn0vEPrYSN4/nBwsfq7BQIDAQAB');
-    return crypt.encrypt(password);
-}
-
-function login() {
-    var data = vm.ruleForm;
-
-    data.login_pwd = encryptPassword(data.login_pwd);
-
-    $$.request('/action/user/login', data, function(data) {
-        //success
-        window.location.href = 'index.html';
-    }, function(data) {
-        alert($$.errmsg(data));
-    });
-}
-
-
-
-var vm = new Vue({
-    el: '#app',
-    data: {
-        ruleForm: {
-            login_name: '',
-            login_pwd: ''
-        },
-        rules: {
-            login_name: [{
-                required: true,
-                message: '请输入手机号或账户名',
-                trigger: 'blur'
-            }],
-            login_pwd: [{
-                required: true,
-                message: '请输入登录密码',
-                trigger: 'blur'
-            }]
-        }
-    },
-    methods: {
-        submitForm: function(formName) {
-            var self = this;
-            self.$refs[formName].validate(function(valid) {
-                if (valid) {
-                    login();
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
-        }
+    <!-- 先引入 Vue -->
+    <script src="lib/vue/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="lib/element-ui/index.js"></script>
+    <script src="lib/axios/axios.js"></script>
+    <script src="js/base2.js"></script>
+    <script src="lib/jsencrypt.min.js"></script>
+    <script>
+    function encryptPassword(password) {
+        //加密密码
+        var crypt = new JSEncrypt();
+        crypt.setPublicKey('MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwpSBCzntA06ceIathHYbN/RsrXey/L5nhhJmrT5z+qrfjz0+zKE/XwmerNnOMYKDt1YRXzmwD/ma+6mQN0yXMnqCIpNGy/QvOqHlQbVy7DJLHXVP7kHl1T4tkxzUbMmA9y7/B0cp1yorfF8oJbe3M2/p0qQ8zF74kXpGaum5FJkqoLTzl+v10qso2PQxp4TP5U1qPioLF1uJAJzlv1lb5Z0RBesOPj+FgG0oh/+bPvL0rJ4QCYnFqDsMcvi4jd9wD6+hyZVG4j+R92YhJHWNy+sgXboLXZTwdTE8sglfAtRK1+ITGKdcYo94Jlo65Kdlxrn0vEPrYSN4/nBwsfq7BQIDAQAB');
+        return crypt.encrypt(password);
     }
-});
-</script>
+
+    function login() {
+        var data = vm.ruleForm;
+
+        data.login_pwd = encryptPassword(data.login_pwd);
+
+        $$.request('/action/user/login', data, function(data) {
+            //success
+            window.location.href = 'index.html';
+        });
+    }
+
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            ruleForm: {
+                login_name: '',
+                login_pwd: ''
+            },
+            rules: {
+                login_name: [{
+                    required: true,
+                    message: '请输入手机号或账户名',
+                    trigger: 'blur'
+                }],
+                login_pwd: [{
+                    required: true,
+                    message: '请输入登录密码',
+                    trigger: 'blur'
+                }]
+            }
+        },
+        methods: {
+            submitForm: function(formName) {
+                var self = this;
+                self.$refs[formName].validate(function(valid) {
+                    if (valid) {
+                        login();
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            }
+        }
+    });
+    </script>
+</body>
 
 </html>
