@@ -2,15 +2,19 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登录系统</title>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="lib/element-ui/theme-default/index.css">
     <style type="text/css">
-    body,
     html,
+    body,
     #app {
         width: 100%;
         height: 100%;
+        margin: 0;
         overflow: hidden;
     }
     
@@ -21,7 +25,7 @@
         background: #324157;
     }
     
-    .ms-title {
+    .login-title {
         position: absolute;
         top: 50%;
         width: 100%;
@@ -31,12 +35,12 @@
         color: #fff;
     }
     
-    .ms-login {
+    .login {
         position: absolute;
         left: 50%;
         top: 50%;
         width: 300px;
-        height: 160px;
+        height: 220px;
         margin: -150px 0 0 -190px;
         padding: 40px;
         border-radius: 5px;
@@ -57,23 +61,27 @@
 <body>
     <div id="app">
         <div class="login-wrap">
-            <div class="ms-title">管理系统</div>
-            <div class="ms-login">
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
+            <div class="login-title">登录系统</div>
+            <div class="login">
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px">
                     <el-form-item prop="login_name">
                         <el-input v-model="ruleForm.login_name" placeholder="请输入手机号或账户名"></el-input>
                     </el-form-item>
                     <el-form-item prop="login_pwd">
-                        <el-input type="password" placeholder="请输入登录密码" v-model="ruleForm.login_pwd" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                        <el-input type="password" placeholder="请输入登录密码" v-model="ruleForm.login_pwd"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="captcha">
+                        <el-input style="width: 50%;" placeholder="请输入验证码" v-model="ruleForm.captcha" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                        <img style="width: 95px; height: 36px; vertical-align: top;" alt="验证码" src="/p/action/user/captcha" onclick="this.src='/p/action/user/captcha?t='+new Date().getTime()" />
                     </el-form-item>
                     <div class="login-btn">
                         <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                     </div>
-                    <!-- <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p> -->
                 </el-form>
             </div>
         </div>
     </div>
+    <script type="text/javascript"></script>
     <!-- 先引入 Vue -->
     <script src="lib/vue/vue.js"></script>
     <!-- 引入组件库 -->
@@ -92,9 +100,11 @@
     function login() {
         var data = vm.ruleForm;
 
-        data.login_pwd = encryptPassword(data.login_pwd);
-
-        $$.request('/action/user/login', data, function(data) {
+        $$.request('/action/user/login', {
+            login_name: data.login_name,
+            login_pwd: encryptPassword(data.login_pwd),
+            captcha: data.captcha
+        }, function(data) {
             //success
             window.location.href = 'index.html';
         });
@@ -118,6 +128,11 @@
                 login_pwd: [{
                     required: true,
                     message: '请输入登录密码',
+                    trigger: 'blur'
+                }],
+                captcha: [{
+                    required: true,
+                    message: '请输入验证码',
                     trigger: 'blur'
                 }]
             }

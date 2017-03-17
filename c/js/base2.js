@@ -34,6 +34,7 @@
     //POST请求
     $$.request = function(url, data, success, error) {
         axios.post($$.wrapUrl(url), data).then(function(response) {
+            var data =response.data;
             if ($$.errcode(data) == 0) {
                 success(data)
             } else if(error){
