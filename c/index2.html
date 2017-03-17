@@ -40,7 +40,7 @@
     }
     
     .layout-content {
-        min-height: 600px;
+        min-height: 800px;
         margin: 15px;
         overflow: hidden;
         background: #fff;
@@ -48,6 +48,7 @@
     }
     
     .layout-content-main {
+        height: 100%;
         padding: 10px;
     }
     
@@ -59,7 +60,7 @@
     </style>
 </head>
 
-<body v-loading.fullscreen.lock="fullscreenLoading">
+<body>
     <div id="app" class="layout">
         <el-row class="el-menu--dark">
             <div class="layout-logo"></div>
@@ -67,7 +68,7 @@
                 <el-menu theme="dark" mode="horizontal">
                     <el-submenu index="1">
                         <template slot="title">我</template>
-                        <el-menu-item index="1-1">修改密码</el-menu-item>
+                        <el-menu-item index="1-1" @click="dialogVisible = true; resetForm('passwordForm')">修改密码</el-menu-item>
                         <el-menu-item index="1-2">退出</el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -86,7 +87,7 @@
             <el-col :span="19">
                 <div class="layout-content">
                     <div class="layout-content-main">
-                        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                        <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                             <el-form-item label="活动名称" prop="name">
                                 <el-input v-model="ruleForm.name"></el-input>
                             </el-form-item>
@@ -133,7 +134,8 @@
                                 <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
                                 <el-button @click="resetForm('ruleForm')">重置</el-button>
                             </el-form-item>
-                        </el-form>
+                        </el-form> -->
+                        <iframe :src="src" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>
                     </div>
                 </div>
             </el-col>
@@ -143,23 +145,42 @@
                 2017 &copy;
             </div>
         </el-row>
+        <el-dialog title="修改密码" v-model="dialogVisible">
+            <el-form :model="passwordForm" :rules="rules" ref="passwordForm">
+                <el-form-item label="原密码" prop="login_pwd">
+                    <el-input type="password" v-model="passwordForm.login_pwd" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="new_login_pwd">
+                    <el-input type="password" v-model="passwordForm.new_login_pwd" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="new_login_pwd2">
+                    <el-input type="password" v-model="passwordForm.new_login_pwd2" auto-complete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer">
+                <el-button @click="resetForm('passwordForm')">取 消</el-button>
+                <el-button type="primary" @click="submitForm('passwordForm')">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </body>
 <!-- 先引入 Vue -->
 <script src="lib/vue/vue.js"></script>
 <!-- 引入组件库 -->
 <script src="lib/element-ui/index.js"></script>
+<script src="lib/axios/axios.js"></script>
 <script>
 Vue.component('submenu', {
     props: ['child'],
     template: '<el-submenu v-if="child.children" :index="child.id"> <template slot="title"><i class="el-icon-menu"></i>{{ child.text }}</template> <!-- submenu --> <template v-for="grandchild in child.children"> <submenu :child="grandchild"></submenu> </template> <!-- submenu --> </el-submenu> <el-menu-item v-else :index="child.id"><i class="el-icon-menu"></i>{{ child.text }}</el-menu-item>'
 });
 
-new Vue({
+var vm = new Vue({
     el: '#app',
     data: {
-    	fullscreenLoading: true,
         visible: false,
+        dialogVisible: false,
+        src: 'http://www.baidu.com',
         items: [{
             id: '1',
             text: '菜单1',
@@ -183,6 +204,11 @@ new Vue({
             type: [],
             resource: '',
             desc: ''
+        },
+        passwordForm: {
+            login_pwd: '',
+            new_login_pwd: '',
+            new_login_pwd2: ''
         },
         rules: {
             name: [{
@@ -227,6 +253,11 @@ new Vue({
                 required: true,
                 message: '请填写活动形式',
                 trigger: 'blur'
+            }],
+            login_pwd: [{
+                required: true,
+                message: '请输入原密码',
+                trigger: 'blur'
             }]
         }
     },
@@ -240,25 +271,34 @@ new Vue({
         submitForm: function(formName) {
             this.$refs[formName].validate(function(valid) {
                 if (valid) {
-                    alert('submit!');
+                    var loadingInstance = vm.$loading();
+                    setTimeout(function() {
+                        loadingInstance.close();
+                        vm.$message({
+                            showClose: true,
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                        vm.dialogVisible = false;
+                    }, 1000);
                 } else {
-                    console.log('error submit!!');
+                    vm.$message({
+                        showClose: true,
+                        message: '请检查数据',
+                        type: 'warning'
+                    });
                     return false;
                 }
             });
-            var loadingInstance = ELEMENT.Loading.service({ fullscreen: true });
-            setTimeout(function () {
-            	loadingInstance.close();
-            }, 500);
+
+
         },
         resetForm: function(formName) {
-            this.$refs[formName].resetFields();
+            var form = this.$refs[formName];
+            if (form) form.resetFields();
         }
     }
 });
-
-
-
 </script>
 
 </html>
