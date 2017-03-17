@@ -47,6 +47,7 @@ gulp.task('release', ['copy', 'build:zepto']);
 
 gulp.task('watch', ['release'], function() {
     gulp.watch(config.copy.src, ['copy', 'build:zepto']);
+    gulp.watch(config.zepto.src, ['build:zepto']);
 });
 
 gulp.task('serve', function() {

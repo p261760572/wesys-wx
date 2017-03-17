@@ -43,7 +43,7 @@ window.basedir = '/p';
 
         if (hash.substr(0, 6) == '#step/') {
             var arr = hash.substr(6).split('/');
-            var flowId = parseInt(arr[0]);
+            var flowId = arr[0];
             var step = parseInt(arr[1]);
             var flow = flows[flowId];
 
