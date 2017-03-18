@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>终端参数</title>
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+</head>
+
+<body>
+    <div class="page page_active" id="search-page">
+        <div>
+            <form id="search-fm" class="form form_search" action="/action/bm/term-param/search" method="post">
+                <table class="form__table">
+                    <caption>查询终端参数</caption>
+                    <!-- <tr>
+                        <td>
+                            <label>终端参数ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="term_param_id">
+                        </td>
+                        <td>
+                            <label>商户参数ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_param_id">
+                        </td>
+                    </tr> -->
+                    <tr>
+                        <td>
+                            <label>商户号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_cd">
+                        </td>
+                        <td>
+                            <label>终端号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="term_id">
+                        </td>
+                    </tr>
+                    <!-- <tr>
+                        <td>
+                            <label>参数状态：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="status">
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr> -->
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="center">
+                                <div style="margin:5px;"></div>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </form>
+        </div>
+        <br>
+        <div id="search-dg-tb">
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.add(this, event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm',onSuccess:$$.addSuccess">新增</a>
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
+            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event, 'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'" data-action="update">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/bm/term-param/batch-delete',onSuccess:$$.batchSubmitSuccess" data-actions="delete">删除</a>
+        </div>
+        <table id="search-dg" title="终端参数" class="easyui-datagrid" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:$$.st.transition[typeId]||[]">
+            <thead>
+                <tr>
+                    <th data-options="field:'chk',checkbox:true"></th>
+                    <!-- <th data-options="field:'term_param_id',width:100">终端参数ID</th>
+                    <th data-options="field:'mchnt_param_id',width:100">商户参数ID</th> -->
+                    <th data-options="field:'mchnt_cd',width:100">商户号</th>
+                    <th data-options="field:'term_id',width:100">终端号</th>
+                    <th data-options="field:'status',width:100">参数状态</th>
+                    <th data-options="field:'expand_inst_nm',width:100">拓展方</th>
+                    <th data-options="field:'expand_nm',width:100">拓展人</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="page" id="detail-page">
+        <form id="detail-fm" class="form form_detail" action="/action/bm/term-param/view" method="post">
+            <table class="form__table">
+                <caption>终端参数</caption>
+                <tbody>
+                    <tr class="hide">
+                        <td>
+                            <label>终端参数ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="term_param_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                        <td>
+                            <label>商户参数ID：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="mchnt_param_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>终端号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="term_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                        <td>
+                            <label>参数状态：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="status" class="easyui-validatebox" data-options="required:true">
+                            <select name="status" class="easyui-validatebox" data-options="required:true">
+                                <option value="">--请选择--</option>
+                            </select>
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>拓展方：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="expand_inst_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                        <td>
+                            <label>拓展人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="expand_id" class="easyui-validatebox" data-options="required:true">
+                            <span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>记录编号：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="rec_id">
+                        </td>
+                        <td>
+                            <label>操作标志/处理状态：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="oper_in" style="width: 100px;">
+                            <input type="text" name="proc_st" style="width: 100px;">
+                            <!-- <select name="oper_in">
+                            </select>
+                            <select name="proc_st">
+                            </select> -->
+                        </td>
+                    </tr>
+                    <tr class="readonly readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>创建人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="created_by">
+                        </td>
+                        <td>
+                            <label>创建时间：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="created_time">
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>最后修改人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_modified_by">
+                        </td>
+                        <td>
+                            <label>最后修改时间：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_modified_time">
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>最后审核人：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_checked_by">
+                        </td>
+                        <td>
+                            <label>最后审核时间：</label>
+                        </td>
+                        <td>
+                            <input type="text" name="last_checked_time">
+                        </td>
+                    </tr>
+                    <tr class="readonly invisible visible-view visible-check1">
+                        <td>
+                            <label>审核通过或不通过原因：</label>
+                        </td>
+                        <td colspan="3" class="editable-check1">
+                            <input type="text" name="checked_reason" class="easyui-validatebox" style="width:100%;" data-options="">
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">
+                            <div style="margin:5px;"></div>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/bm/term-param/create',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/bm/term-param/update',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/st.js"></script>
+    <script type="text/javascript">
+    var typeId = $$.st.alias['term_param'];
+    </script>
+</body>
+
+</html>
