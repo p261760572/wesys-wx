@@ -285,21 +285,21 @@
             <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st_nm}}</div>
         </a>
         <div class="weui-media-box weui-media-box_text">
-            <div class="weui-media-box__desc">{{row.linkman}}</div>
-            <div class="weui-media-box__desc">{{row.mobile}}</div>
-            <div class="weui-media-box__desc">{{row.addr}}</div>
-            <div class="weui-media-box__desc">{{row.checked_reason}}</div>
+            <div class="weui-media-box__desc">联系人：{{row.linkman}}</div>
+            <div class="weui-media-box__desc">手机号：{{row.mobile}}</div>
+            <div class="weui-media-box__desc">地址：{{row.addr}}</div>
+            <div class="weui-media-box__desc">审核备注：{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">{{row.created_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.created_by}}</li>
+                <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.last_created_by_nm}}</li>
             </ul>
             <ul class="weui-media-box__info" style="margin-top: 0px;">
-                <li class="weui-media-box__info__meta">{{row.last_modified_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_modified_by}}</li>
+                <li class="weui-media-box__info__meta">修改时间：{{row.last_modified_time}}</li>
+				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">修改人：{{row.last_modified_by_nm}}</li>
             </ul>
             <ul class="weui-media-box__info" style="margin-top: 0px;">
-                <li class="weui-media-box__info__meta">{{row.last_checked_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_checked_by}}</li>
+                <li class="weui-media-box__info__meta">审核时间：{{row.last_checked_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">审核人：{{row.last_checked_by_nm}}</li>
             </ul>
         </div>
         {{/each}}

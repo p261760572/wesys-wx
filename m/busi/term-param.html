@@ -44,7 +44,7 @@
                         <label class="weui-label">终端标识<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="term_no" required="" placeholder="请输入终端标识" readonly="">
+                        <input class="weui-input" type="text" name="term_no" required="" placeholder="请输入终端标识" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -52,7 +52,7 @@
                         <label class="weui-label">门店名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="shop_name" required="" placeholder="请输入门店名称" readonly="">
+                        <input class="weui-input" type="text" name="shop_name" required="" placeholder="请输入门店名称" readonly>
                     </div>
                 </div>
                 <div class="weui-cell hide">
@@ -68,7 +68,7 @@
                         <label class="weui-label">商户参数<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_cd" required="" placeholder="请选择商户参数" id="mchnt-cd-select2" readonly="">
+                        <input class="weui-input" type="text" name="mchnt_cd" required="" placeholder="请选择商户参数" id="mchnt-cd-select2" readonly>
                         <input type="hidden" name="mchnt_param_id">
                     </div>
                 </div>
@@ -174,21 +174,21 @@
             <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st_nm}}</div>
         </a>
         <div class="weui-media-box weui-media-box_text">
-            <div class="weui-media-box__desc">{{row.mchnt_cd}}</div>
-            <div class="weui-media-box__desc">{{row.term_id}}</div>
-            <div class="weui-media-box__desc">{{row.status}}</div>
-            <div class="weui-media-box__desc">{{row.checked_reason}}</div>
+            <div class="weui-media-box__desc">商户号：{{row.mchnt_cd}}</div>
+            <div class="weui-media-box__desc">终端号：{{row.term_id}}</div>
+            <div class="weui-media-box__desc">终端状态：{{row.status}}</div>
+            <div class="weui-media-box__desc">审核原因：{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">{{row.created_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.created_by}}</li>
+                <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
+				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.last_created_by_nm}}</li>
             </ul>
             <ul class="weui-media-box__info" style="margin-top: 0px;">
-                <li class="weui-media-box__info__meta">{{row.last_modified_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_modified_by}}</li>
+                <li class="weui-media-box__info__meta">修改时间：{{row.last_modified_time}}</li>
+				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">修改人：{{row.last_modified_by_nm}}</li>
             </ul>
             <ul class="weui-media-box__info" style="margin-top: 0px;">
-                <li class="weui-media-box__info__meta">{{row.last_checked_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.last_checked_by}}</li>
+                <li class="weui-media-box__info__meta">审核时间：{{row.last_checked_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">审核人：{{row.last_checked_by_nm}}</li>
             </ul>
         </div>
         {{/each}}
