@@ -1,346 +1,198 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>商户电子资料</title>
-    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/uploadify/uploadify.css" />
-    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../lib/element-ui/theme-default/index.css">
     <style type="text/css">
-    .uploadify-button {
-        background-color: #eeeeee;
-        background-image: linear-gradient(bottom, #eeeeee 0%, #ffffff 100%);
-        background-image: -o-linear-gradient(bottom, #eeeeee 0%, #ffffff 100%);
-        background-image: -moz-linear-gradient(bottom, #eeeeee 0%, #ffffff 100%);
-        background-image: -webkit-linear-gradient(bottom, #eeeeee 0%, #ffffff 100%);
-        background-image: -ms-linear-gradient(bottom, #eeeeee 0%, #ffffff 100%);
-        background-repeat: no-repeat;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        border: 1px solid #bbb;
-        color: #444;
-        font: normal 12px Verdana, Geneva, sans-serif;
-        ;
-        text-align: center;
-        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    html,
+    body{
         width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
     }
     
-    .uploadify:hover .uploadify-button {
-        background: #eaf2ff;
-        color: #000000;
-        border: 1px solid #b7d2ff;
-        filter: none;
+    .search-box {
+        padding: 20px;
+    }
+
+    .detail-box {
+        padding: 20px;
+    }
+
+    .form-box {
+        min-width: 400px;
+        max-width: 600px;
+    }    
+
+    .pagination {
+        margin: 20px 0;
+        text-align: right;
     }
     </style>
 </head>
 
 <body>
-    <div class="page page_active" id="search-page">
-        <div>
-            <form id="upload-fm" class="form form_search hide" action="" method="post">
-                <table class="form__table">
-                    <caption>上传商户电子资料</caption>
-                    <tr>
-                        <td style="width: 158px;">
-                            <label>影印件类型：</label>
-                        </td>
-                        <td colspan="3">
-                            <input type="text" class="easyui-combobox" style="width: 173px;" name="elec_info_type" data-options="required:true" id="elec_info_type">
-                            <span class="required">*</span>
-                            <div id="file_upload-queue" class="uploadify-queue"></div>
-                            <div id="file_upload" class="uploadify" style="float: left; height: 30px; width: 120px;">
-                                <div id="file_upload-button" class="uploadify-button" style="height: 30px; line-height: 30px; width: 120px;"><span class="uploadify-button-text">浏览...</span></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" class="center">
-                                <div style="margin:5px;"></div>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-search',datagrid: '#search-dg'" style="padding:0 5px;" onclick="onUpload()">上传</a>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </form>
+    <div id="app">
+        <div class="search-box" v-if="!detailVisible">
+            <div class="form-box">
+                <el-form ref="searchForm" :model="searchForm" label-width="100px">
+                    <el-form-item label="文件名" prop="mchnt_id">
+                        <el-input v-model="searchForm.mchnt_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服务端ID" prop="serverid">
+                        <el-input v-model="searchForm.serverid"></el-input>
+                    </el-form-item>
+                    <el-form-item label="影印件类型" prop="elec_info_type">
+                        <el-input v-model="searchForm.elec_info_type"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否有效" prop="status">
+                        <el-input v-model="searchForm.status"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
+                        <el-button @click="resetForm('searchForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <el-table :data="searchTableData" border style="width: 100%">
+                <el-table-column prop="mchnt_id" label="文件名"></el-table-column>
+                <el-table-column prop="serverid" label="服务端ID"></el-table-column>
+                <el-table-column prop="elec_info_type" label="影印件类型"></el-table-column>
+                <el-table-column prop="status" label="是否有效"></el-table-column>
+                <el-table-column label="操作" width="150">
+                    <template scope="scope">
+                        <el-button size="small" @click="handleView(scope.$index, scope.row)">查看</el-button>
+                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="0">
+            </el-pagination>
+            </div>
         </div>
-        <br>
-        <div>
-            <form id="search-fm" class="form form_search" action="/action/bm/mchnt-elec-info/search" method="post" data-options="onSerialize:onSerialize">
-                <input type="hidden" name="mchnt_id">
-                <table class="form__table">
-                    <caption>查询商户电子资料</caption>
-                    <tr>
-                        <td>
-                            <label>影印件类型：</label>
-                        </td>
-                        <td>
-                            <input type="text" class="easyui-combobox" name="elec_info_type" id="elec_info_type2">
-                        </td>
-                        <td>
-                            <label>是否有效：</label>
-                        </td>
-                        <td>
-                            <input type="text" class="easyui-combobox" name="status">
-                        </td>
-                    </tr>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" class="center">
-                                <div style="margin:5px;"></div>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-search',datagrid: '#search-dg'" style="padding:0 5px;" onclick="$$.search(this)" id="search-btn">查询</a> &nbsp;&nbsp;
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-clear',datagrid: '#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </form>
+        <el-dialog v-model="detailVisible" size="full">
+            <div class="detail-box">
+            <div class="form-box">
+                <el-form ref="detailForm" :model="detailForm" :rules="rules" label-width="100px">
+                    <el-form-item label="文件名" prop="mchnt_id">
+                        <el-input v-model="detailForm.mchnt_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服务端ID" prop="serverid">
+                        <el-input v-model="detailForm.serverid"></el-input>
+                    </el-form-item>
+                    <el-form-item label="影印件类型" prop="elec_info_type">
+                        <el-input v-model="detailForm.elec_info_type"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否有效" prop="status">
+                        <el-input v-model="detailForm.status"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('detailForm')">提交</el-button>
+                        <el-button @click="detailVisible=false">返回</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
-        <br>
-        <!-- <div id="search-dg-tb">
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.add(this, event)" data-options="plain:true,iconCls: 'icon-add',form: '#detail-fm',onSuccess:$$.addSuccess">新增</a>
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event)" data-options="plain:true,iconCls: 'icon-view',datagrid: '#search-dg',form: '#detail-fm'">查看详情</a>
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event, 'update')" data-options="plain:true,iconCls: 'icon-edit',datagrid: '#search-dg',form: '#detail-fm'" data-action="update">编辑</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls: 'icon-remove',datagrid: '#search-dg',url: '/action/bm/mchnt-elec-info/batch-delete',onSuccess:$$.batchSubmitSuccess" data-actions="delete">删除</a>
-        </div> -->
-        <table id="search-dg" title="商户电子资料" class="easyui-datagrid" style="min-width: 1000px;" data-options="toolbar: '#search-dg-tb',idField: 'rec_id',transition:$$.st.transition[typeId]||[]">
-            <thead>
-                <tr>
-                    <th data-options="field: 'chk',checkbox:true"></th>
-                    <th data-options="field: 'filename',formatter:formatFilename">文件名</th>
-                    <!-- <th data-options="field: 'serverid'">服务端ID</th> -->
-                    <th data-options="field: 'elec_info_type',formatter:formatElecInfoType">影印件类型</th>
-                    <th data-options="field: 'status'">是否有效</th>
-                </tr>
-            </thead>
-        </table>
+        </el-dialog>
     </div>
-    <div class="page" id="detail-page">
-        <form id="detail-fm" class="form form_detail" action="/action/bm/mchnt-elec-info/view" method="post">
-            <table class="form__table">
-                <caption>商户电子资料</caption>
-                <tbody>
-                    <tr>
-                        <td>
-                            <label>文件名：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mchnt_id" class="easyui-validatebox" data-options="">
-                        </td>
-                        <td>
-                            <label>服务端ID：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="serverid" class="easyui-validatebox" data-options="">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>影印件类型：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="elec_info_type" class="easyui-validatebox" data-options="required:true">
-                            <select name="elec_info_type" class="easyui-validatebox" data-options="required:true">
-                                <option value="">--请选择--</option>
-                            </select>
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>是否有效：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="status" class="easyui-validatebox" data-options="">
-                            <select name="status" class="easyui-validatebox" data-options="">
-                                <option value="">--请选择--</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>记录编号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="rec_id">
-                        </td>
-                        <td>
-                            <label>操作标志/处理状态：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="oper_in" style="width: 100px;">
-                            <input type="text" name="proc_st" style="width: 100px;">
-                            <!-- <select name="oper_in">
-                            </select>
-                            <select name="proc_st">
-                            </select> -->
-                        </td>
-                    </tr>
-                    <tr class="readonly readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>创建人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="created_by">
-                        </td>
-                        <td>
-                            <label>创建时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="created_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>最后修改人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_modified_by">
-                        </td>
-                        <td>
-                            <label>最后修改时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_modified_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>最后审核人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_checked_by">
-                        </td>
-                        <td>
-                            <label>最后审核时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_checked_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>审核通过或不通过原因：</label>
-                        </td>
-                        <td colspan="3" class="editable-check1">
-                            <input type="text" name="checked_reason" class="easyui-validatebox" style="width:100%;" data-options="">
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4">
-                            <div style="margin:5px;"></div>
-                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls: 'icon-ok',url: '/action/bm/mchnt-elec-info/create',datagrid: '#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
-                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls: 'icon-ok',url: '/action/bm/mchnt-elec-info/update',datagrid: '#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
-                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls: 'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </form>
-    </div>
-    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../lib/uploadify/jquery.uploadify.min.js"></script>
-    <script type="text/javascript" src="../js/base.js"></script>
-    <script type="text/javascript" src="../js/st.js"></script>
-    <script type="text/javascript" src="../js/param.js"></script>
-    <script type="text/javascript">
-    var query = $$.parseQueryString();
-    var typeId = $$.st.alias['mchnt_elec_info'];
-    var current_elec_info_type;
+    <!-- 先引入 Vue -->
+    <script src="../lib/vue/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="../lib/element-ui/index.js"></script>
+    <script src="../lib/axios/axios.js"></script>
+    <script src="../js/base2.js"></script>
+    <script>
+    function onSearch() {
+        console.log(this, arguments);
+        $$.request('/action/bm/mchnt-elec-info/search', vm.searchForm, function(data) {
+            vm.searchTableData = data.rows;
+            vm.searchForm.total = data.total;
+        });
+    }
 
-    function initUpload() {
-        $('#file_upload').uploadify({
-            'auto': false,
-            'buttonText': '浏览...',
-            'fileObjName': 'file',
-            'fileSizeLimit': '1MB',
-            'fileTypeDesc': '图片文件',
-            'fileTypeExts': '*.gif; *.jpg; *.png',
-            //'buttonImage' : '../../images/browse-btn.png',
-            'swf': '../lib/uploadify/uploadify.swf',
-            'uploader': $$.wrapUrl('/action/upload'),
-            'onUploadSuccess': function(file, data, response) {
-                data = $.evalJSON(data);
-                if (data.errcode == 0) {
-                    onCreate(data);
+    function onView(param) {
+        vm.detailVisible = true;
+
+        $$.request('/action/bm/mchnt-elec-info/view', param, function(data) {
+            vm.detailForm = data.data;
+        });
+    }
+
+    function onSubmit() {
+        $$.request('/action/bm/mchnt-elec-info/update', vm.detailForm, function(data) {
+            //
+        });
+    }
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            detailVisible: false,
+            searchForm: {
+                page: 1,
+                rows: 10,
+                total: 0
+            },
+            searchTableData: [],
+            detailForm: {},
+            rules: {
+                elec_info_type: [{
+                    required: true,
+                    message: '请输入影印件类型',
+                    trigger: 'blur'
+                }],
+            }
+        },
+        methods: {
+            handleView: function(index, row) {
+                console.log(this, arguments);
+                onView(row);
+            },
+            handleEdit: function(index, row) {
+                console.log(this, arguments);
+                onView(row);
+            },
+            handleCurrentChange: function(currentPage) {
+                console.log(this, arguments);
+                this.searchForm.page = currentPage;
+                onSearch();
+            },
+            handleSizeChange: function(size) {
+                console.log(this, arguments);
+                this.searchForm.rows = size;
+                onSearch();
+            },
+            submitForm: function(formName) {
+                var self = this;
+                if (formName == 'searchForm') {
+                    onSearch();
                 } else {
-                    $$.error(data.errmsg);
+                    self.$refs[formName].validate(function(valid) {
+                        if (valid) {
+                            onSubmit();
+                        } else {
+                            return false;
+                        }
+                    });
                 }
             },
-            'onQueueComplete': function(queueData) {
-                console.log(this, arguments);
-                $$.info('上传完成');
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
             }
-        });
-    }
-
-    function onSerialize(data) {
-        $.extend(data, query);
-    }
-
-    function onUpload() {
-        if ($('#upload-fm').form('enableValidation').form('validate') != true) {
-            return false;
-        }
-        var data = $('#upload-fm').serializeObject();
-        current_elec_info_type = data.elec_info_type;
-        $('#file_upload').uploadify('upload', '*');
-    }
-
-    function onCreate(data) {
-        console.log(this, arguments);
-        var param = {
-            mchnt_id: query.mchnt_id,
-            elec_info_type: current_elec_info_type,
-            serverid: data.serverid
-        };
-
-        $$.request('/action/bm/mchnt-elec-info/create', param, function(data) {
-            if (data.errcode == 0) {
-                $('#search-dg').datagrid('reload');
-            }
-        });
-    }
-
-    function formatFilename(value, rowData, rowIndex) {
-        return $$.formatField($$.param['elec_info_type'], value);
-    }
-
-    function formatFilename(value, rowData, rowIndex) {
-        var url = $$.wrapUrl('/action/uploads/' + rowData.serverid);
-
-        var s = '<a href="'+url+'" target="_blank">'+value+'</a>';
-
-        return s;
-    }
-
-    function formatElecInfoType(value, rowData, rowIndex) {
-        return $$.formatField($$.param['elec_info_type'], value);
-    }
-
-    function initCombobox() {
-        $$.request('/action/bm/parameter/list', {
-            elec_info_type: '1',
-            term_inves: '1'
-        }, function(data) {
-            $('#elec_info_type,#elec_info_type2').combobox('loadData', data.elec_info_type);
-            $('#attr4').combobox('loadData', data.term_inves);
-        });
-    }
-
-    $(function() {
-        initCombobox();
-        initUpload();
-
-        //init ui
-        if (query.mchnt_id) {
-            $('#upload-fm').removeClass('hide');
-            $('#search-btn').click();
         }
     });
     </script>

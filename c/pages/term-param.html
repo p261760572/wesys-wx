@@ -1,239 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>终端参数</title>
-    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
-    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../lib/element-ui/theme-default/index.css">
+    <style type="text/css">
+    html,
+    body{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    
+    .search-box {
+        padding: 20px;
+    }
+
+    .detail-box {
+        padding: 20px;
+    }
+
+    .form-box {
+        min-width: 400px;
+        max-width: 600px;
+    }    
+
+    .pagination {
+        margin: 20px 0;
+        text-align: right;
+    }
+    </style>
 </head>
 
 <body>
-    <div class="page page_active" id="search-page">
-        <div>
-            <form id="search-fm" class="form form_search" action="/action/bm/term-param/search" method="post">
-                <table class="form__table">
-                    <caption>查询终端参数</caption>
-                    <!-- <tr>
-                        <td>
-                            <label>终端参数ID：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_param_id">
-                        </td>
-                        <td>
-                            <label>商户参数ID：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mchnt_param_id">
-                        </td>
-                    </tr> -->
-                    <tr>
-                        <td>
-                            <label>商户号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mchnt_cd">
-                        </td>
-                        <td>
-                            <label>终端号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_id">
-                        </td>
-                    </tr>
-                    <!-- <tr>
-                        <td>
-                            <label>参数状态：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="status">
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
-                    </tr> -->
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" class="center">
-                                <div style="margin:5px;"></div>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a> &nbsp;&nbsp;
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </form>
+    <div id="app">
+        <div class="search-box" v-if="!detailVisible">
+            <div class="form-box">
+                <el-form ref="searchForm" :model="searchForm" label-width="100px">
+                    <el-form-item label="终端参数ID" prop="term_param_id">
+                        <el-input v-model="searchForm.term_param_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商户参数ID" prop="mchnt_param_id">
+                        <el-input v-model="searchForm.mchnt_param_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="终端号" prop="term_id">
+                        <el-input v-model="searchForm.term_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="参数状态" prop="status">
+                        <el-input v-model="searchForm.status"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
+                        <el-button @click="resetForm('searchForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <el-table :data="searchTableData" border style="width: 100%">
+                <el-table-column prop="term_param_id" label="终端参数ID"></el-table-column>
+                <el-table-column prop="mchnt_param_id" label="商户参数ID"></el-table-column>
+                <el-table-column prop="term_id" label="终端号"></el-table-column>
+                <el-table-column prop="status" label="参数状态"></el-table-column>
+                <el-table-column prop="expand_inst_id" label="拓展方"></el-table-column>
+                <el-table-column prop="expand_id" label="拓展人"></el-table-column>
+                <el-table-column label="操作" width="150">
+                    <template scope="scope">
+                        <el-button size="small" @click="handleView(scope.$index, scope.row)">查看</el-button>
+                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="0">
+            </el-pagination>
+            </div>
         </div>
-        <br>
-        <div id="search-dg-tb">
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.add(this, event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm',onSuccess:$$.addSuccess">新增</a>
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event, 'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'" data-action="update">编辑</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/bm/term-param/batch-delete',onSuccess:$$.batchSubmitSuccess" data-actions="delete">删除</a>
+        <el-dialog v-model="detailVisible" size="full">
+            <div class="detail-box">
+            <div class="form-box">
+                <el-form ref="detailForm" :model="detailForm" :rules="rules" label-width="100px">
+                    <el-form-item label="终端参数ID" prop="term_param_id">
+                        <el-input v-model="detailForm.term_param_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商户参数ID" prop="mchnt_param_id">
+                        <el-input v-model="detailForm.mchnt_param_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="终端号" prop="term_id">
+                        <el-input v-model="detailForm.term_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="参数状态" prop="status">
+                        <el-input v-model="detailForm.status"></el-input>
+                    </el-form-item>
+                    <el-form-item label="拓展方" prop="expand_inst_id">
+                        <el-input v-model="detailForm.expand_inst_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="拓展人" prop="expand_id">
+                        <el-input v-model="detailForm.expand_id"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('detailForm')">提交</el-button>
+                        <el-button @click="detailVisible=false">返回</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
-        <table id="search-dg" title="终端参数" class="easyui-datagrid" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:$$.st.transition[typeId]||[]">
-            <thead>
-                <tr>
-                    <th data-options="field:'chk',checkbox:true"></th>
-                    <!-- <th data-options="field:'term_param_id',width:100">终端参数ID</th>
-                    <th data-options="field:'mchnt_param_id',width:100">商户参数ID</th> -->
-                    <th data-options="field:'mchnt_cd',width:100">商户号</th>
-                    <th data-options="field:'term_id',width:100">终端号</th>
-                    <th data-options="field:'status',width:100">参数状态</th>
-                    <th data-options="field:'expand_inst_nm',width:100">拓展方</th>
-                    <th data-options="field:'expand_nm',width:100">拓展人</th>
-                </tr>
-            </thead>
-        </table>
+        </el-dialog>
     </div>
-    <div class="page" id="detail-page">
-        <form id="detail-fm" class="form form_detail" action="/action/bm/term-param/view" method="post">
-            <table class="form__table">
-                <caption>终端参数</caption>
-                <tbody>
-                    <tr class="hide">
-                        <td>
-                            <label>终端参数ID：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_param_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>商户参数ID：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mchnt_param_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>终端号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>参数状态：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="status" class="easyui-validatebox" data-options="required:true">
-                            <select name="status" class="easyui-validatebox" data-options="required:true">
-                                <option value="">--请选择--</option>
-                            </select>
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>拓展方：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="expand_inst_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>拓展人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="expand_id" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>记录编号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="rec_id">
-                        </td>
-                        <td>
-                            <label>操作标志/处理状态：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="oper_in" style="width: 100px;">
-                            <input type="text" name="proc_st" style="width: 100px;">
-                            <!-- <select name="oper_in">
-                            </select>
-                            <select name="proc_st">
-                            </select> -->
-                        </td>
-                    </tr>
-                    <tr class="readonly readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>创建人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="created_by">
-                        </td>
-                        <td>
-                            <label>创建时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="created_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>最后修改人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_modified_by">
-                        </td>
-                        <td>
-                            <label>最后修改时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_modified_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>最后审核人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_checked_by">
-                        </td>
-                        <td>
-                            <label>最后审核时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_checked_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>审核通过或不通过原因：</label>
-                        </td>
-                        <td colspan="3" class="editable-check1">
-                            <input type="text" name="checked_reason" class="easyui-validatebox" style="width:100%;" data-options="">
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4">
-                            <div style="margin:5px;"></div>
-                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/bm/term-param/create',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
-                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/bm/term-param/update',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
-                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </form>
-    </div>
-    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../js/base.js"></script>
-    <script type="text/javascript" src="../js/st.js"></script>
-    <script type="text/javascript">
-    var typeId = $$.st.alias['term_param'];
+    <!-- 先引入 Vue -->
+    <script src="../lib/vue/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="../lib/element-ui/index.js"></script>
+    <script src="../lib/axios/axios.js"></script>
+    <script src="../js/base2.js"></script>
+    <script>
+    function onSearch() {
+        console.log(this, arguments);
+        $$.request('/action/bm/term-param/search', vm.searchForm, function(data) {
+            vm.searchTableData = data.rows;
+            vm.searchForm.total = data.total;
+        });
+    }
+
+    function onView(param) {
+        vm.detailVisible = true;
+
+        $$.request('/action/bm/term-param/view', param, function(data) {
+            vm.detailForm = data.data;
+        });
+    }
+
+    function onSubmit() {
+        $$.request('/action/bm/term-param/update', vm.detailForm, function(data) {
+            //
+        });
+    }
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            detailVisible: false,
+            searchForm: {
+                page: 1,
+                rows: 10,
+                total: 0
+            },
+            searchTableData: [],
+            detailForm: {},
+            rules: {
+                term_param_id: [{
+                    required: true,
+                    message: '请输入终端参数ID',
+                    trigger: 'blur'
+                }],
+                mchnt_param_id: [{
+                    required: true,
+                    message: '请输入商户参数ID',
+                    trigger: 'blur'
+                }],
+                status: [{
+                    required: true,
+                    message: '请输入参数状态',
+                    trigger: 'blur'
+                }],
+            }
+        },
+        methods: {
+            handleView: function(index, row) {
+                console.log(this, arguments);
+                onView(row);
+            },
+            handleEdit: function(index, row) {
+                console.log(this, arguments);
+                onView(row);
+            },
+            handleCurrentChange: function(currentPage) {
+                console.log(this, arguments);
+                this.searchForm.page = currentPage;
+                onSearch();
+            },
+            handleSizeChange: function(size) {
+                console.log(this, arguments);
+                this.searchForm.rows = size;
+                onSearch();
+            },
+            submitForm: function(formName) {
+                var self = this;
+                if (formName == 'searchForm') {
+                    onSearch();
+                } else {
+                    self.$refs[formName].validate(function(valid) {
+                        if (valid) {
+                            onSubmit();
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            }
+        }
+    });
     </script>
 </body>
 

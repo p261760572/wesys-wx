@@ -1,424 +1,323 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>终端信息</title>
-    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/default/easyui.css" />
-    <link rel="stylesheet" type="text/css" href="../lib/easyui/themes/icon.css" />
-    <link rel="stylesheet" type="text/css" href="../css/ui-base.css" />
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="../lib/element-ui/theme-default/index.css">
+    <style type="text/css">
+    html,
+    body{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    
+    .search-box {
+        padding: 20px;
+    }
+
+    .detail-box {
+        padding: 20px;
+    }
+
+    .form-box {
+        min-width: 400px;
+        max-width: 600px;
+    }    
+
+    .pagination {
+        margin: 20px 0;
+        text-align: right;
+    }
+    </style>
 </head>
 
 <body>
-    <div class="page page_active" id="search-page">
-        <div>
-            <form id="search-fm" class="form form_search" action="/action/bm/term-info/search" method="post" data-options="onSerialize:onSerialize">
-                <table class="form__table">
-                    <caption>查询终端信息</caption>
-                    <tr>
-                        <td>
-                            <label>终端标识：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_no">
-                        </td>
-                        <td>
-                            <label>客户号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mchnt_id">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>联系人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="linkman">
-                        </td>
-                        <td>
-                            <label>手机号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mobile">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>门店名称：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="shop_name">
-                        </td>
-                        <td>
-                            <label>详细地址：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="addr">
-                        </td>
-                    </tr>
-                    <tfoot>
-                        <tr>
-                            <td colspan="4" class="center">
-                                <div style="margin:5px;"></div>
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.search(this)" id="search-btn">查询</a> &nbsp;&nbsp;
-                                <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-clear',datagrid:'#search-dg'" style="padding:0 5px;" onclick="$$.reset(this)">重置</a>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </form>
+    <div id="app">
+        <div class="search-box" v-if="!detailVisible">
+            <div class="form-box">
+                <el-form ref="searchForm" :model="searchForm" label-width="100px">
+                    <el-form-item label="终端标识" prop="term_no">
+                        <el-input v-model="searchForm.term_no"></el-input>
+                    </el-form-item>
+                    <el-form-item label="客户号" prop="mchnt_id">
+                        <el-input v-model="searchForm.mchnt_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系人" prop="linkman">
+                        <el-input v-model="searchForm.linkman"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号" prop="mobile">
+                        <el-input v-model="searchForm.mobile"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
+                        <el-button @click="resetForm('searchForm')">重置</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <el-table :data="searchTableData" border style="width: 100%">
+                <el-table-column prop="term_no" label="终端标识"></el-table-column>
+                <el-table-column prop="mchnt_id" label="客户号"></el-table-column>
+                <el-table-column prop="linkman" label="联系人"></el-table-column>
+                <el-table-column prop="mobile" label="手机号"></el-table-column>
+                <el-table-column prop="shop_name" label="门店名称"></el-table-column>
+                <el-table-column prop="telno" label="联系电话"></el-table-column>
+                <el-table-column prop="province" label="所在地区(省)"></el-table-column>
+                <el-table-column prop="city" label="所在地区(市)"></el-table-column>
+                <el-table-column prop="district" label="所在地区(区)"></el-table-column>
+                <el-table-column prop="addr" label="详细地址"></el-table-column>
+                <el-table-column prop="term_inves" label="终端投资方"></el-table-column>
+                <el-table-column prop="equi_type" label="机具类型"></el-table-column>
+                <el-table-column prop="installed_date" label="装机日期"></el-table-column>
+                <el-table-column prop="removed_date" label="撤机日期"></el-table-column>
+                <el-table-column prop="installed_by" label="装机人"></el-table-column>
+                <el-table-column prop="maintained_by" label="维护人"></el-table-column>
+                <el-table-column prop="term_status" label="终端状态"></el-table-column>
+                <el-table-column prop="expand_inst_id" label="拓展方"></el-table-column>
+                <el-table-column prop="expand_id" label="拓展人"></el-table-column>
+                <el-table-column label="操作" width="150">
+                    <template scope="scope">
+                        <el-button size="small" @click="handleView(scope.$index, scope.row)">查看</el-button>
+                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="0">
+            </el-pagination>
+            </div>
         </div>
-        <br>
-        <div id="search-dg-tb">
-            <a href="#detail-page" class="easyui-linkbutton hide" onClick="$$.add(this, event)" data-options="plain:true,iconCls:'icon-add',form:'#detail-fm',onSuccess:$$.addSuccess" id="add-btn">新增</a>
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event)" data-options="plain:true,iconCls:'icon-view',datagrid:'#search-dg',form:'#detail-fm'">查看详情</a>
-            <a href="#detail-page" class="easyui-linkbutton" onClick="$$.view(this, event, 'update')" data-options="plain:true,iconCls:'icon-edit',datagrid:'#search-dg',form:'#detail-fm'" data-action="update">编辑</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" onClick="$$.batchSubmit(this)" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/bm/term-info/batch-delete',onSuccess:$$.batchSubmitSuccess" data-actions="delete">删除</a>
+        <el-dialog v-model="detailVisible" size="full">
+            <div class="detail-box">
+            <div class="form-box">
+                <el-form ref="detailForm" :model="detailForm" :rules="rules" label-width="100px">
+                    <el-form-item label="终端标识" prop="term_no">
+                        <el-input v-model="detailForm.term_no"></el-input>
+                    </el-form-item>
+                    <el-form-item label="客户号" prop="mchnt_id">
+                        <el-input v-model="detailForm.mchnt_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系人" prop="linkman">
+                        <el-input v-model="detailForm.linkman"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号" prop="mobile">
+                        <el-input v-model="detailForm.mobile"></el-input>
+                    </el-form-item>
+                    <el-form-item label="门店名称" prop="shop_name">
+                        <el-input v-model="detailForm.shop_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系电话" prop="telno">
+                        <el-input v-model="detailForm.telno"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所在地区(省)" prop="province">
+                        <el-input v-model="detailForm.province"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所在地区(市)" prop="city">
+                        <el-input v-model="detailForm.city"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所在地区(区)" prop="district">
+                        <el-input v-model="detailForm.district"></el-input>
+                    </el-form-item>
+                    <el-form-item label="详细地址" prop="addr">
+                        <el-input v-model="detailForm.addr"></el-input>
+                    </el-form-item>
+                    <el-form-item label="终端投资方" prop="term_inves">
+                        <el-input v-model="detailForm.term_inves"></el-input>
+                    </el-form-item>
+                    <el-form-item label="机具类型" prop="equi_type">
+                        <el-input v-model="detailForm.equi_type"></el-input>
+                    </el-form-item>
+                    <el-form-item label="装机日期" prop="installed_date">
+                        <el-input v-model="detailForm.installed_date"></el-input>
+                    </el-form-item>
+                    <el-form-item label="撤机日期" prop="removed_date">
+                        <el-input v-model="detailForm.removed_date"></el-input>
+                    </el-form-item>
+                    <el-form-item label="装机人" prop="installed_by">
+                        <el-input v-model="detailForm.installed_by"></el-input>
+                    </el-form-item>
+                    <el-form-item label="维护人" prop="maintained_by">
+                        <el-input v-model="detailForm.maintained_by"></el-input>
+                    </el-form-item>
+                    <el-form-item label="终端状态" prop="term_status">
+                        <el-input v-model="detailForm.term_status"></el-input>
+                    </el-form-item>
+                    <el-form-item label="拓展方" prop="expand_inst_id">
+                        <el-input v-model="detailForm.expand_inst_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="拓展人" prop="expand_id">
+                        <el-input v-model="detailForm.expand_id"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('detailForm')">提交</el-button>
+                        <el-button @click="detailVisible=false">返回</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
         </div>
-        <table id="search-dg" title="终端信息" class="easyui-datagrid" style="min-width: 1000px;" data-options="toolbar:'#search-dg-tb',idField:'rec_id',transition:$$.st.transition[typeId]||[]">
-            <thead>
-                <tr>
-                    <th data-options="field:'chk',checkbox:true"></th>
-                    <th data-options="field:'term_no'">终端标识</th>
-                    <!-- <th data-options="field:'mchnt_id'">客户号</th> -->
-                    <th data-options="field:'linkman'">联系人</th>
-                    <th data-options="field:'mobile'">手机号</th>
-                    <th data-options="field:'shop_name'">门店名称</th>
-                    <th data-options="field:'district_name'">所在地区</th>
-                    <th data-options="field:'addr'">详细地址</th>
-                    <th data-options="field:'term_inves_nm'">终端投资方</th>
-                    <th data-options="field:'maintained_by_nm'">维护人</th>
-                    <th data-options="field:'term_status',formatter:formatTermStatus">终端状态</th>
-                    <th data-options="field:'expand_inst_nm'">拓展方</th>
-                    <th data-options="field:'expand_nm'">拓展人</th>
-                    <th data-options="field:'oper_in',formatter:formatOperIn">操作标志</th>
-                    <th data-options="field:'proc_st',formatter:formatProcSt">处理状态</th>
-                </tr>
-            </thead>
-        </table>
+        </el-dialog>
     </div>
-    <div class="page" id="detail-page">
-        <form id="detail-fm" class="form form_detail" action="/action/bm/term-info/view" method="post" data-options="onLoad:onLoad">
-            <table class="form__table">
-                <caption>终端信息</caption>
-                <tbody>
-                    <tr class="readonly">
-                        <td>
-                            <label>终端标识：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_no" class="easyui-validatebox" data-options="">
-                            <!-- <span class="required">*</span>                             -->
-                        </td>
-                        <td>
-                            <label>客户号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mchnt_id" class="easyui-validatebox" data-options="">
-                            <!-- <span class="required">*</span>                             -->
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>联系人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="linkman" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>手机号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="mobile" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>门店名称：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="shop_name" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>联系电话：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="telno" class="easyui-validatebox" data-options="">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>所在地区：</label>
-                        </td>
-                        <td class="td30 clear-readonly">
-                            <div>
-                                <input type="text" id="province" name="province" class="easyui-combobox" data-options="editable:false,required:true,data:provinceData,onChange:onChangeProvince" style="width:80px;">
-                                <input type="text" id="city" name="city" class="easyui-combobox" data-options="editable:false,required:true,data:cityData,onChange:onChangeCity" style="width:80px;">
-                                <input type="text" id="district" name="district" class="easyui-combobox" data-options="editable:false,required:true" style="width:80px;">
-                                <span class="required">*</span>
-                            </div>
-                        </td>
-                        <td>
-                            <label>详细地址：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="addr" class="easyui-validatebox" data-options="required:true">
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>终端投资方：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="term_inves" class="easyui-combobox" style="width: 173px;" data-options="required:true" id="term_inves">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>机具类型：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="equi_type" class="easyui-combobox" style="width: 173px;" data-options="required:true" id="equi_type">
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>装机日期：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="installed_date" class="easyui-validatebox" data-options="">
-                        </td>
-                        <td>
-                            <label>撤机日期：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="removed_date" class="easyui-validatebox" data-options="">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>装机人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="installed_by" class="easyui-validatebox" data-options="">
-                        </td>
-                        <td>
-                            <label>维护人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="maintained_by" class="easyui-validatebox" data-options="">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>终端状态：</label>
-                        </td>
-                        <td>
-                            <!-- <input type="text" name="term_status" class="easyui-validatebox" data-options="required:true"> -->
-                            <select name="term_status" class="easyui-validatebox" data-options="required:true" id="term_status">
-                            </select>
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            <label>拓展方：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="expand_inst_id" class="easyui-combobox" style="width: 173px;" data-options="required:true" id="expand_inst_id">
-                            <span class="required">*</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>拓展人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="expand_id" class="easyui-combobox" style="width: 173px;" data-options="required:true" id="expand_id">
-                            <span class="required">*</span>
-                        </td>
-                        <td>
-                            &nbsp;
-                        </td>
-                        <td>
-                            &nbsp;
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>记录编号：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="rec_id">
-                        </td>
-                        <td>
-                            <label>操作标志/处理状态：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="oper_in" style="width: 100px;">
-                            <input type="text" name="proc_st" style="width: 100px;">
-                            <!-- <select name="oper_in">
-                            </select>
-                            <select name="proc_st">
-                            </select> -->
-                        </td>
-                    </tr>
-                    <tr class="readonly readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>创建人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="created_by">
-                        </td>
-                        <td>
-                            <label>创建时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="created_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>最后修改人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_modified_by">
-                        </td>
-                        <td>
-                            <label>最后修改时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_modified_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>最后审核人：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_checked_by">
-                        </td>
-                        <td>
-                            <label>最后审核时间：</label>
-                        </td>
-                        <td>
-                            <input type="text" name="last_checked_time">
-                        </td>
-                    </tr>
-                    <tr class="readonly invisible visible-view visible-check1">
-                        <td>
-                            <label>审核通过或不通过原因：</label>
-                        </td>
-                        <td colspan="3" class="editable-check1">
-                            <input type="text" name="checked_reason" class="easyui-validatebox" style="width:100%;" data-options="">
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4">
-                            <div style="margin:5px;"></div>
-                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-create" data-options="iconCls:'icon-ok',url:'/action/bm/term-info/create',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">新增提交</a>
-                            <a href="javascript:void(0)" class="easyui-linkbutton invisible visible-update" data-options="iconCls:'icon-ok',url:'/action/bm/term-info/update',datagrid:'#search-dg',onSuccess:$$.submitSuccess" style="padding:0 5px;" onclick="$$.submit(this)">编辑提交</a>
-                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-return'" style="padding:0 5px;" onclick="$$.back(this)">返回</a>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </form>
-    </div>
-    <script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="../lib/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
-    <script type="text/javascript" src="../js/select2.js"></script>
-    <script type="text/javascript" src="../js/base.js"></script>
-    <script type="text/javascript" src="../js/st.js"></script>
-    <script type="text/javascript" src="../js/param.js"></script>
-    <script type="text/javascript" src="../js/district.js"></script>
-    <script type="text/javascript">
-    var query = $$.parseQueryString();
-    var typeId = $$.st.alias['mchnt_base_info'];
-    var provinceData = xProvinceCityDistrict['province'];
-    var cityData = xProvinceCityDistrict['city']['43'];
-
-    function onChangeProvince(newValue, oldValue) {
-        if (newValue) {
-            $('#city').combobox('clear').combobox('loadData', xProvinceCityDistrict['city'][newValue]);
-            $('#district').combobox('clear');
-        }
+    <!-- 先引入 Vue -->
+    <script src="../lib/vue/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="../lib/element-ui/index.js"></script>
+    <script src="../lib/axios/axios.js"></script>
+    <script src="../js/base2.js"></script>
+    <script>
+    function onSearch() {
+        console.log(this, arguments);
+        $$.request('/action/bm/term-info/search', vm.searchForm, function(data) {
+            vm.searchTableData = data.rows;
+            vm.searchForm.total = data.total;
+        });
     }
 
-    function onChangeCity(newValue, oldValue) {
-        if (newValue) {
-            var province = $('#province').combobox('getValue');
-            if (province) {
-                $('#district').combobox('clear').combobox('loadData', xProvinceCityDistrict['district'][province + newValue]);
+    function onView(param) {
+        vm.detailVisible = true;
+
+        $$.request('/action/bm/term-info/view', param, function(data) {
+            vm.detailForm = data.data;
+        });
+    }
+
+    function onSubmit() {
+        $$.request('/action/bm/term-info/update', vm.detailForm, function(data) {
+            //
+        });
+    }
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            detailVisible: false,
+            searchForm: {
+                page: 1,
+                rows: 10,
+                total: 0
+            },
+            searchTableData: [],
+            detailForm: {},
+            rules: {
+                term_no: [{
+                    required: true,
+                    message: '请输入终端标识',
+                    trigger: 'blur'
+                }],
+                mchnt_id: [{
+                    required: true,
+                    message: '请输入客户号',
+                    trigger: 'blur'
+                }],
+                linkman: [{
+                    required: true,
+                    message: '请输入联系人',
+                    trigger: 'blur'
+                }],
+                mobile: [{
+                    required: true,
+                    message: '请输入手机号',
+                    trigger: 'blur'
+                }],
+                shop_name: [{
+                    required: true,
+                    message: '请输入门店名称',
+                    trigger: 'blur'
+                }],
+                province: [{
+                    required: true,
+                    message: '请输入所在地区(省)',
+                    trigger: 'blur'
+                }],
+                city: [{
+                    required: true,
+                    message: '请输入所在地区(市)',
+                    trigger: 'blur'
+                }],
+                district: [{
+                    required: true,
+                    message: '请输入所在地区(区)',
+                    trigger: 'blur'
+                }],
+                addr: [{
+                    required: true,
+                    message: '请输入详细地址',
+                    trigger: 'blur'
+                }],
+                term_inves: [{
+                    required: true,
+                    message: '请输入终端投资方',
+                    trigger: 'blur'
+                }],
+                equi_type: [{
+                    required: true,
+                    message: '请输入机具类型',
+                    trigger: 'blur'
+                }],
+                term_status: [{
+                    required: true,
+                    message: '请输入终端状态',
+                    trigger: 'blur'
+                }],
+                expand_inst_id: [{
+                    required: true,
+                    message: '请输入拓展方',
+                    trigger: 'blur'
+                }],
+                expand_id: [{
+                    required: true,
+                    message: '请输入拓展人',
+                    trigger: 'blur'
+                }]
             }
-        }
-    }
-
-    function onSerialize(data) {
-        $.extend(data, query);
-    }
-
-    function onLoad(data) {
-        $('#province').combobox('clear').combobox('setValue', data.data.province);
-        $('#city').combobox('clear').combobox('setValue', data.data.city);
-        $('#district').combobox('clear').combobox('setValue', data.data.district);
-    }
-
-    function formatTermStatus(value, rowData, rowIndex) {
-        console.log($$.param['term_status']);
-        return $$.formatField($$.param['term_status'], value);
-    }
-
-    function formatOperIn(value, rowData, rowIndex) {
-        return $$.formatField($$.st.operIn[typeId], value);
-    }
-
-    function formatProcSt(value, rowData, rowIndex) {
-        return $$.formatField($$.st.procSt[typeId], value);
-    }
-
-    function formatOp(value, rowData, rowIndex) {
-        var queryString = $.param(query).replace(/\+/g, '%20');
-        var url = 'photo-copy.html?' + queryString;
-
-        var s = '<a href="' + url + '" target="_blank">影印件</a>';
-
-        return s;
-    }
-
-    function initCombobox() {
-        $$.request('/action/bm/expand-inst/list', {}, function(data) {
-            $('#expand_inst_id').combobox('loadData', data.rows);
-        });
-
-        $$.request('/action/bm/expand/list', {}, function(data) {
-            $('#expand_id').combobox('loadData', data.rows);
-        });
-
-        $$.request('/action/bm/parameter/list', {
-            term_inves: '1',
-            equi_type: '1'
-        }, function(data) {
-            if (data.errcode == 0) {
-                $('#term_inves').combobox('loadData', data.term_inves);
-                $('#equi_type').combobox('loadData', data.equi_type);
+        },
+        methods: {
+            handleView: function(index, row) {
+                console.log(this, arguments);
+                onView(row);
+            },
+            handleEdit: function(index, row) {
+                console.log(this, arguments);
+                onView(row);
+            },
+            handleCurrentChange: function(currentPage) {
+                console.log(this, arguments);
+                this.searchForm.page = currentPage;
+                onSearch();
+            },
+            handleSizeChange: function(size) {
+                console.log(this, arguments);
+                this.searchForm.rows = size;
+                onSearch();
+            },
+            submitForm: function(formName) {
+                var self = this;
+                if (formName == 'searchForm') {
+                    onSearch();
+                } else {
+                    self.$refs[formName].validate(function(valid) {
+                        if (valid) {
+                            onSubmit();
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
             }
-        });
-    }
-
-    $(function() {
-        $('#term_status').select2().select2('loadData', $$.param['term_status']);
-        initCombobox();
-
-        if(query.mchnt_id) {
-            $('#add-btn').removeClass('hide');
-            $('#search-btn').click();
         }
     });
     </script>
