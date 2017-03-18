@@ -5,28 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>e通</title>
-    <link rel="stylesheet" href="../../lib/weui/style/weui.min.css">
-    <link rel="stylesheet" href="../../lib/weuijs/style/weuijs.css">
-    <link rel="stylesheet" href="../../css/ui-base.css">
+    <title>余额</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
 </head>
 
-<body class="page_navbar">
-    <div class="navbar">
-        <div class="navbar__inner">
-            <div class="navbar__left">
-                <a href="javascript:history.back()" class="navbar__link">
-                    <i class="icon-back_nav"></i>
-                </a>
-            </div>
-            <div class="navbar__center">余额</div>
-            <div class="navbar__right">
-                <a href="balance-history.html" class="navbar__link" style="font-size: 14px;">
-                    <span>明细</span>
-                </a>
-            </div>
-        </div>
-    </div>
+<body>
     <div class="page__content">
         <div class="weui-msg">
             <div class="weui-msg__icon-area"><i class="icon-balance" style="width: 100px; height: 100px;"></i></div>
@@ -40,6 +24,9 @@
                     <!-- <a href="javascript:history.back();" class="weui-btn weui-btn_default">辅助操作</a> -->
                 </p>
             </div>
+            <a href="balance-history.html" style="font-size: 14px;">
+                 <span>明细</span>
+            </a>
             <!-- <div class="weui-msg__extra-area">
             <div class="weui-footer">
                 <p class="weui-footer__links">
@@ -50,11 +37,8 @@
         </div> -->
         </div>
     </div>
-    <script type="text/javascript" src="../../lib/jweixin-1.0.0.js"></script>
-    <script type="text/javascript" src="../../lib/zepto/zepto.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../lib/art-template/template.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../lib/weuijs/weuijs.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../js/base.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript">
     $(function() {
         $$.request('/action/user/account/view', {}, function(data) {
