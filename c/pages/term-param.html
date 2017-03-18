@@ -63,10 +63,11 @@
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
                         <el-button @click="resetForm('searchForm')">重置</el-button>
+                        <el-button @click="handleAdd">新增</el-button>
                     </el-form-item>
                 </el-form>
             </div>
-            <el-table :data="searchTableData" border style="width: 100%">
+            <el-table :data="pagination.data" border style="width: 100%">
                 <el-table-column prop="term_param_id" label="终端参数ID"></el-table-column>
                 <el-table-column prop="mchnt_param_id" label="商户参数ID"></el-table-column>
                 <el-table-column prop="term_id" label="终端号"></el-table-column>
@@ -81,7 +82,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="0">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagination.page" :page-sizes="[10, 20, 50, 100]" :page-size="pagination.rows" layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
             </el-pagination>
             </div>
         </div>
@@ -125,9 +126,10 @@
     <script>
     function onSearch() {
         console.log(this, arguments);
-        $$.request('/action/bm/term-param/search', vm.searchForm, function(data) {
-            vm.searchTableData = data.rows;
-            vm.searchForm.total = data.total;
+        var param = $$.extend({}, vm.searchForm, vm.pagination);
+        $$.request('/action/bm/term-param/search', param, function(data) {
+            vm.pagination.data = data.rows;
+            vm.pagination.total = data.total;
         });
     }
 
@@ -140,7 +142,7 @@
     }
 
     function onSubmit() {
-        $$.request('/action/bm/term-param/update', vm.detailForm, function(data) {
+        $$.request('/action/bm/term-param/' + vm.operateType, vm.detailForm, function(data) {
             //
         });
     }
@@ -149,13 +151,16 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            operateType: null,
             detailVisible: false,
             searchForm: {
+            },
+            pagination: {
                 page: 1,
                 rows: 10,
-                total: 0
+                total: 0,
+                data: []
             },
-            searchTableData: [],
             detailForm: {},
             rules: {
                 term_param_id: [{
@@ -176,22 +181,27 @@
             }
         },
         methods: {
+            handleAdd: function() {
+                vm.detailVisible = true;
+                vm.operateType = 'create';
+            },
             handleView: function(index, row) {
                 console.log(this, arguments);
                 onView(row);
             },
             handleEdit: function(index, row) {
                 console.log(this, arguments);
+                this.operateType = 'update';
                 onView(row);
             },
             handleCurrentChange: function(currentPage) {
                 console.log(this, arguments);
-                this.searchForm.page = currentPage;
+                this.pagination.page = currentPage;
                 onSearch();
             },
             handleSizeChange: function(size) {
                 console.log(this, arguments);
-                this.searchForm.rows = size;
+                this.pagination.rows = size;
                 onSearch();
             },
             submitForm: function(formName) {
