@@ -103,7 +103,7 @@
     function share() {
         if (curent_user) {
             wxOnMenuShare({
-                title: '分享',
+                title: '湖南银信诺信息技术有限公司-' + curent_user.data.mobile.replace(/(\d{3})\d+(\d{4})/, '$1****$2'),
                 link: window.location.origin + '/p/m/register.html?referral_id=' + curent_user.data.userid
             });
         }

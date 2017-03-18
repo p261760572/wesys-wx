@@ -10,11 +10,7 @@
     body {
         height: 100%;
         margin: 0;
-    }
-    
-    .layout {
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
+        overflow: hidden;
     }
     
     .layout-logo {
@@ -33,36 +29,37 @@
         margin-right: 20px;
     }
     
-    .layout-nav {
-        /*margin: 15px 0 15px 15px;*/
-        margin: 15px 0 0 0;
-        border-radius: 4px;
+    .layout-header {
+        height: 60px;
+        background-color: #324157;
+    }
+    
+    .layout-sidebar {
+        position: absolute;
+        width: 250px;
+        left: 0;
+        top: 60px;
+        bottom: 0;
+    }
+    
+    .layout-sidebar>ul {
+        height: 100%;
+        overflow: auto;
     }
     
     .layout-content {
-        min-height: 800px;
-        margin: 15px;
-        overflow: hidden;
-        background: #fff;
-        border-radius: 4px;
-    }
-    
-    .layout-content-main {
-        height: 100%;
-        padding: 10px;
-    }
-    
-    .layout-copy {
-        text-align: center;
-        padding: 0 0 10px;
-        color: #9ea7b4;
+        position: absolute;
+        left: 250px;
+        right: 0;
+        top: 60px;
+        bottom: 0;
     }
     </style>
 </head>
 
 <body>
-    <div id="app" class="layout">
-        <el-row class="el-menu--dark">
+    <div id="app">
+        <div class="layout-header">
             <div class="layout-logo"></div>
             <div class="layout-assistant">
                 <el-menu theme="dark" mode="horizontal">
@@ -73,31 +70,18 @@
                     </el-submenu>
                 </el-menu>
             </div>
-        </el-row>
-        <el-row>
-            <el-col :span="5">
-                <div class="layout-nav">
-                    <el-menu>
-                        <template v-for="child in items">
-                            <submenu :child="child"></submenu>
-                        </template>
-                    </el-menu>
-                </div>
-            </el-col>
-            <el-col :span="19">
-                <div class="layout-content">
-                    <div class="layout-content-main">
-                        <iframe :src="src" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
-        <el-row>
-            <div class="layout-copy">
-                2017 &copy;
-            </div>
-        </el-row>
-        <el-dialog title="修改密码" v-model="dialogVisible">
+        </div>
+        <div class="layout-sidebar">
+            <el-menu @select="handleSelect">
+                <template v-for="child in menu">
+                    <submenu :child="child"></submenu>
+                </template>
+            </el-menu>
+        </div>
+        <div class="layout-content">
+            <iframe :src="src" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>
+        </div>
+        <el-dialog title="修改密码" v-model="dialogVisible" size="tiny">
             <el-form :model="passwordForm" :rules="rules" ref="passwordForm">
                 <el-form-item label="原密码" prop="login_pwd">
                     <el-input type="password" v-model="passwordForm.login_pwd" auto-complete="off"></el-input>
@@ -133,7 +117,7 @@
             dialogVisible: false,
             loginName: '我',
             src: 'http://www.baidu.com',
-            items: [],
+            menu: [],
             ruleForm: {
                 name: '',
                 region: '',
@@ -156,6 +140,23 @@
                 $$.request('/action/user/logout', {}, function() {
                     window.location.href = 'login.html';
                 });
+            },
+            handleSelect: function(key, keyPath) {
+                var menu;
+                var children = this.menu;
+                for (var i = 0; i < keyPath.length; i++) {
+                    for (var j = 0; j < children.length; j++) {
+                        if (children[j].menu_id == keyPath[i]) {
+                            menu = children[j];
+                            children = menu.children;
+                            break;
+                        }
+                    }
+                }
+
+                this.src = menu.url;
+
+                console.log(this, arguments);
             },
             handleOpen: function(key, keyPath) {
                 console.log(key, keyPath);
@@ -204,9 +205,9 @@
             var row = rows[i];
             temp[row.menu_id] = row;
         }
-  
+
         for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];            
+            var row = rows[i];
             var p = temp[row.menu_pid];
             if (!p) { //没有找到parent
                 data.push(row);
@@ -230,7 +231,7 @@
     });
 
     $$.request('/action/user/menu', {}, function(data) {
-        vm.items = generateMenuData(data.rows);
+        vm.menu = generateMenuData(data.rows);
     });
     </script>
 </body>
