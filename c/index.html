@@ -2,210 +2,249 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>导航页</title>
-    <link rel="stylesheet" type="text/css" href="lib/zTree/css/zTreeStyle/zTreeStyle.css" />
-    <link rel="stylesheet" type="text/css" href="lib/easyui/themes/default/easyui.css" />
-    <link rel="stylesheet" type="text/css" href="lib/easyui/themes/icon.css" />
-    <link rel="stylesheet" type="text/css" href="css/ui-base.css" />
+    <meta charset="UTF-8">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="lib/element-ui/theme-default/index.css">
     <style type="text/css">
-    .noscroll {
+    html,
+    body {
+        height: 100%;
+        margin: 0;
         overflow: hidden;
     }
     
-    .node_name {
-        font-size: 14px;
+    .layout-logo {
+        width: 100px;
+        height: 30px;
+        background: #5b6270;
+        border-radius: 3px;
+        float: left;
+        position: relative;
+        top: 15px;
+        left: 20px;
+    }
+    
+    .layout-assistant {
+        float: right;
+        margin-right: 20px;
+    }
+    
+    .layout-header {
+        height: 60px;
+        background-color: #324157;
+    }
+    
+    .layout-sidebar {
+        position: absolute;
+        width: 250px;
+        left: 0;
+        top: 60px;
+        bottom: 0;
+    }
+    
+    .layout-sidebar>ul {
+        height: 100%;
+        overflow: auto;
+    }
+    
+    .layout-content {
+        position: absolute;
+        left: 250px;
+        right: 0;
+        top: 60px;
+        bottom: 0;
     }
     </style>
 </head>
 
-<body class="easyui-layout">
-    <div data-options="region:'north',border:false" style="height:30px;">
-        <div class="shortcut">
-            <a href="javascript:;" id="login-name" class="shortcut__lnk"></a>
-            <a href="javascript:;" class="shortcut__lnk" onclick="changePassword()">修改密码</a>
-            <a href="javascript:;" class="shortcut__lnk" onclick="logout()">退出</a>
-        </div>
-    </div>
-    <div data-options="region:'south'" style="height:30px;">
-        <div class="footer">xx公司</div>
-    </div>
-    <div data-options="region:'west',split:true" title="导航" style="width:200px;">
-        <ul id="nav-tree" class="ztree">
-        </ul>
-    </div>
-    <div data-options="region:'center'">
-        <div id="main-tabs" class="easyui-tabs" data-options="border:false,fit:true">
-            <div title="主页" style="padding:10px; height: 100%;">
+<body>
+    <div id="app">
+        <div class="layout-header">
+            <div class="layout-logo"></div>
+            <div class="layout-assistant">
+                <el-menu theme="dark" mode="horizontal">
+                    <el-submenu index="1">
+                        <template slot="title">{{ loginName }}</template>
+                        <el-menu-item index="1-1" @click="dialogVisible = true">修改密码</el-menu-item>
+                        <el-menu-item index="1-2" @click="logout">退出</el-menu-item>
+                    </el-submenu>
+                </el-menu>
             </div>
         </div>
+        <div class="layout-sidebar">
+            <el-menu @select="handleSelect">
+                <template v-for="child in menu">
+                    <submenu :child="child"></submenu>
+                </template>
+            </el-menu>
+        </div>
+        <div class="layout-content">
+            <!-- <el-tabs type="card" closable value="home">
+                <el-tab-pane label="首页" name="home">                    
+                    首页
+                </el-tab-pane>
+                <el-tab-pane v-for="(item, index) in contentTabs" :label="item.title" :name="item.name">                    
+                    <iframe :src="item.src" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>
+                </el-tab-pane>
+            </el-tabs> -->
+            <iframe :src="src" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>
+        </div>
+        <el-dialog title="修改密码" v-model="dialogVisible" size="tiny">
+            <el-form :model="passwordForm" :rules="rules" ref="passwordForm">
+                <el-form-item label="原密码" prop="login_pwd">
+                    <el-input type="password" v-model="passwordForm.login_pwd" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="new_login_pwd">
+                    <el-input type="password" v-model="passwordForm.new_login_pwd" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="new_login_pwd2">
+                    <el-input type="password" v-model="passwordForm.new_login_pwd2" auto-complete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer">
+                <el-button @click="resetForm('passwordForm')">取 消</el-button>
+                <el-button type="primary" @click="submitForm('passwordForm')">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
-    <div id="dd" class="easyui-dialog" title="修改密码" data-options="closed:true,modal:true">
-        <form id="passwd-fm" class="form form_detail" style="margin:10px;" method="post" action="#">
-            <input type="hidden" name="pubkey" id="pubkey" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwpSBCzntA06ceIathHYbN/RsrXey/L5nhhJmrT5z+qrfjz0+zKE/XwmerNnOMYKDt1YRXzmwD/ma+6mQN0yXMnqCIpNGy/QvOqHlQbVy7DJLHXVP7kHl1T4tkxzUbMmA9y7/B0cp1yorfF8oJbe3M2/p0qQ8zF74kXpGaum5FJkqoLTzl+v10qso2PQxp4TP5U1qPioLF1uJAJzlv1lb5Z0RBesOPj+FgG0oh/+bPvL0rJ4QCYnFqDsMcvi4jd9wD6+hyZVG4j+R92YhJHWNy+sgXboLXZTwdTE8sglfAtRK1+ITGKdcYo94Jlo65Kdlxrn0vEPrYSN4/nBwsfq7BQIDAQAB">
-            <table class="form__table">
-                <tr>
-                    <td>
-                        <label>原密码:</label>
-                    </td>
-                    <td>
-                        <input name="login_pwd" class="easyui-validatebox" type="password" style="padding: 5px;" data-options="required:true">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>新密码:</label>
-                    </td>
-                    <td>
-                        <input name="new_login_pwd" class="easyui-validatebox" style="padding: 5px;" type="password" data-options="required:true,validType:['minLength[8]','password']">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>确认密码:</label>
-                    </td>
-                    <td>
-                        <input name="new_login_pwd2" class="easyui-validatebox" style="padding: 5px;" type="password" data-options="required:true">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label>验证码:</label>
-                    </td>
-                    <td>
-                        <input name="captcha" class="easyui-validatebox" style="padding: 5px; width: 100px;" data-options="required:true" />
-                        <img id="captcha-img" src="javascript:void(0)" onclick="this.src='/p/action/user/captcha?t='+new Date().getTime()" style="width:100px; height:35px; vertical-align:middle;" />
-                    </td>
-                </tr>
-                <tfoot>
-                    <tr>
-                        <td colspan="2">
-                            <br>
-                            <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:0 5px;" onclick="changePasswdSubmit()">确认</a>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </form>
-    </div>
-    
-    <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/zTree/jquery.ztree.all.min.js"></script>
-    <script type="text/javascript" src="lib/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="lib/jsencrypt.min.js"></script>
-    <script type="text/javascript" src="js/base.js"></script>
-    <!-- <script type="text/javascript" src="js/home.js"></script> -->
-    <script type="text/javascript">
-    function encryptPassword(password) {
-        //加密密码
-        var crypt = new JSEncrypt();
-        crypt.setPublicKey($('#pubkey').val());
-        return crypt.encrypt(password);
-    }
+    <!-- 先引入 Vue -->
+    <script src="lib/vue/vue.js"></script>
+    <!-- 引入组件库 -->
+    <script src="lib/element-ui/index.js"></script>
+    <script src="lib/axios/axios.js"></script>
+    <script src="js/base2.js"></script>
+    <script>
+    Vue.component('submenu', {
+        props: ['child'],
+        template: '<el-submenu v-if="child.children" :index="child.menu_id"> <template slot="title"><i class="el-icon-menu"></i>{{ child.menu_name }}</template> <!-- submenu --> <template v-for="grandchild in child.children"> <submenu :child="grandchild"></submenu> </template> <!-- submenu --> </el-submenu> <el-menu-item v-else :index="child.menu_id"><i class="el-icon-menu"></i>{{ child.menu_name }}</el-menu-item>'
+    });
 
-    function logout() {
-        $$.request('/action/user/logout', {}, function() {
-            window.location.href = 'login.html';
-        });
-    }
-
-    function onClickNode(event, treeId, treeNode, clickFlag) {
-        event.preventDefault();
-        var zTree = $.fn.zTree.getZTreeObj(treeId);
-        zTree.expandNode(treeNode, null, null, null, true);
-        if (treeNode.url) {
-            if ($('#main-tabs').tabs('getTab', treeNode.menu_name) == null) {
-                $('#main-tabs').tabs('add', {
-                    title: treeNode.menu_name,
-                    content: '<iframe  src="' + treeNode.url + '" frameborder="0" style="width:100%; height:100%; border: 0; overflow: hidden;"></iframe>',
-                    closable: true,
-                    // fit: true
-                    bodyCls: 'noscroll'
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            dialogVisible: false,
+            loginName: '我',
+            src: '',
+            menu: [],
+            // contentTabs: [{
+            //     title: 'Tab 1',
+            //     name: '1',
+            //     src: 'https://www.baidu.com'
+            // }],
+            ruleForm: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            passwordForm: {
+                login_pwd: '',
+                new_login_pwd: '',
+                new_login_pwd2: ''
+            },
+            rules: {}
+        },
+        methods: {
+            logout: function() {
+                $$.request('/action/user/logout', {}, function() {
+                    window.location.href = 'login.html';
                 });
-            } else {
-                $('#main-tabs').tabs('select', treeNode.menu_name);
-            }
-        }
-    }
-
-    function changePassword() {
-        $('#captcha-img').click();
-        $('#passwd-fm').form('disableValidation');
-        $('#dd').dialog('open');
-    }
-
-    // function des_ecb_encrypt(key, val) {
-    //     var ev, i;
-                      
-    //      ev = '';
-    //      for(i = 0; i < 32; i +=8) {
-    //         ev += des(key.substr(i, 8), val.substr(i,8), 1);
-    //      }
-    //      return stringToHex(ev).substr(2);
-    // }
-
-    function changePasswdSubmit() {
-        var fm = $('#passwd-fm');
-        var data = fm.serializeObject();
-
-        if (fm.form('enableValidation').form('validate') != true) {
-            return false;
-        }
-
-        if (data.new_login_pwd != data.new_login_pwd2) {
-            $$.error('两次输入的密码不一致');
-            return false;
-        }
-
-        data.login_pwd = encryptPassword(data.login_pwd);
-        data.new_login_pwd = encryptPassword(data.new_login_pwd);
-        data.new_login_pwd2= encryptPassword(data.new_login_pwd2);
-
-        $$.request('/action/user/password/change', data, function(data) {
-                $$.info('操作成功', function () { $('#dd').dialog('close'); });
-        });
-    }
-
-    $(function() {
-
-        $$.request('/action/user/view', {}, function(data) {
-            $('#login-name').html(data.data.login_name);
-            window.login_name = data.data.login_name;
-        }, function (data) {
-            if($$.errcode(data) == -11 || $$.errcode(data) == 5) {
-                window.location.href = 'login.html';
-            }
-        });
-
-        $$.request('/action/user/menu', {}, function(data) {
-            var setting = {
-                data: {
-                    key: {
-                        name: 'menu_name'
-                    },
-                    simpleData: {
-                        enable: true,
-                        idKey: 'menu_id',
-                        pIdKey: 'menu_pid'
+            },
+            handleSelect: function(key, keyPath) {
+                var menu;
+                var children = this.menu;
+                for (var i = 0; i < keyPath.length; i++) {
+                    for (var j = 0; j < children.length; j++) {
+                        if (children[j].menu_id == keyPath[i]) {
+                            menu = children[j];
+                            children = menu.children;
+                            break;
+                        }
                     }
-                },
-                callback: {
-                    onClick: onClickNode
                 }
-            };
 
-            for (var i = 0, l = data.rows.length; i < l; i++) {
-                if (data.rows[i].url) {
-                    //data.rows[i].target = 'content';
-                    // data.rows[i].attributes = {
-                    //     url: data.rows[i].url
-                    // }
-                }
+                this.src = menu.url;
+
+                console.log(this, arguments);
+            },
+            handleOpen: function(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose: function(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            submitForm: function(formName) {
+                this.$refs[formName].validate(function(valid) {
+                    if (valid) {
+                        var loadingInstance = vm.$loading();
+                        setTimeout(function() {
+                            loadingInstance.close();
+                            vm.$message({
+                                showClose: true,
+                                message: '操作成功',
+                                type: 'success'
+                            });
+                            vm.dialogVisible = false;
+                        }, 1000);
+                    } else {
+                        vm.$message({
+                            showClose: true,
+                            message: '请检查数据',
+                            type: 'warning'
+                        });
+                        return false;
+                    }
+                });
+
+
+            },
+            resetForm: function(formName) {
+                var form = this.$refs[formName];
+                if (form) form.resetFields();
             }
+        }
+    });
 
-            $.fn.zTree.init($("#nav-tree"), setting, data.rows);
-            $.fn.zTree.getZTreeObj('nav-tree').expandAll(true);
-        }, $.noop);
+
+    function generateMenuData(rows) {
+        var data = [];
+        var temp = {};
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            temp[row.menu_id] = row;
+        }
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var p = temp[row.menu_pid];
+            if (!p) { //没有找到parent
+                data.push(row);
+            } else { //找到parent
+                p.children = p.children || [];
+                p.children.push(row);
+            }
+            row.menu_id += '';
+        }
+
+        return data;
+    }
+
+
+    $$.request('/action/user/view', {}, function(data) {
+        vm.loginName = data.data.login_name;
+    }, function(data) {
+        if ($$.errcode(data) == -11 || $$.errcode(data) == 5) {
+            window.location.href = 'login.html';
+        }
+    });
+
+    $$.request('/action/user/menu', {}, function(data) {
+        vm.menu = generateMenuData(data.rows);
     });
     </script>
 </body>
