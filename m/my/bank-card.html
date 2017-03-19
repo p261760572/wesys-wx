@@ -5,29 +5,27 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>e通</title>
+    <title>我的银行卡</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
     <link rel="stylesheet" href="../css/ui-base.css">
 </head>
 
-<body class="page_navbar">
-    <div class="navbar">
-        <div class="navbar__inner">
-            <div class="navbar__left">
-                <a href="javascript:history.back()" class="navbar__link">
-                    <i class="icon-back_nav"></i>
-                </a>
-            </div>
-            <div class="navbar__center">我的银行卡</div>
-            <div class="navbar__right">
-                <a href="add-bank-card.html" class="navbar__link">
-                    <i class="icon-plus"></i>
-                </a>
-            </div>
-        </div>
-    </div>
+<body>
     <div id="card-list" class="page__content">
     </div>
+    <a class="weui-panel weui-panel_access" href="add-bank-card.html">
+		<div class="weui-panel__bd">
+			<div class="weui-media-box weui-media-box_appmsg">
+				<div class="weui-media-box__hd">
+				</div>
+				<div class="weui-media-box__bd">
+					<h4 class="weui-media-box__title" align="center">
+						<p>添加银行卡</p>
+					</h4>
+				</div>
+			</div>
+		</div>
+	</a>  
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="card-templ" type="text/html">
@@ -36,7 +34,7 @@
             <div class="weui-panel__bd">
                 <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
                     <div class="weui-media-box__hd">
-                        <!-- <img class="weui-media-box__thumb" src="../../images/icon_nav_panel.png" alt=""> -->
+                        <!-- <img class="weui-media-box__thumb" src="../images/icon_nav_panel.png" alt=""> -->
                         <i class="icon-bank-card" style="width: 60px; height: 60px;"></i>
                     </div>
                     <div class="weui-media-box__bd">

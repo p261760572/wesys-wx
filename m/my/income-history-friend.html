@@ -5,34 +5,17 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>e通</title>
-    <link rel="stylesheet" href="../../lib/weui/style/weui.min.css">
-    <link rel="stylesheet" href="../../lib/weuijs/style/weuijs.css">
-    <link rel="stylesheet" href="../../css/ui-base.css">
+    <title><span id="nickname"></span>-贡献收益</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
 </head>
 
-<body class="page_navbar">
-    <div class="navbar">
-        <div class="navbar__inner">
-            <div class="navbar__left">
-                <a href="javascript:history.back()" class="navbar__link">
-                    <i class="icon-back_nav"></i>
-                </a>
-            </div>
-            <div class="navbar__center"><span id="nickname"></span>-贡献收益</div>
-            <div class="navbar__right">
-                &#12288;&#12288;
-            </div>
-        </div>
-    </div>
+<body>
     <div id="infinite" class="page__content">
         <div id="income-list" class="weui-cells"></div>
     </div>
-    <script type="text/javascript" src="../../lib/jweixin-1.0.0.js"></script>
-    <script type="text/javascript" src="../../lib/zepto/zepto.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../lib/art-template/template.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../lib/weuijs/weuijs.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../../js/base.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="income-templ" type="text/html">
         {{each rows as row i}}
         <!-- <div class="weui-cells__title">{{row.settle_mon}}</div> -->
