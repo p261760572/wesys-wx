@@ -64,7 +64,7 @@
     }
 
     function submitDetail() {
-		if (!weui.form.validate('#detail-fm', options)) return;
+		if (!weui.form.validate('#detail-fm', {})) return;
 		var param = ('#detail-fm').serializeObject();
 
 		$$.request('/action/user/withdraw', param, {
@@ -81,14 +81,18 @@
     }
     $(function() {
         //验证
-        $$.request('/action/account/view', {}, function(data) {
-            $$.load({
-                available_balance: parseFloat(data.data.available_balance || 0).toFixed(2)
-            }); //unsettled_income,balance
+        $$.request('/action/account/view', {}, {
+			success: function(data) {
+				$$.load({
+					available_balance: parseFloat(data.data.available_balance || 0).toFixed(2)
+				}); //unsettled_income,balance
+			}
         });
-		$$.request('/action/as-user-card-info/list', {}, function(data) {
-			var DefaultCard = (data[0]?data[0].bank_nm+'('+data[0].bank_acct_no+')':null) || '添加银行卡';
-            $('#bank_acct').text(DefaultCard);
+		$$.request('/action/as-user-card-info/list', {}, {
+			success: function(data) {
+				var DefaultCard = (data.rows[0]?data.rows[0].bank_nm+'('+data.rows[0].bank_acct_no+')':null) || '添加银行卡';
+				$('#bank_acct').text(DefaultCard);
+			}
         });
     });
     </script>

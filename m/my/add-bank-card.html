@@ -57,7 +57,7 @@
     });
 
     function submitDetail() {
-		if (!weui.form.validate('#detail-fm', options)) return;
+		if (!weui.form.validate('#detail-fm', {})) return;
 		var param = ('#detail-fm').serializeObject();
 
 		$$.request('/action/user/card-info/create', param, {
