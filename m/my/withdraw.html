@@ -12,7 +12,7 @@
 
 <body>
 	<div class="page__content">
-		<form id="detail-fm" method="post" action="/action/user/withdraw">
+		<form id="detail-fm">
 		<div class="weui-cell weui-cell_access">
 			<div class="weui-cell__hd">
 				<p>银行卡</p>
@@ -64,17 +64,26 @@
     }
 
     function submitDetail() {
-        $$.submit('detail-fm', function() {
-            history.back();
-        });
+		if (!weui.form.validate('#detail-fm', options)) return;
+		var param = ('#detail-fm').serializeObject();
+
+		$$.request('/action/user/withdraw', param, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					weui.toast('操作成功');
+					history.back();
+				} else {
+					weui.alert(data.errmsg, { title: '提示' });
+				}
+			},
+			error: function() {}
+		});
     }
     $(function() {
         //验证
-        $('.validate').validate();
-
         $$.request('/action/account/view', {}, function(data) {
             $$.load({
-                available_balance: parseFloat(data.available_balance || 0).toFixed(2)
+                available_balance: parseFloat(data.data.available_balance || 0).toFixed(2)
             }); //unsettled_income,balance
         });
 		$$.request('/action/as-user-card-info/list', {}, function(data) {

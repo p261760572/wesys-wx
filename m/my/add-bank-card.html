@@ -58,7 +58,7 @@
 
     function submitDetail() {
 		if (!weui.form.validate('#detail-fm', options)) return;
-		var param = ('#form').serializeObject();
+		var param = ('#detail-fm').serializeObject();
 
 		$$.request('/action/user/card-info/create', param, {
 			success: function(data) {

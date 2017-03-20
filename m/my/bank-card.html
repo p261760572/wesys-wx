@@ -44,17 +44,6 @@
         {{/each}}
     </script>
     <script type="text/javascript">
-	var searchPage = weui.searchPage('#card-list', {
-        resultTpl: '#card-templ',
-        loader: onSearch,
-        onInput: function() {
-            console.log(this, arguments);
-        },
-        onClickItem: function(row) {
-            console.log(this, arguments);
-            weui.page.back();
-        }
-    }).search();
 		
 	function onSearch(param, success, error) {
         var queryParams = param;
@@ -73,7 +62,17 @@
     }
 		
     $(function() {
-        searchPage.search();
+        weui.searchPage('#card-list', {
+			resultTpl: '#card-templ',
+			loader: onSearch,
+			onInput: function() {
+				console.log(this, arguments);
+			},
+			onClickItem: function(row) {
+				console.log(this, arguments);
+				weui.page.back();
+			}
+		}).search();
     });
     </script>
 </body>
