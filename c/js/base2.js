@@ -34,12 +34,12 @@
     //POST请求
     $$.request = function(url, data, success, error) {
         axios.post($$.wrapUrl(url), data).then(function(response) {
-            var data =response.data;
+            var data = response.data;
             if ($$.errcode(data) == 0) {
                 success(data)
-            } else if(error){
+            } else if (error) {
                 error(data);
-            } else if(vm) {
+            } else if (vm) {
                 vm.$message({
                     showClose: true,
                     message: $$.errmsg(data),
@@ -50,5 +50,27 @@
             console.log(error);
         });
     };
-    // return $$;
+
+    $$.extend = function(target) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        for (var i = 0; i < args.length; i++) {
+            var source = args[i];
+            for (var key in source) {
+                if (source[key] !== undefined) target[key] = source[key];
+            }
+        }
+
+        return target
+    }
+
+    $$.formatField = function(rows, value, valueField, textField) {
+        valueField = valueField || 'value';
+        textField = textField || 'text';
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i][valueField] == value) {
+                return rows[i][textField];
+            }
+        }
+        return null;
+    };
 })();

@@ -10,13 +10,13 @@
     <link rel="stylesheet" href="../lib/element-ui/theme-default/index.css">
     <style type="text/css">
     html,
-    body{
+    body {
         width: 100%;
         height: 100%;
         margin: 0;
         overflow: hidden;
     }
-
+    
     #app {
         width: 100%;
         height: 100%;
@@ -26,16 +26,16 @@
     .search-box {
         padding: 20px;
     }
-
+    
     .detail-box {
         padding: 20px;
     }
-
+    
     .form-box {
         min-width: 400px;
-        max-width: 600px;
-    }    
-
+        max-width: 800px;
+    }
+    
     .pagination {
         margin: 20px 0;
         text-align: right;
@@ -47,18 +47,15 @@
     <div id="app">
         <div class="search-box" v-if="!detailVisible">
             <div class="form-box">
-                <el-form ref="searchForm" :model="searchForm" label-width="100px">
-                    <el-form-item label="文件名" prop="mchnt_id">
+                <el-form ref="searchForm" :model="searchForm" :inline="true">
+                    <el-form-item label="客户号" prop="mchnt_id">
                         <el-input v-model="searchForm.mchnt_id"></el-input>
                     </el-form-item>
-                    <el-form-item label="服务端ID" prop="serverid">
-                        <el-input v-model="searchForm.serverid"></el-input>
-                    </el-form-item>
                     <el-form-item label="影印件类型" prop="elec_info_type">
-                        <el-input v-model="searchForm.elec_info_type"></el-input>
-                    </el-form-item>
-                    <el-form-item label="是否有效" prop="status">
-                        <el-input v-model="searchForm.status"></el-input>
+                        <el-select v-model="searchForm.elec_info_type" filterable placeholder="请选择">
+                            <el-option v-for="item in elecInfoType" :label="item.text" :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
@@ -66,47 +63,51 @@
                     </el-form-item>
                 </el-form>
             </div>
-            <el-table :data="searchTableData" border style="width: 100%">
-                <el-table-column prop="mchnt_id" label="文件名"></el-table-column>
-                <el-table-column prop="serverid" label="服务端ID"></el-table-column>
-                <el-table-column prop="elec_info_type" label="影印件类型"></el-table-column>
-                <el-table-column prop="status" label="是否有效"></el-table-column>
-                <el-table-column label="操作" width="150">
+            <el-table :data="pagination.data" border style="width: 100%">
+                <el-table-column prop="mchnt_id" label="客户号"></el-table-column>
+                <el-table-column prop="serverid" label="文件名">
+                    <template scope="scope">
+                        <a href="/p/action/uploads/{{scope.row.serverid}}" target="_blank">{{scope.row.filename}}</a>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="elec_info_type" label="影印件类型" :formatter="formatElecInfoType"></el-table-column>
+                <el-table-column prop="created_time" label="创建时间"></el-table-column>
+                <!-- <el-table-column label="操作" width="150">
                     <template scope="scope">
                         <el-button size="small" @click="handleView(scope.$index, scope.row)">查看</el-button>
                         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <div class="pagination">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="0">
-            </el-pagination>
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagination.page" :page-sizes="[10, 20, 50, 100]" :page-size="pagination.rows" layout="total, sizes, prev, pager, next, jumper" :total="pagination.total">
+                </el-pagination>
             </div>
         </div>
-        <el-dialog v-model="detailVisible" size="full">
-            <div class="detail-box">
+        <div class="detail-box">
             <div class="form-box">
-                <el-form ref="detailForm" :model="detailForm" :rules="rules" label-width="100px">
-                    <el-form-item label="文件名" prop="mchnt_id">
+                <el-form ref="detailForm" :model="detailForm" :rules="rules" :inline="true" label-width="100px">
+                    <el-form-item label="客户号" prop="mchnt_id">
                         <el-input v-model="detailForm.mchnt_id"></el-input>
                     </el-form-item>
-                    <el-form-item label="服务端ID" prop="serverid">
-                        <el-input v-model="detailForm.serverid"></el-input>
-                    </el-form-item>
                     <el-form-item label="影印件类型" prop="elec_info_type">
-                        <el-input v-model="detailForm.elec_info_type"></el-input>
-                    </el-form-item>
-                    <el-form-item label="是否有效" prop="status">
-                        <el-input v-model="detailForm.status"></el-input>
+                        <el-select v-model="detailForm.elec_info_type" filterable placeholder="请选择">
+                            <el-option v-for="item in elecInfoType" :label="item.text" :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitForm('detailForm')">提交</el-button>
-                        <el-button @click="detailVisible=false">返回</el-button>
                     </el-form-item>
                 </el-form>
+                <el-upload action="/p/action/upload" list-type="picture-card" multiple ref="upload" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog v-model="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
             </div>
         </div>
-        </el-dialog>
     </div>
     <!-- 先引入 Vue -->
     <script src="../lib/vue/vue.js"></script>
@@ -114,12 +115,15 @@
     <script src="../lib/element-ui/index.js"></script>
     <script src="../lib/axios/axios.js"></script>
     <script src="../js/base2.js"></script>
+    <script src="../js/st.js"></script>
+    <script src="../js/param.js"></script>
     <script>
     function onSearch() {
         console.log(this, arguments);
-        $$.request('/action/bm/mchnt-elec-info/search', vm.searchForm, function(data) {
-            vm.searchTableData = data.rows;
-            vm.searchForm.total = data.total;
+        var param = $$.extend({}, vm.searchForm, vm.pagination);
+        $$.request('/action/bm/mchnt-elec-info/search', param, function(data) {
+            vm.pagination.data = data.rows;
+            vm.pagination.total = data.total;
         });
     }
 
@@ -132,7 +136,20 @@
     }
 
     function onSubmit() {
-        $$.request('/action/bm/mchnt-elec-info/update', vm.detailForm, function(data) {
+        var uploadFiles = vm.$refs.upload.uploadFiles;
+        if(uploadFiles.length == 0) return;
+        
+        var data = $$.extend({}, vm.detailForm);
+        data.images = [];
+
+        for (var i = 0; i < uploadFiles.length; i++) {
+            data.images.push({
+                filename: uploadFiles[i].name,
+                serverid: uploadFiles[i].response.serverid
+            });
+        }
+
+        $$.request('/action/bm/mchnt-elec-info/batch-create', data, function(data) {
             //
         });
     }
@@ -141,15 +158,36 @@
     var vm = new Vue({
         el: '#app',
         data: {
+            dialogImageUrl: '',
+            dialogVisible: false,
+            operateType: null,
             detailVisible: false,
             searchForm: {
+                mchnt_id: '',
+                elec_info_type: ''
+            },
+            pagination: {
                 page: 1,
                 rows: 10,
-                total: 0
+                total: 0,
+                data: []
             },
-            searchTableData: [],
-            detailForm: {},
+            elecInfoType: $$.param['elec_info_type'],
+            detailForm: {
+                mchnt_id: '',
+                elec_info_type: ''
+            },
             rules: {
+                mchnt_id: [{
+                    required: true,
+                    message: '请输入客户号',
+                    trigger: 'blur'
+                }],
+                serverid: [{
+                    required: true,
+                    message: '请输入服务端ID',
+                    trigger: 'blur'
+                }],
                 elec_info_type: [{
                     required: true,
                     message: '请输入影印件类型',
@@ -158,22 +196,27 @@
             }
         },
         methods: {
+            handleAdd: function() {
+                vm.detailVisible = true;
+                vm.operateType = 'create';
+            },
             handleView: function(index, row) {
                 console.log(this, arguments);
                 onView(row);
             },
             handleEdit: function(index, row) {
                 console.log(this, arguments);
+                this.operateType = 'update';
                 onView(row);
             },
             handleCurrentChange: function(currentPage) {
                 console.log(this, arguments);
-                this.searchForm.page = currentPage;
+                this.pagination.page = currentPage;
                 onSearch();
             },
             handleSizeChange: function(size) {
                 console.log(this, arguments);
-                this.searchForm.rows = size;
+                this.pagination.rows = size;
                 onSearch();
             },
             submitForm: function(formName) {
@@ -190,8 +233,23 @@
                     });
                 }
             },
-            resetForm(formName) {
+            resetForm: function(formName) {
                 this.$refs[formName].resetFields();
+            },
+            formatFilename: function(row, column) {
+                var url = $$.wrapUrl('/action/uploads/' + row.serverid);
+                var s = '<a href="' + url + '" target="_blank">' + row.filename + '</a>';
+                return s;
+            },
+            formatElecInfoType: function(row, column) {
+                return $$.formatField($$.param['elec_info_type'], row.elec_info_type);
+            },
+            handleRemove: function(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePictureCardPreview: function(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
             }
         }
     });
