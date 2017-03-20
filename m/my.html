@@ -205,7 +205,16 @@
                     });
                 }
             }
-        })
+        });
+		$$.request('/action/user/account/view', {}, {
+            success: function(data) {
+				$$.load({
+					available_balance: parseFloat(data.data.available_balance || 0).toFixed(2),
+					unsettled_income: parseFloat(data.data.unsettled_income || 0).toFixed(2),
+				}); //unsettled_income,balance
+			}
+							
+        });
     });
     </script>
 </body>
