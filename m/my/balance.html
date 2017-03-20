@@ -41,10 +41,10 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript">
     $(function() {
-        $$.request('/action/user/account/view', {}, {
+        $$.request('/action/account/view', {}, {
 			success: function(data) {
 				$$.load({
-					available_balance: parseFloat(data.data.available_balance || 0).toFixed(2)
+					available_balance: parseFloat(data.available_balance || 0).toFixed(2)
 				}); //unsettled_income,balance
 			}
         });
