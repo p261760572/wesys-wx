@@ -13,20 +13,21 @@
 <body>
 	<div id="card-list">
 		<form>
-			<div class="weui-cells">
-				<div class="searchbar-result">
-
+			<div class="weui-panel weui-panel_access">
+				<div class="weui-panel__hd">我的银行卡</div>
+				<div class="weui-panel__bd">
+					<div class="searchbar-result">
+					</div>
+					<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
+						<div class="weui-media-box__hd">
+							<i class="icon-plus" style="width: 60px; height: 60px;"></i>
+						</div>
+						<div class="weui-media-box__bd">
+							<h4 class="weui-media-box__title">添加银行卡</h4>
+							<p class="weui-media-box__desc"></p>
+						</div>
+					</a>  
 				</div>
-				<a class="weui-cell weui-cell_access" href="add-bank-card.html">
-					<div class="weui-cell__hd">
-						<i class="icon-plus" style="width: 60px; height: 60px;"></i>
-					</div>
-					<div class="weui-cell__bd">
-						<h4 class="weui-media-box__title">
-							<p>添加银行卡</p>
-						</h4>
-					</div>
-				</a>  
 			</div>
   		</form>
   	</div>
@@ -34,15 +35,13 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="card-templ" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access">
-			<div class="weui-cell__hd">
+        <div class="weui-media-box weui-media-box_appmsg">
+			<div class="weui-media-box__hd">
 				<i class="icon-bank-card" style="width: 60px; height: 60px;"></i>
 			</div>
-			<div class="weui-cell__bd">
-				<h4 class="weui-media-box__title">
-				<p>{{row.bank_nm}}</p>
-				<p>{{row.bank_acct_no | formatCardNo}}</p>
-				</h4>
+			<div class="weui-media-box__bd">
+				<h4 class="weui-media-box__title">{{row.bank_nm}}</h4>
+				<p class="weui-media-box__desc">{{row.bank_acct_no | formatCardNo}}</p>
 			</div>
         </div>    
         {{/each}}

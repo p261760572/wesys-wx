@@ -127,7 +127,7 @@
                 </a>
             </div>
         </div>
-        <form id="detail-fm" method="post" action="/action/user/auth" style="display: none;">
+        <form id="detail-fm" style="display: none;">
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
@@ -192,7 +192,6 @@
 
     $(function() {
         //验证
-        $('.validate').validate();
         $('#zm_image').click(function () {
             uploadImage(['camera'], 'dt_zm_image', 'input_zm_image');
         });
@@ -219,9 +218,20 @@
     });
 
     function submitDetail() {
-        $$.submit('detail-fm', function() {
-            history.back();
-        });
+        if (!weui.form.validate('#detail-fm', {})) return;
+		var param = $('#detail-fm').serializeObject();
+
+		$$.request('/action/user/auth', param, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					weui.toast('操作成功');
+					history.back();
+				} else {
+					weui.alert(data.errmsg, { title: '提示' });
+				}
+			},
+			error: function() {}
+		});
     }
 
     function uploadImage(sourceType, dtId, inputId) {
