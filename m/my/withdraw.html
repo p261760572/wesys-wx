@@ -29,7 +29,7 @@
 						</h4>
 						</div> -->
 					<p id="bank_acct"></p>
-					<input type="text" class="validate" name="bank_acct_no" value="" required="required" title="银行卡" style="display: none;">
+					<input type="hidden" id="rec_id" name="rec_id" value="" required="required" title="银行卡">
 				</a>
 			</div>
 			<div class="weui-cells__title">提现金额</div>
@@ -67,7 +67,7 @@
 		if (!weui.form.validate('#detail-fm', {})) return;
 		var param = $('#detail-fm').serializeObject();
 
-		$$.request('/action/user/withdraw', param, {
+		$$.request('/action/as-withdraw/create', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					weui.toast('操作成功');
@@ -90,8 +90,9 @@
         });
 		$$.request('/action/as-user-card-info/list', {}, {
 			success: function(data) {
-				var DefaultCard = (data.rows[0]?(data.rows[0].bank_nm+'('+data.rows[0].bank_acct_no+')'):undefined) || '添加银行卡';
+				var DefaultCard = (data.rows[0]?('('+data.rows[0].bank_acct_no+')'):undefined) || '添加银行卡';
 				$('#bank_acct').text(DefaultCard);
+				$('#rec_id').val(data.rows[0].rec_id);
 			}
         });
     });

@@ -43,6 +43,7 @@
 				<h4 class="weui-media-box__title">{{row.bank_nm}}</h4>
 				<p class="weui-media-box__desc">{{row.bank_acct_no | formatCardNo}}</p>
 			</div>
+			<input type="hidden" name="rec_id" value="{{row.rec_id}}" required="required" title="银行卡">
         </div>    
         {{/each}}
     </script>

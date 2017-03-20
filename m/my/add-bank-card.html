@@ -45,7 +45,7 @@
     $(function() {
         //验证
 		
-        $$.request('/action/user/view', {}, function(data) {
+    	$$.request('/action/user/view', {}, function(data) {
             if (data.data.auth_st == '2') {
                 $$.load({
                     bank_acct_nm: data.data.actual_name
@@ -60,7 +60,7 @@
 		if (!weui.form.validate('#detail-fm', {})) return;
 		var param = $('#detail-fm').serializeObject();
 
-		$$.request('/action/user/card-info/create', param, {
+		$$.request('/action/as-user-card-info/create', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					weui.toast('操作成功');

@@ -20,9 +20,11 @@
 </head>
 
 <body>
-    <div id="infinite" class="page__content">
-        <div id="friend-list" class="weui-cells">
-        </div>
+   	<div class="page__content">
+       	<form>
+			<div id="friend-list" class="weui-cells searchbar-result">
+			</div>
+        </form>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
@@ -43,45 +45,44 @@
     //     return parseFloat(amount).toFixed(2)
     // });
 
-    function searchFriend() {
-        var processing = false;
-        // $('#friend-list').html('');
-        $('#friend-list').pagination({
-            url: $$.wrapUrl('/action/user/friend/list'),
-            pageNumber: 1,
-            queryParams: {},
-            onLoadSuccess: function(data) {
-                processing = false;
-                var html = template('friend-templ', data);
-                $('#friend-list').append(html);
+    function onSearch(param, success, error) {
+        var queryParams = param;
+        $$.request('/action/ss-friend/list', queryParams, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+					
+                }
             },
-            onLoadError: function() {
-                processing = false;
-            }
-        })
-
-        $('#infinite').infinite().on('infinite', function() {
-            if (!processing) {
-                processing = true;
-                $('#friend-list').pagination('next');
+            error: function() {
+                error();
             }
         });
     }
-
-    $(function() {
-        //查询
-        searchFriend();
-
-        $('#friend-list').on('click', 'a.weui-cell', function() {
-            // showActions(this);
-            var id = $(this).attr('data-id');
+		
+	var searchFriend = weui.searchPage('#friend-list', {
+		resultTpl: '#friend-templ',
+		loader: onSearch,
+		onInput: function() {
+			console.log(this, arguments);
+		},
+		onClickItem: function(row) {
+			console.log(this, arguments);
+			//weui.page.back();
+			var id = $(this).attr('data-id');
             var name = $(this).attr('data-name');
-            
+
             window.location.href = 'income-history-friend.html?' + $.param({
                 userid: id,
                 nickname: name
             });
-        });
+		}
+	}).search();
+
+    $(function() {
+        //查询
+        searchFriend.search();
     });
     </script>
 </body>
