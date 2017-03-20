@@ -20,11 +20,23 @@
 </head>
 
 <body>
-    <div class="page__content">
-       	<form>
-			<div id="merchant-list" class="weui-cells searchbar-result">
-			</div>
-        </form>
+    <div class="page__content" id="merchant-list">
+		<div class="weui-search-bar hide">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+		<div class="weui-cells searchbar-result">
+		</div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
@@ -80,7 +92,6 @@
 	}).search();
     $(function() {
         //查询
-        searchMerchant.search();
     });
     </script>
 </body>

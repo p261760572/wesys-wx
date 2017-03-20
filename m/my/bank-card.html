@@ -12,24 +12,36 @@
 
 <body>
 	<div id="card-list">
-		<form>
-			<div class="weui-panel weui-panel_access">
-				<div class="weui-panel__hd">我的银行卡</div>
-				<div class="weui-panel__bd">
-					<div class="searchbar-result">
-					</div>
-					<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
-						<div class="weui-media-box__hd">
-							<i class="icon-plus" style="width: 60px; height: 60px;"></i>
-						</div>
-						<div class="weui-media-box__bd">
-							<h4 class="weui-media-box__title">添加银行卡</h4>
-							<p class="weui-media-box__desc"></p>
-						</div>
-					</a>  
+		<div class="weui-search-bar hide">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+		<div class="weui-panel weui-panel_access">
+			<div class="weui-panel__hd">我的银行卡</div>
+			<div class="weui-panel__bd">
+				<div class="searchbar-result">
 				</div>
+				<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
+					<div class="weui-media-box__hd">
+						<i class="icon-plus" style="width: 60px; height: 60px;"></i>
+					</div>
+					<div class="weui-media-box__bd">
+						<h4 class="weui-media-box__title">添加银行卡</h4>
+						<p class="weui-media-box__desc"></p>
+					</div>
+				</a>  
 			</div>
-  		</form>
+		</div>
   	</div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
@@ -64,19 +76,19 @@
             }
         });
     }
-		
+	var searchCard= weui.searchPage('#card-list', {
+		resultTpl: '#card-templ',
+		loader: onSearch,
+		onInput: function() {
+			console.log(this, arguments);
+		},
+		onClickItem: function(row) {
+			console.log(this, arguments);
+			weui.page.back();
+		}
+	}).search();
     $(function() {
-        weui.searchPage('#card-list', {
-			resultTpl: '#card-templ',
-			loader: onSearch,
-			onInput: function() {
-				console.log(this, arguments);
-			},
-			onClickItem: function(row) {
-				console.log(this, arguments);
-				weui.page.back();
-			}
-		}).search();
+        
     });
     </script>
 </body>
