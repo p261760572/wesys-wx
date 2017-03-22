@@ -630,11 +630,11 @@
         });
 
         $('#license-date-picker').on('focus', function() {
-            $$.showDatePicker(this);
+            $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
 
         $('#cert-date-picker').on('focus', function() {
-            $$.showDatePicker(this);
+            $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
 
         $('#expand-inst-select2').on('focus', function() {

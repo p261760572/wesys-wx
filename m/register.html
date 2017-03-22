@@ -66,7 +66,7 @@
                     <label class="weui-label">推荐码</label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="text" required="" placeholder="请输入推荐码或推荐人手机" name="referral_id" id="referral_id">
+                    <input class="weui-input" type="text" placeholder="请输入推荐码或推荐人手机" name="referral_id" id="referral_id">
                 </div>
             </div>
             <div class="weui-cell" id="referral-cell">
@@ -135,6 +135,11 @@
 
     function register() {
         if (!weui.form.validate('#form')) return;
+		if ($('#referral_id').val() == "" ) {
+			weui.alert('您将成为自主注册用户！', error, {
+				title: '提示'
+			});
+		}
 
         var data = $('#form').serializeObject();
         data.login_pwd = encryptPassword(data.login_pwd);

@@ -26,11 +26,11 @@
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
-		<div class="weui-panel weui-panel_access">
+       
+		<!--div class="weui-panel weui-panel_access">
 			<div class="weui-panel__hd">我的银行卡</div>
-			<div class="weui-panel__bd searchbar-result">
-				<!--div class="searchbar-result">
-				</div-->
+			<div class="weui-panel__bd">
+				
 				<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
 					<div class="weui-media-box__hd">
 						<i class="icon-plus" style="width: 60px; height: 60px;"></i>
@@ -41,7 +41,20 @@
 					</div>
 				</a>  
 			</div>
+		</div-->
+		<div class="searchbar-result">
 		</div>
+				
+				
+		<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
+			<div class="weui-media-box__hd">
+				<i class="icon-plus" style="width: 60px; height: 60px;"></i>
+			</div>
+			<div class="weui-media-box__bd">
+				<h4 class="weui-media-box__title">添加银行卡</h4>
+				<p class="weui-media-box__desc"></p>
+			</div>
+		</a>  
   	</div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
@@ -55,8 +68,8 @@
 				<h4 class="weui-media-box__title">{{row.bank_nm}}</h4>
 				<p class="weui-media-box__desc">{{row.bank_acct_no}}</p>
 			</div>
-			<input type="hidden" name="rec_id" value="{{row.rec_id}}" required="required" title="银行卡">
-        </div>    
+			<input type="hidden" name="rec_id" value="{{row.rec_id}}" required="required">
+        </div>
         {{/each}}
     </script>
     <script type="text/javascript">

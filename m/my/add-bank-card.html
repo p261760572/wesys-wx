@@ -45,14 +45,16 @@
     $(function() {
         //验证
 		
-    	$$.request('/action/user/view', {}, function(data) {
-            if (data.data.auth_st == '2') {
-                $$.load({
-                    bank_acct_nm: data.data.actual_name
-                });
-            } else {
-                window.location.replace('authentication.html');
-            }
+    	$$.request('/action/user/view', {}, {
+			success: function(data) {
+				if (data.data.auth_st == '2') {
+					$$.load({
+						bank_acct_nm: data.data.actual_name
+					});
+				} else {
+					window.location.replace('authentication.html');
+				}
+			}
         });
     });
 
