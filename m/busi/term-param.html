@@ -339,7 +339,7 @@
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
-
+		param = $.extend(query, param);
         $$.request('/action/bm/term-param/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {

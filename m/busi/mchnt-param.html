@@ -550,6 +550,7 @@
             onClick: function() {
                 console.log(this, arguments);
                 window.location.href = 'term-param.html?' + $.param({
+					mchnt_id: row.mchnt_id,
                     mchnt_param_id: row.mchnt_param_id
                 });
             }
@@ -569,7 +570,7 @@
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
-
+		param = $.extend(query, param);
         $$.request('/action/bm/mchnt-param/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {
