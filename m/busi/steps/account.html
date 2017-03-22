@@ -48,7 +48,7 @@
                 <div class="weui-cell__bd">
                     <div class="weui-uploader" data-type="zhfm">
                         <div class="weui-uploader__hd">
-                            <p class="weui-uploader__title">账户正面照片</p>
+                            <p class="weui-uploader__title">账户反面照片</p>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files">
@@ -165,9 +165,12 @@
         $$.request('/action/bm/mchnt-param/save-account', param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    flows.next({
-                        mchnt_param_id: data.data.mchnt_param_id
+					weui.toast('操作成功', function() {
+						flows.next({
+							mchnt_param_id: data.data.mchnt_param_id
+						});
                     });
+                    
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
