@@ -136,7 +136,7 @@
     function register() {
         if (!weui.form.validate('#form')) return;
 		if ($('#referral_id').val() == "" ) {
-			weui.alert('您将成为自主注册用户！', , {
+			weui.alert('您将成为自主注册用户！', {
 				title: '提示'
 			});
 		}
