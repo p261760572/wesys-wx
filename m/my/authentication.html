@@ -117,7 +117,7 @@
 
 <body>
     <div class="page__content">
-        <div id="detail-panel" class="weui-panel weui-panel_access"><!-- style="display: none;"-->
+        <div id="detail-panel" class="weui-panel weui-panel_access" style="display: none;">
             <!-- <div class="weui-panel__hd">图文组合列表</div> -->
             <div class="weui-panel__bd">
                 <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
@@ -131,7 +131,7 @@
                 </a>
             </div>
         </div>
-        <form id="detail-fm" ><!--style="display: none;"-->
+        <form id="detail-fm" style="display: none;">
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
@@ -194,7 +194,7 @@
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript">
-	var uploaderData = [];
+	var uploaderData = {};
 
     function initUploader(selector, elec_info_type) {
 
@@ -213,11 +213,7 @@
                 // return false; // 阻止文件上传
             },
             onSuccess: function(ret) {
-                uploaderData.push({
-                    status: '1',
-                    serverid: ret.serverid,
-                    elec_info_type: elec_info_type
-                });
+				uploaderData[elec_info_type] = ret.serverid;
             },
             onError: function(err) {
                 console.log(this, err);
@@ -257,8 +253,8 @@
     function submitDetail() {
         if (!weui.form.validate('#detail-fm', {})) return;
 		var param = $('#detail-fm').serializeObject();
-		param.elec_info = uploaderData;
-		$$.request('/action/user/auth', param, {
+		$.extend(param, uploaderData);
+		$$.request('/action/user-auth/create', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					weui.toast('操作成功');
