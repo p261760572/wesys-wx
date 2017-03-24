@@ -161,6 +161,7 @@
 						console.log(this, arguments);
 					},
 					onClickItem: function(row) {
+						alert(JSON.stringify(row));
 						console.log(arguments);
 						$('#bank_acct').text('('+row.bank_acct_no+')');
 						$('#rec_id').val(row.rec_id);
