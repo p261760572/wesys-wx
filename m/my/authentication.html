@@ -234,19 +234,21 @@
         });
 
 
-        $$.request('/action/user/view', {}, function(data) {
-            if (data.data.auth_st != '0') {
-                $('#detail-panel').show();
-                $$.load(data.data);
-            }
+        $$.request('/action/user/view', {}, {
+			success: function(data) {
+				if (data.data.auth_st != '0') {
+					$('#detail-panel').show();
+					$$.load(data.data);
+				}
 
-            if (data.data.auth_st == '0' || data.data.auth_st == '3') {
-                $('#detail-fm').show();
-            }
+				if (data.data.auth_st == '0' || data.data.auth_st == '3') {
+					$('#detail-fm').show();
+				}
 
-            if (data.data.auth_st != '2') {
-                $('#auth_st_nm').addClass('badge_warn');
-            }
+				if (data.data.auth_st != '2') {
+					$('#auth_st_nm').addClass('badge_warn');
+				}
+			}
         });
     });
 
