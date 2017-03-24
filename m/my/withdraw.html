@@ -160,10 +160,10 @@
 					onInput: function() {
 						console.log(this, arguments);
 					},
-					onClickItem: function(obj, row, this) {
-						console.log(this, arguments);
+					onClickItem: function(row) {
+						console.log(arguments);
 						$('#bank_acct').text('('+row.bank_acct_no+')');
-						$('#rec_id').val(rows.rec_id);
+						$('#rec_id').val(row.rec_id);
 						$('#card-list').removeClass('page_show');
 						$('#withdraw').addClass('page_show');
 					}
