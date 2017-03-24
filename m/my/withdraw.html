@@ -107,7 +107,7 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="card-templ" type="text/html">
         {{each rows as row i}}
-        <div class="weui-media-box weui-media-box_appmsg">
+        <div class="weui-media-box weui-media-box_appmsg" onclick="SelectCard({{row}})">
 			<div class="weui-media-box__hd">
 				<i class="icon-bank-card" style="width: 60px; height: 60px;"></i>
 			</div>
@@ -140,6 +140,14 @@
 			error: function() {}
 		});
     }
+		
+	function SelectCard(row) {
+		$('#bank_acct').text('('+row.bank_acct_no+')');
+		$('#rec_id').val(row.rec_id);
+		$('#card-list').removeClass('page_show');
+		$('#withdraw').addClass('page_show');
+	}
+		
     $(function() {
         //验证
         $$.request('/action/account/view', {}, {
@@ -161,12 +169,7 @@
 						console.log(this, arguments);
 					},
 					onClickItem: function(row) {
-						alert(JSON.stringify(row));
 						console.log(arguments);
-						$('#bank_acct').text('('+row.bank_acct_no+')');
-						$('#rec_id').val(row.rec_id);
-						$('#card-list').removeClass('page_show');
-						$('#withdraw').addClass('page_show');
 					}
 				}).search();
 			}
