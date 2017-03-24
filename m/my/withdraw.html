@@ -107,7 +107,7 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="card-templ" type="text/html">
         {{each rows as row i}}
-        <div class="weui-media-box weui-media-box_appmsg" onclick="SelectCard({{row}})">
+        <div class="weui-media-box weui-media-box_appmsg" onclick="SelectCard('{{row.rec_id}}', '{{row.bank_acct_no}}')">
 			<div class="weui-media-box__hd">
 				<i class="icon-bank-card" style="width: 60px; height: 60px;"></i>
 			</div>
@@ -141,9 +141,9 @@
 		});
     }
 		
-	function SelectCard(row) {
-		$('#bank_acct').text('('+row.bank_acct_no+')');
-		$('#rec_id').val(row.rec_id);
+	function SelectCard(rec_id, acct_no) {
+		$('#bank_acct').text('('+acct_no+')');
+		$('#rec_id').val(rec_id);
 		$('#card-list').removeClass('page_show');
 		$('#withdraw').addClass('page_show');
 	}
