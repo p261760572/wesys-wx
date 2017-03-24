@@ -95,9 +95,8 @@
 		onInput: function() {
 			console.log(this, arguments);
 		},
-		onClickItem: function(row) {
+		onClickItem: function(obj, row, this) {
 			console.log(this, arguments);
-			weui.page.back();
 		}
 	}).search();
     $(function() {
