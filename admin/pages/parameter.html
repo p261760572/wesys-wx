@@ -65,7 +65,7 @@
                     <th data-options="field:'parameter_type_name',width:120">参数类型</th>
                     <th data-options="field:'parameter_value',width:120">参数值</th>
                     <th data-options="field:'parameter_name',width:120">参数名称</th>
-                    <th data-options="field:'inuse',width:120,formatter:formatInuse">状态</th>
+                    <th data-options="field:'status',width:120,formatter:formatStatus">状态</th>
                 </tr>
             </thead>
         </table>
@@ -103,7 +103,7 @@
                             <label>状态：</label>
                         </td>
                         <td>
-                            <select class="easyui-combobox" name="inuse" data-options="panelHeight:'auto',required:true">
+                            <select class="easyui-combobox" name="status" data-options="panelHeight:'auto',required:true">
                                 <option value="0">停用</option>
                                 <option value="1">启用</option>
                             </select>
@@ -131,7 +131,7 @@
     <script type="text/javascript" src="../js/district.js"></script>
     <script>
     var formDefaults = {
-        inuse: '1'
+        status: '1'
     };
 
     var myTransition = [{
@@ -144,7 +144,7 @@
         action: 'delete'
     }];
 
-    function formatInuse(value, rowData, rowIndex) {
+    function formatStatus(value, rowData, rowIndex) {
         if (value == '1') {
             return '启用';
         }
