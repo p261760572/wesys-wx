@@ -113,7 +113,7 @@
 
 <body>
     <div class="page__content">
-        <div id="detail-panel" class="weui-panel weui-panel_access" style="display: none;">
+        <div id="detail-panel" class="weui-panel weui-panel_access"><!-- style="display: none;"-->
             <!-- <div class="weui-panel__hd">图文组合列表</div> -->
             <div class="weui-panel__bd">
                 <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
@@ -127,7 +127,7 @@
                 </a>
             </div>
         </div>
-        <form id="detail-fm" style="display: none;">
+        <form id="detail-fm" ><!--style="display: none;"-->
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
@@ -160,7 +160,6 @@
                 <dl>
                     <dd>
                         <img src="zhengmian.png">
-                        <input type="hidden" id="input_zm_image" name="id_card_zm_image" class="validate" required="required" title="身份证原件正面">
                     </dd>
                     <dt id="dt_zm_image" style="height: 158px;">
                         <ul class="weui-uploader__files"></ul>
@@ -176,7 +175,6 @@
                 <dl>
                     <dd>
                         <img src="fanmian.png">
-                        <input type="hidden" id="input_fm_image" name="id_card_fm_image" class="validate" required="required" title="身份证原件反面">
                     </dd>
                     <dt id="dt_fm_image" style="height: 158px;">
                         <ul class="weui-uploader__files"></ul>
