@@ -11,13 +11,13 @@
 </head>
 
 <body>
-	<div class="page__content">
+	<div class="page page_show" id="withdraw">
 		<form id="detail-fm">
 			<div class="weui-cell weui-cell_access">
 				<div class="weui-cell__hd">
 					<p>银行卡</p>
 				</div>
-				<div class="weui-cell__bd weui-cell_primary weui-cell_link" onclick="$('#card-list').addClass('page_show')">
+				<div class="weui-cell__bd weui-cell_primary weui-cell_link" onclick="$('#card-list').addClass('page_show');$('#withdraw').removeClass('page_show')">
 
 						<!--                         <div class="weui-media-box__hd">
 							<img class="weui-media-box__thumb" src="../../images/icon_nav_panel.png" alt="">
@@ -165,6 +165,7 @@
 						$('#bank_acct').text('('+row.bank_acct_no+')');
 						$('#rec_id').val(rows.rec_id);
 						$('#card-list').removeClass('page_show');
+						$('#withdraw').addClass('page_show')
 					}
 				}).search();
 			}
