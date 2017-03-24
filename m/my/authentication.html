@@ -89,11 +89,15 @@
         padding: 10px 5px;
     }
     
-    .upload-photos dl dt div img {
+    .upload-photos dl dt div img{
         width: 35%;
         margin-top: 30px;
     }
-    
+	.weui-uploader__files .weui-uploader__file {
+		width: 100%;
+        margin-top: 0px;
+		height: 158px;
+	}
     .upload-photos dl dt span.delete {
         position: absolute;
         left: 0;
@@ -160,25 +164,27 @@
                 <dl>
                     <dd>
                         <img src="zhengmian.png">
-                        <input type="hidden" id="input_zm_image" name="id_card_zm_image" class="validate" required="required" title="身份证原件正面">
                     </dd>
                     <dt id="dt_zm_image" style="height: 158px;">
-                        <div class="i-chose">
-                            <img src="upload-click.png" id="zm_image" style="max-height: 158px;">
-                        </div>
-                        <div class="font">身份证原件正面</div>
+                        <ul class="weui-uploader__files"></ul>
+						<div class="i-chose">
+							<img src="upload-click.png" id="zm_image" style="max-height: 158px;">
+							<input id="uploader-zm" class="weui-uploader__input hide" type="file" accept="image/*" capture="camera">
+						</div>
+						<div class="font">身份证原件正面</div>
                     </dt>
                 </dl>
                 <dl>
                     <dd>
                         <img src="fanmian.png">
-                        <input type="hidden" id="input_fm_image" name="id_card_fm_image" class="validate" required="required" title="身份证原件反面">
                     </dd>
                     <dt id="dt_fm_image" style="height: 158px;">
-                        <div class="i-chose">
-                            <img src="upload-click.png" id="fm_image" style="max-height: 158px;">
-                        </div>
-                        <div class="font">身份证原件反面</div>
+                        <ul class="weui-uploader__files"></ul>
+						<div class="i-chose">
+							<img src="upload-click.png" id="fm_image" style="max-height: 158px;">
+							<input id="uploader-fm" class="weui-uploader__input hidden" type="file" accept="image/*" capture="camera">
+						</div>
+						<div class="font">身份证原件反面</div>
                     </dt>
                 </dl>
             </div>
@@ -188,40 +194,69 @@
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript">
-    requiredWx();
+	var uploaderData = {};
 
+    function initUploader(selector, elec_info_type) {
+
+        weui.ajaxUploader(selector, {
+            url: $$.wrapUrl('/action/upload'),
+            auto: true,
+            type: 'file',
+            fileVal: 'file',
+            compress: {
+                width: 1600,
+                height: 1600,
+                quality: 0.92
+            },
+            onBeforeSend: function(data, headers) {
+                console.log(this, arguments);
+                // return false; // 阻止文件上传
+            },
+            onSuccess: function(ret) {
+				uploaderData[elec_info_type] = ret.serverid;
+            },
+            onError: function(err) {
+                console.log(this, err);
+            }
+        });
+    }
+		
     $(function() {
         //验证
+		initUploader('#dt_zm_image', 'sfzzm');
+		initUploader('#dt_fm_image', 'sfzfm');
         $('#zm_image').click(function () {
-            uploadImage(['camera'], 'dt_zm_image', 'input_zm_image');
+			$('#uploader-zm').click();
         });
 
         $('#fm_image').click(function () {
-            uploadImage(['camera'], 'dt_fm_image', 'input_fm_image');
+			$('#uploader-fm').click();
         });
 
 
-        $$.request('/action/user/view', {}, function(data) {
-            if (data.data.auth_st != '0') {
-                $('#detail-panel').show();
-                $$.load(data.data);
-            }
+        $$.request('/action/user/view', {}, {
+			success: function(data) {
+				if (data.data.auth_st != '0') {
+					$('#detail-panel').show();
+					$$.load(data.data);
+				}
 
-            if (data.data.auth_st == '0' || data.data.auth_st == '3') {
-                $('#detail-fm').show();
-            }
+				if (data.data.auth_st == '0' || data.data.auth_st == '3') {
+					$('#detail-fm').show();
+				}
 
-            if (data.data.auth_st != '2') {
-                $('#auth_st_nm').addClass('badge_warn');
-            }
+				if (data.data.auth_st != '2') {
+					$('#auth_st_nm').addClass('badge_warn');
+				}
+			}
         });
     });
 
     function submitDetail() {
         if (!weui.form.validate('#detail-fm', {})) return;
 		var param = $('#detail-fm').serializeObject();
-
-		$$.request('/action/user/auth', param, {
+		$.extend(param, uploaderData);
+		$$.request('/action/user-auth/create', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					weui.toast('操作成功');
@@ -232,20 +267,6 @@
 			},
 			error: function() {}
 		});
-    }
-
-    function uploadImage(sourceType, dtId, inputId) {
-        wxChooseImage(sourceType, function(localId) {
-            wxUploadImage(localId, function(serverId) {
-                // data.app_created_time = $$.formatDate(new Date(), 'yyyyMMddhhmmss');
-                //生成html,存储
-                // $(template('uploader-file-templ', data)).appendTo(files).data('file', data);
-                $('#'+dtId).html('<img src="'+localId+'">');
-                $('#'+inputId).val(serverId);
-            }, function(res) {
-                $.toast('show', '上传失败,请重新上传' + JSON.stringify(res));
-            });
-        });
     }
     </script>
 </body>
