@@ -182,7 +182,7 @@
                         <ul class="weui-uploader__files"></ul>
 						<div class="i-chose">
 							<img src="upload-click.png" id="fm_image" style="max-height: 158px;">
-							<input id="uploader-fm" class="weui-uploader__input hide" type="file" accept="image/*" capture="camera">
+							<input id="uploader-fm" class="weui-uploader__input hidden" type="file" accept="image/*" capture="camera">
 						</div>
 						<div class="font">身份证原件反面</div>
                     </dt>
@@ -231,12 +231,10 @@
 		initUploader('#dt_fm_image', 'sfzfm');
         $('#zm_image').click(function () {
 			$('#uploader-zm').click();
-			$(this).hide();
         });
 
         $('#fm_image').click(function () {
 			$('#uploader-fm').click();
-			$(this).hide();
         });
 
 
