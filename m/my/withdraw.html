@@ -156,7 +156,7 @@
 				$('#rec_id').val(data.rows[0].rec_id);
 				weui.searchPage('#card-list', {
 					resultTpl: '#card-templ',
-					data: data,
+					data: data.rows,
 					onInput: function() {
 						console.log(this, arguments);
 					},
