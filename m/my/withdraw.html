@@ -17,7 +17,7 @@
 				<div class="weui-cell__hd">
 					<p>银行卡</p>
 				</div>
-				<a class="weui-cell__bd weui-cell_primary weui-cell_link" href="bank-card.html">
+				<a class="weui-cell__bd weui-cell_primary weui-cell_link" onclick="$('#card-list).addClass('page_show')">
 
 						<!--                         <div class="weui-media-box__hd">
 							<img class="weui-media-box__thumb" src="../../images/icon_nav_panel.png" alt="">
@@ -56,8 +56,69 @@
 			<a href="javascript:;" class="weui-btn weui-btn_primary" onclick="submitDetail()">确认提现</a>
 		</form>
 	</div>
+   
+    <div class="page"  id="card-list">
+		<div class="weui-search-bar hide">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+       
+		<!--div class="weui-panel weui-panel_access">
+			<div class="weui-panel__hd">我的银行卡</div>
+			<div class="weui-panel__bd">
+				
+				<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
+					<div class="weui-media-box__hd">
+						<i class="icon-plus" style="width: 60px; height: 60px;"></i>
+					</div>
+					<div class="weui-media-box__bd">
+						<h4 class="weui-media-box__title">添加银行卡</h4>
+						<p class="weui-media-box__desc"></p>
+					</div>
+				</a>  
+			</div>
+		</div-->
+		<div class="searchbar-result">
+		</div>
+				
+				
+		<a class="weui-media-box weui-media-box_appmsg" href="add-bank-card.html">
+			<div class="weui-media-box__hd">
+				<i class="icon-plus" style="width: 60px; height: 60px;"></i>
+			</div>
+			<div class="weui-media-box__bd">
+				<h4 class="weui-media-box__title">添加银行卡</h4>
+				<p class="weui-media-box__desc"></p>
+			</div>
+		</a>
+    </div>
+    
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
+    <script id="card-templ" type="text/html">
+        {{each rows as row i}}
+        <div class="weui-media-box weui-media-box_appmsg" onclick="SelectCard()">
+			<div class="weui-media-box__hd">
+				<i class="icon-bank-card" style="width: 60px; height: 60px;"></i>
+			</div>
+			<div class="weui-media-box__bd">
+				<h4 class="weui-media-box__title">{{row.bank_nm}}</h4>
+				<p class="weui-media-box__desc">{{row.bank_acct_no}}</p>
+			</div>
+			<input type="hidden" name="rec_id" value="{{row.rec_id}}" required="required">
+        </div>
+        {{/each}}
+    </script>
     <script type="text/javascript">
     function withdrawAll() {
         $('#withdraw_amount').val($('#available_balance').text());
@@ -93,6 +154,19 @@
 				var DefaultCard = (data.rows[0]?('('+data.rows[0].bank_acct_no+')'):undefined) || '添加银行卡';
 				$('#bank_acct').text(DefaultCard);
 				$('#rec_id').val(data.rows[0].rec_id);
+				weui.searchPage('#card-list', {
+					resultTpl: '#card-templ',
+					data: data,
+					onInput: function() {
+						console.log(this, arguments);
+					},
+					onClickItem: function(row) {
+						console.log(this, arguments);
+						$('#bank_acct').text('('+row.bank_acct_no+')');
+						$('#rec_id').val(rows.rec_id);
+						$('#card-list').removeClass('page_show');
+					}
+				}).search();
 			}
         });
     });
