@@ -89,7 +89,8 @@
         padding: 10px 5px;
     }
     
-    .upload-photos dl dt div img {
+    .upload-photos dl dt div img,
+	.upload-photos dl dt ul li{
         width: 35%;
         margin-top: 30px;
     }
@@ -255,7 +256,7 @@
     function submitDetail() {
         if (!weui.form.validate('#detail-fm', {})) return;
 		var param = $('#detail-fm').serializeObject();
-
+		param.elec_info = uploaderData;
 		$$.request('/action/user/auth', param, {
 			success: function(data) {
 				if (data.errcode == 0) {
