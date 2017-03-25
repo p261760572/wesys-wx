@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>待办事务</title>
-    <link rel="stylesheet" href="../../js/lib/weuijs/style/weuijs.min.css">
-    <link rel="stylesheet" href="../../css/ui-base.css">
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
 </head>
 
 <body>
@@ -64,7 +64,8 @@
     </script>
     <script>
     var query = $$.parseQueryString();
-	weui.searchPage('#page1', {
+		
+	var searchPage = weui.searchPage('#page1', {
 		resultTpl: '#list-template',
 		loader: function(param, success, error) {
 			console.log(arguments);
@@ -85,16 +86,55 @@
 			console.log(arguments);
 		},
 		onClickItem: function(row) {
-			var params = {
-				mchnt_id: row.mchnt_id,
-				mchnt_param_id: row.mchnt_param_id,
-				acq_inst_id: row.acq_inst_id,
-				busi_type: row.busi_type
-			};
-			flows.start(row.flow, params, row.step);
+			showActions(row);
 		}
 	}).search();
-    
+		
+	function onDelete(param) {
+        $$.request('/action/bm/net-dealt/delete', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功', function() {
+                        searchPage.search();
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+	function showActions(row) {
+        var actions = [{
+            label: '删除',
+            onClick: function() {
+                console.log(this, arguments);
+				weui.confirm('确认要删除?', function() {
+					onDelete(row);
+				});
+            }
+        },{
+			label: '继续完成',
+			onClick: function() {
+				console.log(this, arguments);
+				var params = {
+					mchnt_id: row.mchnt_id,
+					mchnt_param_id: row.mchnt_param_id,
+					acq_inst_id: row.acq_inst_id,
+					busi_type: row.busi_type
+				};
+				flows.start(row.flow, params, row.step);
+			}
+		}];
+		weui.actionSheet(actions, [{
+            label: '取消',
+            onClick: function() {
+                console.log(this, arguments);
+            }
+        }]);
+	}
     </script>
 </body>
 
