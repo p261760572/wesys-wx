@@ -330,7 +330,7 @@
             </div>
             <div class="weui-form-preview__ft">
                 <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
-                <!-- <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">编辑</button> -->
+                <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" onclick="onEdit()">编辑</button>
             </div>
         </div>
     </div>
@@ -457,6 +457,14 @@
         });
     }
 
+	function onEdit() {
+		console.log(this, arguments);
+		operateType = 'update';
+		weui.page.hide('#preview-page');
+		onView(row);
+		$('#back-btn').show().siblings().show();
+	}
+		
     function showActions(row) {
         var actions = [{
             label: '查看',
@@ -466,7 +474,7 @@
                 $('#back-btn').show().siblings().hide();
             }
         }]
-
+		/*
         if ($.inArray(row.proc_st, ['8', '9', 'A']) >= 0) {
             actions.push({
                 label: '编辑',
@@ -477,7 +485,7 @@
                     $('#back-btn').show().siblings().show();
                 }
             });
-        }
+        }*/
 
         if (row.oper_in == 'I' && $.inArray(row.proc_st, ['9', 'A']) >= 0) {
             actions.push({
