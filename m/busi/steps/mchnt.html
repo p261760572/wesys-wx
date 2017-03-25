@@ -146,8 +146,7 @@
                 uploaderData.push({
                     status: '1',
                     serverid: ret.serverid,
-                    elec_info_type: elec_info_type,
-					rec_id: ''
+                    elec_info_type: elec_info_type
                 });
             },
             onError: function(err) {
@@ -157,7 +156,7 @@
     }
 
 	function prev() {
-		flows.prev(query);
+		window.location.href = 'select-busi.html?' + $.param(query);
 	}
 		
     function onSubmit() {
@@ -194,12 +193,30 @@
     }
 
 	function LoadForm() {
+		var itemTpl = '<li class="weui-uploader__file weui-uploader__file_status" data-id="{{id}}"><div class="weui-uploader__file-content"><i class="weui-loading" style="width: 30px;height: 30px;"></i></div></li>';
+		var _id = 0, id=0;
 		if(query.mchnt_id && query.mchnt_id != "" &&
 		  	query.mchnt_param_id && query.mchnt_param_id != "") {
 			$$.request('/action/bm/mchnt-base-info/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.form.load('#form', data.data);
+						uploaderData = data.images;
+						$.each(uploaderData, function(index, item) {
+							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
+							$$.request('/action/uploads/' + item.serverid, {}, {
+								success: function(data) {
+									id = ++_id;
+									var $file = $($.render(itemTpl, {
+										id: id
+									}));
+									$(target).find('.weui-uploader__files').append($file);
+									$file.css({
+										backgroundImage: data
+									});
+								}
+							})
+						})
 					} else {
 
 					}
@@ -210,36 +227,6 @@
 			$('#form').find('.weui-uploader__files').each(function(i, element) {
 				$(element).html('');
 			});*/
-			var itemTpl = '<li class="weui-uploader__file weui-uploader__file_status" data-id="{{id}}"><div class="weui-uploader__file-content"><i class="weui-loading" style="width: 30px;height: 30px;"></i></div></li>';
-			
-			$$.request('/action/bm/mchnt-elec-info/list', query, {
-				success: function(data) {
-					if (data.errcode == 0) {
-						$.each(data.rows, function(index, item) {
-							var file = $($.render(itemTpl, {
-								id: index+1
-							}));
-							$$.request('/action/uploads/' + item.serverid, {}, {
-								success: function(data) {
-									$('#form').find('.weui-uploader[data-type='+item.elec_info_type+']').find('.weui-uploader__files').append(file);
-									file.css({
-										backgroundImage: 'url("' + data.url + '")'
-									});
-									uploaderData.push({
-										status: '1',
-										serverid: item.serverid,
-										elec_info_type: item.elec_info_type,
-										rec_id: item.rec_id
-									});
-								}
-							})
-						});
-					} else {
-
-					}
-				},
-				error: function() {}
-			});
 		}
 	}
 		

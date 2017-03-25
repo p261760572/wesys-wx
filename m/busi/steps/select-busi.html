@@ -91,9 +91,7 @@
     var query = $$.parseQueryString();
 	
 	function back() {
-		window.location.href = 'base.html?' + $.param({
-			mchnt_id: query.mchnt_id
-		});
+		window.location.href = 'base.html?' + $.param(query);
 	}
 	weui.searchPage('#page2', {
 		resultTpl: '#acq-template',

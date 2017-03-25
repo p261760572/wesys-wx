@@ -458,10 +458,13 @@
     }
 
 	function onEdit() {
+		var param = {
+			mchnt_id: $('#preview-mchnt_id').text();
+		};
 		console.log(this, arguments);
 		operateType = 'update';
 		$('#preview-page').removeClass('page_show');
-		onView(row);
+		onView(param);
 		$('#back-btn').show().siblings().show();
 	}
 		
