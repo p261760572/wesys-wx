@@ -78,12 +78,12 @@
 				resultTpl: '#list-template',
 				loader: function(param, success, error) {
 					console.log(arguments);
-					$$.request('/action/bm/parameter/list', {
-						busi_type: '1'
+					$$.request('/action/bm/acq-inst-busi/list', {
+						acq_inst_id: acq_inst
 					}, {
 						success: function(data) {
 							if (data.errcode == 0) {
-								success(data.busi_type);
+								success(data.rows);
 							} else {
 								weui.alert(data.errmsg, {
 									title: '提示'

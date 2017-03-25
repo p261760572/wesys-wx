@@ -106,7 +106,7 @@
         </div>
         <!-- 填写结算信息结束 -->
         <div class="weui-btn-area btn-area">
-            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">上一步</a>
+            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="prev()">上一步</a>
             <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
         </div>
     </form>
@@ -148,6 +148,10 @@
         });
     }
 
+	function prev() {
+		flows.prev(query);
+	}
+		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
