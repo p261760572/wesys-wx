@@ -43,7 +43,7 @@
         <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
-                    {{row.text}}
+                    {{row.busi_type_nm}}
                 </p>
             </div>
             <div class="weui-cell__ft"></div>
@@ -76,6 +76,7 @@
 			var acq_inst = row.acq_inst_id;
 			weui.searchPage('#page1', {
 				resultTpl: '#list-template',
+				
 				loader: function(param, success, error) {
 					console.log(arguments);
 					$$.request('/action/bm/acq-inst-busi/list', {
@@ -97,7 +98,7 @@
 					console.log(arguments);
 				},
 				onClickItem: function(row) {
-					flows.busi.start(row.value, acq_inst);
+					flows.busi.start(row.busi_type, acq_inst);
 				}
 			}).search()
         }
