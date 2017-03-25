@@ -47,7 +47,7 @@
                 </div>
                 <label class="weui-search-bar__label">
                     <i class="weui-icon-search"></i>
-                    <span>搜索</span> </label>
+                    <span>收单机构</span> </label>
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
@@ -112,8 +112,8 @@
 			})
 		},
 		onClickItem: function(row) {
-			$('#pages').removeClass('page_show');
-			weui.page.show('page1');
+			$('#page2').removeClass('page_show');
+			$('#page1').addClass('page_show');
 			var acq_inst = row.acq_inst_id;
 			weui.searchPage('#page1', {
 				resultTpl: '#list-template',
