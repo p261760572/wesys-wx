@@ -2720,7 +2720,7 @@ window.$ === undefined && (window.$ = Zepto)
                 return /^(https?|ftp):\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/.test(value);
             },
             length: function(value, param) {
-                var len = $.trim(value).length;
+                var len = $.trim(_44).length;
                 return len >= param[0] && len <= param[1];
             },
             remote: function(value, param) {
@@ -2734,9 +2734,6 @@ window.$ === undefined && (window.$ = Zepto)
                     }
                 });
                 return errcode == 0;
-            },
-            equal: function(value, param) {
-                return value == $(param[0]).val();
             },
             mobile: function(value) {
                 return /^1[34578]{1}\d{9}$/.test(value);
@@ -2778,7 +2775,7 @@ window.$ === undefined && (window.$ = Zepto)
                     return item[opts.textField];
                 });
 
-                $target.val(text.join(' '));
+                $target.val(text.join(' ')).change();
 
                 var $temp = $target;
                 for (var i = 0; i < result.length; i++) {
@@ -2892,9 +2889,9 @@ window.basedir = '/p';
     };
 
 
-    function start(flowId, param) {
+    function start(flowId, param, step) {
         var flow = flows[flowId];
-        var step = 1;
+        var step = step || 1;
 
         var query = $$.parseQueryString();
         $.extend(query, param || {});

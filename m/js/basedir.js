@@ -24,9 +24,9 @@ window.basedir = '/p';
     };
 
 
-    function start(flowId, param) {
+    function start(flowId, param, step) {
         var flow = flows[flowId];
-        var step = 1;
+        var step = step || 1;
 
         var query = $$.parseQueryString();
         $.extend(query, param || {});
