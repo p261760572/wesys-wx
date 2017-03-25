@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="page1" class="page page_show">
+    <div id="page1" class="page">
         <div class="weui-cells__title">选择业务类型</div>
         <div class="weui-search-bar hide">
             <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
@@ -52,56 +52,57 @@
     </script>
     <script>
     var query = $$.parseQueryString();
-
-    var searchPage = weui.searchPage('#page1', {
-        resultTpl: '#list-template',
-        loader: function(param, success, error) {
-            console.log(arguments);
-            $$.request('/action/bm/parameter/list', {
-                busi_type: '1'
-            }, {
-                success: function(data) {
-                    if (data.errcode == 0) {
-                        success(data.busi_type);
-                    } else {
-                        weui.alert(data.errmsg, {
-                            title: '提示'
-                        });
-                    }
-                },
-                error: error
-            });
-        },
-        onInput: function() {
-            console.log(arguments);
-        },
-        onClickItem: function(row) {
-            console.log(arguments);
-            var busiType = row.value;
-            weui.select2({
-                title: '搜索收单机构',
-                valueField: 'acq_inst_id',
-                textField: 'acq_inst_nm',
-                loader: function(param, success, error) {
-                    $$.request('/action/bm/acq-inst/search', {}, {
-                        success: function(data) {
-                            if (data.errcode == 0) {
-                                success(data.rows);
-                            } else {
-                                weui.alert(data.errmsg, error, {
-                                    title: '提示'
-                                });
-                            }
-                        },
-                        error: error()
-                    })
-                },
-                onClickItem: function(row) {
-                    flows.busi.start(busiType, row.acq_inst_id);
-                }
-            }).search();
+	
+	weui.select2({
+		title: '搜索收单机构',
+		valueField: 'acq_inst_id',
+		textField: 'acq_inst_nm',
+		loader: function(param, success, error) {
+			$$.request('/action/bm/acq-inst/search', {}, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						success(data.rows);
+					} else {
+						weui.alert(data.errmsg, error, {
+							title: '提示'
+						});
+					}
+				},
+				error: error()
+			})
+		},
+		onClickItem: function(row) {
+			$('#page1').addClass('page_show');
+			var acq_inst = row.acq_inst_id;
+			weui.searchPage('#page1', {
+				resultTpl: '#list-template',
+				loader: function(param, success, error) {
+					console.log(arguments);
+					$$.request('/action/bm/parameter/list', {
+						busi_type: '1'
+					}, {
+						success: function(data) {
+							if (data.errcode == 0) {
+								success(data.busi_type);
+							} else {
+								weui.alert(data.errmsg, {
+									title: '提示'
+								});
+							}
+						},
+						error: error
+					});
+				},
+				onInput: function() {
+					console.log(arguments);
+				},
+				onClickItem: function(row) {
+					flows.busi.start(row.value, acq_inst);
+				}
+			}).search()
         }
     }).search();
+    
     </script>
 </body>
 

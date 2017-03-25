@@ -110,8 +110,8 @@
                 </div>
             </div>
             <div class="weui-btn-area btn-area">
-                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
-                <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">上一步</a>
+                <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
             </div>
         </form>
     </div>
@@ -123,7 +123,9 @@
     var operateType = query.operateType;
 
     var uploaderData = [];
-
+		
+	var hash = window.location.hash;
+        
     function initUploader(selector, elec_info_type) {
 
         weui.ajaxUploader(selector, {
@@ -144,7 +146,8 @@
                 uploaderData.push({
                     status: '1',
                     serverid: ret.serverid,
-                    elec_info_type: elec_info_type
+                    elec_info_type: elec_info_type,
+					rec_id: ''
                 });
             },
             onError: function(err) {
@@ -157,7 +160,11 @@
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
         var elec_info = [];
-
+		if (hash.substr(0, 6) == '#step/') {
+            var arr = hash.substr(6).split('/');
+			param['flow'] = arr[0];
+			param['step'] = parseInt(arr[1]);
+		}
         $('#form').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
             elec_info.push(uploaderData[id-1]);
@@ -182,9 +189,52 @@
         });
     }
 
+	function LoadForm() {
+		if(query.mchnt_id && query.mchnt_id != "") {
+			$$.request('/action/bm/mchnt-base-info/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						weui.form.load('#form', data.data);
+					} else {
+
+					}
+				},
+				error: function() {}
+			});
+			
+			$('#form').find('.weui-uploader__files').each(function(i, element) {
+				$(element).html('');
+			});
+			var itemTpl = '<li class="weui-uploader__file weui-uploader__file_status" data-id="{{id}}"><div class="weui-uploader__file-content"><i class="weui-loading" style="width: 30px;height: 30px;"></i></div></li>';
+			$$.request('/action/bm/mchnt-elec-info/search', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						$.each(data.rows, function(index, item) {
+							var file = $($.render(itemTpl, {
+								id: index+1
+							}));
+							uploaderData.push({
+								status: '1',
+								serverid: item.file_url,
+								elec_info_type: item.elec_info_type,
+								rec_id: item.rec_id
+							});
+							file.css({
+								backgroundImage: 'url("' + item.file_url + '")'
+							});
+						});
+					} else {
+
+					}
+				},
+				error: function() {}
+			});
+		}
+	}
+		
     $(function() {
         $('#submit-btn').on('click', onSubmit);
-
+		LoadForm();
         $('#form').find('.weui-uploader').each(function () {
             initUploader(this, $(this).attr('data-type'));
         });        

@@ -64,7 +64,7 @@
                         <label class="weui-label">所在地区<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="district_name" required="" placeholder="请选择所在地区" id="city-picker">
+                        <input class="weui-input" type="text" name="district_name" required="" placeholder="请选择所在地区" id="city-picker" readonly>
                         <input type="hidden" name="province">
                         <input type="hidden" name="city">
                         <input type="hidden" name="district">
@@ -82,7 +82,7 @@
         </div>
         <div class="weui-btn-area btn-area">
             <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
-            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
         </div>
     </form>
     <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
@@ -90,9 +90,10 @@
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
     <script type="text/javascript" src="../../js/district.js"></script>
     <script>
-    // var query = $$.parseQueryString();
-    var operateType = 'create-base';
-
+    var query = $$.parseQueryString();
+    var operateType = 'create-save';
+		
+	var hash = window.location.hash;
     function onBack() {
         window.history.back();
     }
@@ -100,7 +101,11 @@
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
-
+		if (hash.substr(0, 6) == '#step/') {
+            var arr = hash.substr(6).split('/');
+			param['flow'] = arr[0];
+			param['step'] = parseInt(arr[1]);
+		}
         $$.request('/action/bm/mchnt-base-info/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -168,14 +173,30 @@
             enableHighAccuracy: true
         });
     }
+	function LoadForm() {
+		if(query.mchnt_id && query.mchnt_id != "") {
+			$$.request('/action/bm/mchnt-base-info/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						weui.form.load('#form', data.data);
+					} else {
 
+					}
+				},
+				error: function() {}
+			});
+		}
+	}
     $(function() {
         $('#back-btn').on('click', onBack);
         $('#submit-btn').on('click', onSubmit);
-        
+        $('#city-picker').on('focus', function() {
+            $$.showPicker(this, districtData);
+        });
         // 失去焦点时检测
         weui.form.checkIfBlur('#form', $$.rules);
-
+		
+		LoadForm();
         getLocation(function(addr) {
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
             $('#addr').val(addr.street + addr.streetNumber);

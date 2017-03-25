@@ -106,7 +106,7 @@
         </div>
         <!-- 填写结算信息结束 -->
         <div class="weui-btn-area btn-area">
-            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
+            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">上一步</a>
             <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
         </div>
     </form>
@@ -116,7 +116,7 @@
     <script>
     var query = $$.parseQueryString();
     var operateType = query.operateType;
-
+	var hash = window.location.hash;
     var uploaderData = [];
 
     function initUploader(selector, elec_info_type) {
@@ -151,6 +151,12 @@
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
+		
+		if (hash.substr(0, 6) == '#step/') {
+            var arr = hash.substr(6).split('/');
+			param['flow'] = arr[0];
+			param['step'] = parseInt(arr[1]);
+		}
         var elec_info = [];
 
         $('#form').find('.weui-uploader__file').forEach(function(item) {
