@@ -204,18 +204,15 @@
 						uploaderData = data.images;
 						$.each(uploaderData, function(index, item) {
 							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
-							$$.request('/action/uploads/' + item.serverid, {}, {
-								success: function(data) {
-									id = ++_id;
-									var $file = $($.render(itemTpl, {
-										id: id
-									}));
-									$(target).find('.weui-uploader__files').append($file);
-									$file.css({
-										backgroundImage: data
-									});
-								}
-							})
+							id = ++_id;
+							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
+							var $file = $($.render(itemTpl, {
+								id: id
+							}));
+							$(target).find('.weui-uploader__files').append($file);
+							$file.css({
+								backgroundImage: 'url('+ url+ ')'
+							});
 						})
 					} else {
 
