@@ -460,7 +460,7 @@
 	function onEdit() {
 		console.log(this, arguments);
 		operateType = 'update';
-		weui.page.hide('#preview-page');
+		$('#preview-page').removeClass('page_show');
 		onView(row);
 		$('#back-btn').show().siblings().show();
 	}

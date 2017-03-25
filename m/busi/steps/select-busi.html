@@ -37,13 +37,12 @@
     </div>
     
     <div id="page2" class="page page_show">
-        <div class="weui-cells__title">选择收单机构</div>
         <div class="weui-search-bar">
             <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
             <form class="weui-search-bar__form" method="post" action="">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索收单机构">
                     <a href="javascript:" class="weui-icon-clear"></a>
                 </div>
                 <label class="weui-search-bar__label">
@@ -113,7 +112,7 @@
 			})
 		},
 		onClickItem: function(row) {
-			weui.page.hide('page2');
+			$('#pages').removeClass('page_show');
 			weui.page.show('page1');
 			var acq_inst = row.acq_inst_id;
 			weui.searchPage('#page1', {

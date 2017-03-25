@@ -101,6 +101,7 @@
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
+		param = $.extend({}, query, param);
 		if (hash.substr(0, 6) == '#step/') {
             var arr = hash.substr(6).split('/');
 			param['flow'] = arr[0];
