@@ -239,7 +239,7 @@ $$.open = function(page, params, title) {
     window.open(url, title, 'status=yes,toolbar=no,menubar=yes,location=no,resizable=yes,scrollbars=yes');
 };
 
-$$.export = function(target) {
+$$.exportData = function(target) {
     var opts = $.parser.parseOptions(target);
     var f = $(target).closest('form');
     var url = opts.url;
