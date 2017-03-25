@@ -80,13 +80,21 @@ window.basedir = '/p';
 
 (function() {
     var flowConfig = [{
-        busi_type: 'SD',
+        busi_type: 'SDZL',
+        acq_inst_id: '48215500',
+        flow: 'sd'
+    }, {
+        busi_type: 'SDJL',
         acq_inst_id: '48215500',
         flow: 'sd'
     }, {
         busi_type: 'DMF',
         acq_inst_id: '48215500',
         flow: 'dmf'
+    }, {
+        busi_type: 'SD',
+        acq_inst_id: '48025500',
+        flow: 'sd'
     }];
 
 
