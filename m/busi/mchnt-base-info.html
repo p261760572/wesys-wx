@@ -458,8 +458,9 @@
     }
 
 	function onEdit() {
+		var pre_mchnt_id = $('#preview-mchnt_id').text();
 		var param = {
-			mchnt_id: $('#preview-mchnt_id').text();
+			mchnt_id: pre_mchnt_id
 		};
 		console.log(this, arguments);
 		operateType = 'update';
