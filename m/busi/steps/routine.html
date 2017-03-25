@@ -126,7 +126,9 @@
 					busi_type: row.busi_type
 				};
 				if(row.step == 0) {
-					flows.busi.start(row.busi_type, row.acq_inst_id);
+					 window.location.href = 'select-busi.html?' + $.param({
+						mchnt_id: row.mchnt_id
+					});
 				} else {
 					flows.start(row.flow, params, row.step);
 				}
