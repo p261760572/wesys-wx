@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>待办事务</title>
+    <link rel="stylesheet" href="../../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../../css/ui-base.css">
+</head>
+
+<body>
+    <div id="page1" class="page page_show">
+        <div class="weui-cells__title">进入待办流程</div>
+        <div class="weui-search-bar hide">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
+            <!-- <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__bd weui-cell_primary">
+                    <p>实时搜索文本</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <!-- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script> -->
+    <script type="text/javascript" src="../../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
+    <script id="list-template" type="text/html">
+        {{each rows as row i}}
+        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>{{row.mchnt_name}}</p>
+            </div>
+            <div class="weui-cell__ft" style="color:#f6383a;">{{row.proc_st_nm}}</div>
+        </a>
+        <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box__desc">商户号：{{row.mchnt_cd}}</div>
+            <div class="weui-media-box__desc">收单机构：{{row.acq_inst_nm}}</div>
+            <div class="weui-media-box__desc">开户行：{{row.account_bank_branch_nm}}</div>
+			<div class="weui-media-box__desc">业务类型：{{row.busi_type_nm}}</div>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
+				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.last_created_by_nm}}</li>
+            </ul>
+            <ul class="weui-media-box__info" style="margin-top: 0px;">
+                <li class="weui-media-box__info__meta">修改时间：{{row.last_modified_time}}</li>
+				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">修改人：{{row.last_modified_by_nm}}</li>
+            </ul>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+    var query = $$.parseQueryString();
+	weui.searchPage('#page1', {
+		resultTpl: '#list-template',
+		loader: function(param, success, error) {
+			console.log(arguments);
+			$$.request('/action/bm/net-dealt/list', {}, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						success(data.rows);
+					} else {
+						weui.alert(data.errmsg, {
+							title: '提示'
+						});
+					}
+				},
+				error: error
+			});
+		},
+		onInput: function() {
+			console.log(arguments);
+		},
+		onClickItem: function(row) {
+			var params = {
+				mchnt_id: row.mchnt_id,
+				mchnt_param_id: row.mchnt_param_id,
+				acq_inst_id: row.acq_inst_id,
+				busi_type: row.busi_type
+			};
+			flows.start(row.flow, params, row.step);
+		}
+	}).search();
+    
+    </script>
+</body>
+
+</html>
