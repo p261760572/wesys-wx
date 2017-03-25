@@ -97,7 +97,7 @@
 	function LoadForm() {
 		if(query.mchnt_id && query.mchnt_id != "" &&
 		  	query.mchnt_param_id && query.mchnt_param_id != "") {
-			$$.request('/action/bm/mchnt-param/param_detail', query, {
+			$$.request('/action/bm/mchnt-param/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.form.load('#form', data.data);
