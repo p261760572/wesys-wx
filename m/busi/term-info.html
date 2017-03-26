@@ -163,7 +163,7 @@
                         <input class="weui-input" type="text" name="term_status" required="" placeholder="请输入终端状态">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <!--div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
@@ -180,7 +180,7 @@
                         <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请输入拓展人" id="expand-select2">
                         <input type="hidden" name="expand_id">
                     </div>
-                </div>
+                </div-->
             </div>
             <div class="weui-btn-area btn-area">
                 <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
@@ -291,15 +291,7 @@
             <div class="weui-media-box__desc">审核备注：{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.last_created_by_nm}}</li>
-            </ul>
-            <ul class="weui-media-box__info" style="margin-top: 0px;">
-                <li class="weui-media-box__info__meta">修改时间：{{row.last_modified_time}}</li>
-				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">修改人：{{row.last_modified_by_nm}}</li>
-            </ul>
-            <ul class="weui-media-box__info" style="margin-top: 0px;">
-                <li class="weui-media-box__info__meta">审核时间：{{row.last_checked_time}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">审核人：{{row.last_checked_by_nm}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.expand_nm}}</li>
             </ul>
         </div>
         {{/each}}
@@ -477,7 +469,19 @@
             mchnt_id: query.mchnt_id
         });
         $('#back-btn').show().siblings().show();
-
+		$$.request('/action/bm/mchnt-base-info/view', {mchnt_id: query.mchnt_id}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    $('input[name="linkman"]').val(data.linkman);
+					$('input[name="mobile"]').val(data.mobile);
+					$('input[name="telno"]').val(data.telno);
+					$('input[name="shop_name"]').val(data.mchnt_abbr);
+                } else {
+					
+                }
+            },
+            error: function() {}
+        });
         getLocation(function (addr) {
             setPickerValues('#city-picker', districtData, [addr.province,addr.city,addr.district]);
             $('#addr').val(addr.street+addr.streetNumber);
