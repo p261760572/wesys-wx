@@ -629,7 +629,7 @@
         $('#acq-inst-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索收单机构',
-                valueField: 'acq_inst_cd',
+                valueField: 'acq_inst_id',
                 textField: 'acq_inst_nm',
                 url: '/action/bm/acq-inst/search'
             }).search();
