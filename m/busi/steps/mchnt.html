@@ -201,8 +201,9 @@
 	
 	function checkMustPic() {
 		$('#form').find('.weui-uploader.required').each(function(index, item){
-			if(($(this).find('.weui-uploader__file').length) == 0) {
-				if($(this).closest('.weui-cell').hasClass('hide') == false) {
+			var target = $(this);
+			if(target.find('.weui-uploader__file').length == 0) {
+				if(!(target.closest('.weui-cell').hasClass('hide')) {
 					return false;
 				}
 			}
