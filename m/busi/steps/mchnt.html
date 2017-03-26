@@ -201,9 +201,8 @@
 	
 	function checkMustPic() {
 		$('#form').find('.weui-uploader.required').each(function(index, item){
-			if($(this).closest('.weui-cell').hasClass('hide')) 
-				continue;
-			else if(($(this).find('.weui-uploader__file').length) == 0) {
+			if((!$(this).closest('.weui-cell').hasClass('hide')) &&
+				($(this).find('.weui-uploader__file').length) == 0) {
 				weui.alert('请完善电子资料', {
 					title: '提示'
 				});
