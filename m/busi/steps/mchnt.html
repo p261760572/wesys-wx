@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="page page_show">
+    <div class="page">
         <form id="form">
             <div class="weui-cells__title">营业执照</div>
             <div class="weui-cells weui-cells_form">
@@ -120,9 +120,44 @@
             </div>
         </form>
     </div>
+    <div id="page2" class="page page_show">
+        <div class="weui-search-bar hide">
+            <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索收单机构">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>入网类型</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
+            <!-- <div class="weui-cell weui-cell_access">
+                <div class="weui-cell__bd weui-cell_primary">
+                    <p>实时搜索文本</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
     <!-- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script> -->
     <script type="text/javascript" src="../../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
+    <script id="list-template" type="text/html">
+        {{each rows as row i}}
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>
+                    {{row.text}}
+                </p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        {{/each}}
+    </script>
     <script>
     var query = $$.parseQueryString();
     var operateType = query.operateType;
@@ -165,7 +200,7 @@
 	}
 	
 	function checkMustPic() {
-		$('#form').find('.weui-uploader .required').each(index, function(item){
+		$('#form').find('.weui-uploader .required').each(function(index, item){
 			if($(this).closest('.weui-cell').style.display != "none" &&
 				$(this).find('.weui-uploader__file').length === 0) {
 				weui.alert('请完善电子资料', {
@@ -250,15 +285,16 @@
 			{value: '1', text: '企业入网'},
 			{value: '2', text: '个人入网'}
 		];
-		weui.select2(this, {
-			title: '请选择入网方式',
+		weui.searchPage('#page2', {
+			resultTpl: '#list-template',
 			data: type,
 			onClickItem: function(row) {
 				if(row.value == '2') {
 					$('#s10').change();
 				}
+				weui.page.show('#page1');
 			}
-		});
+		}).search();;
 		$('#s10').on('change', function() {
 			if ($(this).prop('checked')) {
 				$(this).closest('.weui-cell').siblings().show();
