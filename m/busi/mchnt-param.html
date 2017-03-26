@@ -437,7 +437,7 @@
     }).search();
 
     function onSearch(param, success, error) {
-        var queryParams = $.extend(param, query);
+        var queryParams = $.extend(query, param);
         $$.request('/action/bm/mchnt-param/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
