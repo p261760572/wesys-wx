@@ -204,7 +204,6 @@
 			var target = $(this);
 			if(target.find('.weui-uploader__file').length == 0) {
 				if(!(target.closest('.weui-cell').hasClass('hide'))) {
-					alert('exit');
 					return false;
 				}
 			}
@@ -214,12 +213,15 @@
 		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
+		
 		if (!checkMustPic()) {
+			alert('false');
 			weui.alert('请完善电子资料', {
 				title: '提示'
 			});
 			return;
 		}
+		alert('true');
         var param = $('#form').serializeObject();
         var elec_info = [];
 		if (hash.substr(0, 6) == '#step/') {
