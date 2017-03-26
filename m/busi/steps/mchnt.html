@@ -202,13 +202,14 @@
 	function checkMustPic() {
 		$('#form').find('.weui-uploader.required').each(function(index, item){
 			alert($(this).find('.weui-uploader__file').length+','+$(this).closest('.weui-cell').hasClass('hide'));
-			if((!$(this).closest('.weui-cell').hasClass('hide')) &&
-				(($(this).find('.weui-uploader__file').length) == 0)) {
-				weui.alert('请完善电子资料', {
-					title: '提示'
-				});
-				return false;
-			}	
+			if(($(this).find('.weui-uploader__file').length) == 0) {
+				if($(this).closest('.weui-cell').hasClass('hide') == false) {
+					weui.alert('请完善电子资料', {
+						title: '提示'
+					});
+					return false;
+				}
+			}
 		});
 		return true;
 	}
