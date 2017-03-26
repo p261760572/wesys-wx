@@ -221,14 +221,14 @@
 
             data.flag = '0';
             $('#data-rule-dg').datagrid({
-                url: '/action/admin/data-role/exist-rule',
+                url: $$.wrapUrl('/action/admin/data-role/exist-rule'),
                 queryParams: data
             });
 
             data.flag = '1';
             data.rows = 1000;
             $('#selected-data-rule-dg').datagrid({
-                url: '/action/admin/data-role/exist-rule',
+                url: $$.wrapUrl('/action/admin/data-role/exist-rule'),
                 queryParams: data
             });
         } else {
