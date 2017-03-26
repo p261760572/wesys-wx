@@ -200,10 +200,10 @@
 	}
 	
 	function checkMustPic() {
-		$('#form').find('.weui-uploader').each(function(index, item){
-			if(($(this).hasClass('required')) &&
-			   	($(this).closest('.weui-cell').hasClass('hide') == false) &&
-					($(this).find('.weui-uploader__file').length === 0)) {
+		$('#form').find('.weui-uploader.required').each(function(index, item){
+			if($(this).closest('.weui-cell').hasClass('hide')) 
+				continue;
+			else if(($(this).find('.weui-uploader__file').length) == 0) {
 				weui.alert('请完善电子资料', {
 					title: '提示'
 				});
@@ -292,6 +292,8 @@
 			onClickItem: function(row) {
 				if(row.value == '2') {
 					$('#s10').prop('checked', false).change();
+				} else if(row.value == '1') {
+					$('#s10').prop('checked', true).change();
 				}
 				weui.page.show('#page1');
 			}
