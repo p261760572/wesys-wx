@@ -373,7 +373,7 @@
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">当面付手续费</label>
-                    <span class="weui-form-preview__value" id="preview-fee"></span>‰
+                    <span class="weui-form-preview__value"><span id="preview-fee"></span>‰</span>
                 </div>
                 <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">参数状态</label>
@@ -413,8 +413,10 @@
             <div class="weui-media-box__desc">审核备注：{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
-				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.expand_nm}}</li>
             </ul>
+			<ul class="weui-media-box__info">
+				<li class="weui-media-box__info__meta">创建人：{{row.expand_nm}}</li>
+			</ul>
         </div>
         {{/each}}
     </script>

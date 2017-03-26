@@ -249,7 +249,7 @@
 		var type = [
 			{value: '1', text: '企业入网'},
 			{value: '2', text: '个人入网'}
-		]
+		];
 		weui.select2(this, {
 			title: '请选择入网方式',
 			data: type,
@@ -258,7 +258,7 @@
 					$('#s10').change();
 				}
 			}
-		}
+		};
 		$('#s10').on('change', function() {
 			if ($(this).prop('checked')) {
 				$(this).closest('.weui-cell').siblings().show();

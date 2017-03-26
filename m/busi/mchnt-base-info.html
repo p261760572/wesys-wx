@@ -356,8 +356,10 @@
             <div class="weui-media-box__desc">审核备注：{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
-				<li class="weui-media-box__info__meta weui-media-box__info__meta_extra">创建人：{{row.expand_nm}}</li>
             </ul>
+			<ul class="weui-media-box__info">
+				<li class="weui-media-box__info__meta">创建人：{{row.expand_nm}}</li>
+			</ul>
         </div>
         {{/each}}
     </script>
