@@ -290,7 +290,7 @@
 			data: type,
 			onClickItem: function(row) {
 				if(row.value == '2') {
-					$('#s10').change();
+					$('#s10').prop('checked', false);
 				}
 				weui.page.show('#page1');
 			}
