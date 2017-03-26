@@ -211,7 +211,7 @@
                         <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请选择拓展方" id="expand-inst-select2">
+                        <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请选择拓展方" id="expand-inst-select2" readonly>
                         <input type="hidden" name="expand_inst_id">
                     </div>
                 </div>
@@ -220,7 +220,7 @@
                         <label class="weui-label">拓展人<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2">
+                        <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2" readonly>
                         <input type="hidden" name="expand_id">
                     </div>
                 </div>
@@ -330,7 +330,7 @@
             </div>
             <div class="weui-form-preview__ft">
                 <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
-                <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:" onclick="onEdit()">编辑</button>
+                <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary hide" href="javascript:" onclick="onEdit()" id="edit-btn">编辑</button>
             </div>
         </div>
     </div>
@@ -405,7 +405,9 @@
 
     function onPreview(param) {
         weui.page.show('#preview-page');
-
+		if($.inArray(param.proc_st, ['8', '9', 'A']) >= 0) {
+			$('#edit-btn').show();
+		}
         $$.request('/action/bm/mchnt-base-info/view', param, {
             success: function(data) {
                 if (data.errcode == 0) {

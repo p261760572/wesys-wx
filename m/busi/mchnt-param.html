@@ -254,7 +254,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="weui-cell">
+                <!--div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">拓展方<span class="required">*</span></label>
                     </div>
@@ -271,7 +271,7 @@
                         <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2">
                         <input type="hidden" name="expand_id">
                     </div>
-                </div>
+                </div-->
             </div>
             <div class="weui-btn-area btn-area">
                 <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
@@ -372,6 +372,10 @@
                     <span class="weui-form-preview__value" id="preview-credit_card_fee_nm"></span>
                 </div>
                 <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">当面付手续费</label>
+                    <span class="weui-form-preview__value" id="preview-fee"></span>‰
+                </div>
+                <div class="weui-form-preview__item hide">
                     <label class="weui-form-preview__label">参数状态</label>
                     <span class="weui-form-preview__value" id="preview-status"></span>
                 </div>
@@ -467,6 +471,7 @@
                     for (var name in data.data) {
                         $('#preview-' + name).html(data.data[name]);
                     }
+					
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'

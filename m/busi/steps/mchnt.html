@@ -15,11 +15,16 @@
         <form id="form">
             <div class="weui-cells__title">营业执照</div>
             <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_switch">
+					<div class="weui-cell__ft">
+						<input class="weui-switch" type="checkbox" checked="" id="s10">
+					</div>
+				</div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader" data-type="yyzzzm">
+                        <div class="weui-uploader required" data-type="yyzzzm">
                             <div class="weui-uploader__hd">
-                                <p class="weui-uploader__title">营业执照正面照片</p>
+                                <p class="weui-uploader__title">营业执照正面照片<span class="required">*</span></p>
                             </div>
                             <div class="weui-uploader__bd">
                                 <ul class="weui-uploader__files">
@@ -31,14 +36,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="weui-cell">
+                <!--div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">商户名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mchnt_name" required="" placeholder="请输入商户名称">
                     </div>
-                </div>
+                </div-->
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">营业执照号<span class="required">*</span></label>
@@ -62,7 +67,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader" data-type="sfzzm">
+                        <div class="weui-uploader required" data-type="sfzzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
                             </div>
@@ -158,9 +163,23 @@
 	function prev() {
 		window.location.href = 'select-busi.html?' + $.param(query);
 	}
+	
+	function checkMustPic() {
+		$('#form').find('.weui-uploader .required').each(index, function(item){
+			if($(this).closest('.weui-cell').style.display != "none" &&
+				$(this).find('.weui-uploader__file').length === 0) {
+				weui.alert('请完善电子资料', {
+					title: '提示'
+				});
+				return false;
+			}	
+		});
+		return true;
+	}
 		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
+		if (!checkMustPic()) return;
         var param = $('#form').serializeObject();
         var elec_info = [];
 		if (hash.substr(0, 6) == '#step/') {
@@ -226,8 +245,27 @@
 			});*/
 		}
 	}
-		
     $(function() {
+		var type = [
+			{value: '1', text: '企业入网'},
+			{value: '2', text: '个人入网'}
+		]
+		weui.select2(this, {
+			title: '请选择入网方式',
+			data: type,
+			onClickItem: function(row) {
+				if(row.value == '2') {
+					$('#s10').change();
+				}
+			}
+		}
+		$('#s10').on('change', function() {
+			if ($(this).prop('checked')) {
+				$(this).closest('.weui-cell').siblings().show();
+			} else {
+				$(this).closest('.weui-cell').siblings().hide().find('input').val("");
+			}
+		});
         $('#submit-btn').on('click', onSubmit);
 		LoadForm();
         $('#form').find('.weui-uploader').each(function () {
