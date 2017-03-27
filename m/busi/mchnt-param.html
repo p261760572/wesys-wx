@@ -113,8 +113,8 @@
                         <label class="weui-label">开户支行<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
-                        <input type="hidden" class="required" name="account_bank_branch_cd">
+                        <input class="weui-input" type="text" required="" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
+                        <input type="hidden" name="account_bank_branch_cd">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -539,24 +539,8 @@
 
     // 失去焦点时检测
     weui.form.checkIfBlur('#form', $$.rules);
-	function checkMustSelect2() {
-		var check = true;
-		$('#form').find('input[type="hide"]').each(function(index, item){
-			if($(this).hasClass('required') && 
-			  	$(this).val() == "") {
-				check = false;
-				return check;
-			}
-		})
-		return check;
-	}
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
-		if(!checkMustSelect2()) {
-			weui.alert('请完善必填项', {
-				title: '提示'
-			});
-		}
         var param = $('#form').serializeObject();
 		param = $.extend(query, param);
         $$.request('/action/bm/mchnt-param/' + operateType, param, {
@@ -610,7 +594,6 @@
                 $('#fee-cell').removeClass('hide');
             } else {
                 $('#debit-card-fee-cell,#credit-card-fee-cell').removeClass('hide');
-				$('input[name="credit_card_fee"], input[name="debit_card_fee"]').addClass('required');
             }
         });
 
