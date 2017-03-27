@@ -259,6 +259,7 @@
 		var _id = 0, id=0;
 		if(query.mchnt_id && query.mchnt_id != "" &&
 		  	query.mchnt_param_id && query.mchnt_param_id != "") {
+			weui.page.show('#page1');
 			$$.request('/action/bm/mchnt-base-info/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {

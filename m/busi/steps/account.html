@@ -20,7 +20,7 @@
                     <label for="" class="weui-label">账户类型<span class="required">*</span></label>
                 </div>
                 <div class="weui-cell__bd">
-                    <select class="weui-select for_busi" name="account_type" id="account_type" value="1">
+                    <select class="weui-select" name="account_type" id="account_type" value="1">
                         <option value="1">对公账户</option>
                         <option value="2">对私账户</option>
                     </select>
@@ -28,7 +28,7 @@
             </div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <div class="weui-uploader" data-type="zhzm">
+                    <div class="weui-uploader required" data-type="zhzm">
                         <div class="weui-uploader__hd">
                             <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
                         </div>
@@ -67,7 +67,7 @@
                     <label class="weui-label">账户户名<span class="required">*</span></label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input for_busi" name="account_name" required="" type="text" placeholder="请输入账户户名">
+                    <input class="weui-input" name="account_name" required="" type="text" placeholder="请输入账户户名">
                 </div>
             </div>
             <div class="weui-cell">
@@ -75,7 +75,7 @@
                     <label class="weui-label">银行账号<span class="required">*</span></label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input for_busi" name="account_no" required="" type="number" placeholder="请输入银行账号">
+                    <input class="weui-input" name="account_no" required="" type="number" placeholder="请输入银行账号">
                 </div>
             </div>
             <!--div class="weui-cell">
@@ -152,8 +152,28 @@
 		flows.prev(query);
 	}
 		
+	function checkMustPic() {
+		var check = true;
+		$('#form').find('.weui-uploader.required').each(function(index, item){
+			var target = $(this);
+			if(target.find('.weui-uploader__file').length == 0) {
+				if(!(target.closest('.weui-cell').hasClass('hide'))) {
+					check = false;
+					return check;
+				}
+			}
+		});
+		return check;
+	}
+		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
+		if (!checkMustPic()) {
+			weui.alert('请完善电子资料', {
+				title: '提示'
+			});
+			return;
+		}
         var param = $('#form').serializeObject();
 		
 		if (hash.substr(0, 6) == '#step/') {
