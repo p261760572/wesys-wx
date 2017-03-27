@@ -66,10 +66,10 @@
                 </div>
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
-                        <label for="" class="weui-label">业务类型<span class="required">*</span></label>
+                        <label class="weui-label">业务类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
+                        <input class="weui-input" type="text" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
                         <input type="hidden" name="busi_type">
                     </div>
                 </div>
@@ -609,22 +609,14 @@
             }).search();
         });
 
-		$('#acq-inst-select2').on('change', function() {
-			var acq_inst = $('#acq-inst-select2').next().val();
-			$$.request('/action/bm/acq-inst-busi/list', {
-				acq_inst_id: acq_inst
-			}, {
-				success: function(data) {
-					if (data.errcode == 0) {
-						$$.showSelect2('#busi-type', data.rows, {
-							title: '',
-							valueField: 'busi_type',
-							textField: 'busi_type_nm'
-						}).search();
-					} 
-				}
-			});
-			
+		$('#busi-type').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '',
+                valueField: 'busi_type',
+                textField: 'busi_type_nm',
+				url: '/action/bm/acq-inst-busi/list',
+				queryParams: {acq_inst_id: $('input[name="acq-inst-id"]').val()}
+            }).search();
         });
 		
         $('#account-bank-branch-select2').on('focus', function() {
