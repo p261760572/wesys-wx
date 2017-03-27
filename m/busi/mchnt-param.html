@@ -55,17 +55,6 @@
                         <input class="weui-input" type="text" name="mchnt_param_id" required="" placeholder="请输入商户参数ID">
                     </div>
                 </div>
-                <div class="weui-cell weui-cell_select weui-cell_select-after">
-                    <div class="weui-cell__hd">
-                        <label for="" class="weui-label">业务类型<span class="required">*</span></label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <select class="weui-select" name="busi_type" required missingTips="请选择业务类型" id="busi-type">
-                            <option value="SD">收单</option>
-                            <option value="DMF">当面付</option>
-                        </select>
-                    </div>
-                </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">收单机构<span class="required">*</span></label>
@@ -73,6 +62,15 @@
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2">
                         <input type="hidden" name="acq_inst_id">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">业务类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
+                        <input type="hidden" name="busi_type">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -110,37 +108,13 @@
                         <input class="weui-input" type="text" name="account_name" required="" placeholder="请输入开户名称">
                     </div>
                 </div>
-                <div class="weui-cell hide">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">开户银行</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_bank" placeholder="请输入开户银行">
-                    </div>
-                </div>
-                <div class="weui-cell hide">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">开户银行省</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_province" placeholder="请输入开户银行省">
-                    </div>
-                </div>
-                <div class="weui-cell hide">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">开户银行市</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="account_city" placeholder="请输入开户银行市">
-                    </div>
-                </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">开户支行</label>
+                        <label class="weui-label">开户支行<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
-                        <input type="hidden" name="account_bank_branch_cd">
+                        <input type="hidden" required="" name="account_bank_branch_cd">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -635,6 +609,24 @@
             }).search();
         });
 
+		$('#acq-inst-select2').on('change', function() {
+			var acq_inst = $('#acq-inst-select2').next().val();
+			$$.request('/action/bm/acq-inst-busi/list', {
+				acq_inst_id: acq_inst
+			}, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						$$.showSelect2('#busi-type', data.rows, {
+							title: '',
+							valueField: 'busi_type',
+							textField: 'busi_type_nm'
+						}).search();
+					} 
+				}
+			});
+			
+        });
+		
         $('#account-bank-branch-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索开户支行',
