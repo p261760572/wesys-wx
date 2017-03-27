@@ -61,16 +61,16 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2">
-                        <input type="hidden" name="acq_inst_id">
+                        <input type="hidden" required="" name="acq_inst_id">
                     </div>
                 </div>
-                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">业务类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
-                        <input type="hidden" name="busi_type">
+                        <input type="hidden" required="" name="busi_type">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -457,7 +457,6 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
-                    $('#busi-type').change();
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -568,7 +567,6 @@
         weui.form.clear('#form');
         weui.form.load('#form', {
             mchnt_id: query.mchnt_id,
-            busi_type: 'SD',
             account_type: '1'
         });
         $('#busi-type').change();
@@ -591,7 +589,7 @@
         // });
 
         $('#busi-type').on('change', function() {
-            var value = $(this).val();
+            var value = $('input[name="busi_type"]').val();
             $('#debit-card-fee-cell,#credit-card-fee-cell,#fee-cell').addClass('hide');
             if (value == 'DMF') {
                 $('#fee-cell').removeClass('hide');
@@ -610,12 +608,13 @@
         });
 
 		$('#busi-type').on('focus', function() {
+			var acq_inst = $('input[name="acq_inst_id"]').val();
             $$.showSelect2(this, {
                 title: '',
                 valueField: 'busi_type',
                 textField: 'busi_type_nm',
 				url: '/action/bm/acq-inst-busi/list',
-				queryParams: {acq_inst_id: $('input[name="acq-inst-id"]').val()}
+				queryParams: {acq_inst_id: acq_inst}
             }).search();
         });
 		
