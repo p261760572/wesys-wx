@@ -61,7 +61,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2">
-                        <input type="hidden" required="" name="acq_inst_id">
+                        <input type="hidden" class="required" name="acq_inst_id">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -70,7 +70,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
-                        <input type="hidden" required="" name="busi_type">
+                        <input type="hidden" class="required" name="busi_type">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -114,7 +114,7 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
-                        <input type="hidden" required="" name="account_bank_branch_cd">
+                        <input type="hidden" class="required" name="account_bank_branch_cd">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -211,7 +211,7 @@
                         <label for="" class="weui-label">手续费<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input for_busi" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="请输入手续费千分比" invalidTips="请输入正确的手续费">
+                        <input class="weui-input" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="请输入手续费千分比" invalidTips="请输入正确的手续费">
                     </div>
                     <div class="weui-cell__ft">
                         <button class="weui-vcode-btn">‰</button>
@@ -539,9 +539,24 @@
 
     // 失去焦点时检测
     weui.form.checkIfBlur('#form', $$.rules);
-
+	function checkMustSelect2() {
+		var check = true;
+		$('#form').find('input[type="hide"]').each(function(index, item){
+			if($(this).hasClass('required') && 
+			  	$(this).val() == "") {
+				check = false;
+				return check;
+			}
+		})
+		return check;
+	}
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
+		if(!checkMustSelect2()) {
+			weui.alert('请完善必填项', {
+				title: '提示'
+			});
+		}
         var param = $('#form').serializeObject();
 		param = $.extend(query, param);
         $$.request('/action/bm/mchnt-param/' + operateType, param, {
@@ -595,6 +610,7 @@
                 $('#fee-cell').removeClass('hide');
             } else {
                 $('#debit-card-fee-cell,#credit-card-fee-cell').removeClass('hide');
+				$('input[name="credit_card_fee"], input[name="debit_card_fee"]').addClass('required');
             }
         });
 
@@ -605,6 +621,11 @@
                 textField: 'acq_inst_nm',
                 url: '/action/bm/acq-inst/search'
             }).search();
+        });
+		
+		$('#acq-inst-select2').on('change', function() {
+			$('#busi-type').val('');
+			$('input[name="busi_type"]').val('');
         });
 
 		$('#busi-type').on('focus', function() {
