@@ -20,7 +20,7 @@
                         <label class="weui-label">MCC</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mcc_nm" placeholder="请选择商户类别" id="mcc-select2">
+                        <input class="weui-input" type="text" name="mcc_nm" placeholder="请选择商户商业" id="mcc-select2">
                         <input type="hidden" name="mcc">
                     </div>
                 </div>
@@ -124,7 +124,7 @@
 
         $('#mcc-select2').on('focus', function() {
             $$.showSelect2(this, {
-                title: '搜索商户类别',
+                title: '搜索商户行业',
                 valueField: 'mcc',
                 textField: 'mcc_nm',
                 url: '/action/bm/mcc/search'
