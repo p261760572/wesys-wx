@@ -51,8 +51,11 @@
                         <label class="weui-label">商户类型</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" id="mchnt_type" pattern="" placeholder="请选择商户类型">
-                        <input type="hidden" name="mchnt_type">
+                        <select class="weui-select" name="mchnt_type" missingTips="请选择证件类型">
+                            <option value="1">企业</option>
+                            <option value="2">个人</option>
+                            <option value="9">其他</option>
+                        </select>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -440,7 +443,6 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
-					$('#mchnt_type').val(mchnt_type_nm[data.data.mchnt_type]);
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -643,7 +645,6 @@
         });
     }
 	
-	var mchnt_type_nm = {'1': '企业', '2': '个人', '9': '其他'};
     $(function() {
         $('#add-btn').on('click', onClickAdd);
         $('#submit-btn').on('click', onSubmit);

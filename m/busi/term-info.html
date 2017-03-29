@@ -426,6 +426,7 @@
             onClick: function() {
                 console.log(this, arguments);
                 window.location.href = 'term-param.html?' + $.param({
+					mchnt_id: row.mchnt_id,
                     term_no: row.term_no
                 });
             }
