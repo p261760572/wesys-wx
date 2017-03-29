@@ -255,8 +255,8 @@
     }
 
 	function LoadForm() {
-		var itemTpl = '<li class="weui-uploader__file weui-uploader__file_status" data-id="{{id}}"><div class="weui-uploader__file-content"></div></li>';
-		var _id=0, id=0;
+		var itemTpl = '<li class="weui-uploader__file" data-id="{{id}}"><div class="weui-uploader__file-content"></div></li>';
+		//var _id=0, id=0;
 		if(query.mchnt_id && query.mchnt_id != "" &&
 		  	query.mchnt_param_id && query.mchnt_param_id != "") {
 			weui.page.show('#page1');
@@ -268,6 +268,9 @@
 						
 						$.each(uploaderData, function(index, item) {
 							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
+							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
+							weui.uploader(target).appendFile(url);
+							/*
 							id = ++_id;
 							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
 							var $file = $($.render(itemTpl, {
@@ -276,7 +279,7 @@
 							$(target).find('.weui-uploader__files').append($file);
 							$file.css({
 								backgroundImage: 'url('+ url+ ')'
-							});
+							});*/
 						})
 						
 					} else {
