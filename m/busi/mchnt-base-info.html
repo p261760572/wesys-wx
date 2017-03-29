@@ -440,6 +440,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.form.load('#form', data.data);
+					$('#mchnt_type').val(mchnt_type_nm[data.data.mchnt_type]);
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -475,7 +476,7 @@
 		console.log(this, arguments);
 		operateType = 'update';
 		$('#preview-page').removeClass('page_show');
-		onView(param);
+		onView(param);		
 		$('#back-btn').show().siblings().show();
 	}
 		
@@ -641,7 +642,8 @@
             enableHighAccuracy: true
         });
     }
-
+	
+	var merch_type_nm = {'1': '企业', '2': '个人', '9': '其他'};
     $(function() {
         $('#add-btn').on('click', onClickAdd);
         $('#submit-btn').on('click', onSubmit);
