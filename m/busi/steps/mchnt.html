@@ -13,6 +13,7 @@
 <body>
     <div class="page" id="page1">
         <form id="form">
+            <input type="hidden" id="mchnt_type" name="mchnt_type">
             <div class="weui-cells__title">营业执照</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell weui-cell_switch">
@@ -263,6 +264,9 @@
 			$$.request('/action/bm/mchnt-base-info/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
+						if(data.data.mchnt_type == '2') {
+							$('#s10').prop('checked', false).change();
+						}
 						weui.form.load('#form', data.data);
 						uploaderData = data.images;
 						
@@ -283,15 +287,17 @@
     $(function() {
 		var type = [
 			{value: '1', text: '企业入网'},
-			{value: '2', text: '个人入网'}
+			{value: '2', text: '个人入网'},
+			{value: '9', text: '其他'}
 		];
 		weui.searchPage('#page2', {
 			resultTpl: '#list-template',
 			data: type,
 			onClickItem: function(row) {
+				$('#mchnt_type').val(row.value);
 				if(row.value == '2') {
 					$('#s10').prop('checked', false).change();
-				} else if(row.value == '1') {
+				} else {
 					$('#s10').prop('checked', true).change();
 				}
 				weui.page.show('#page1');
