@@ -264,9 +264,9 @@
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.form.load('#form', data.data);
-						var images = data.images;
+						uploaderData = data.images;
 						
-						$.each(images, function(index, item) {
+						$.each(uploaderData, function(index, item) {
 							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
 							id = ++_id;
 							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
