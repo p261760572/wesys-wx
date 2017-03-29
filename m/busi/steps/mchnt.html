@@ -204,8 +204,8 @@
 		$('#form').find('.weui-uploader.required').each(function(index, item){
 			var target = $(this);
 			if(target.find('.weui-uploader__file').length == 0 ||
-				target.find('.weui-uploader__file').attr('data-type') == undefined ||
-				target.find('.weui-uploader__file').attr('data-type') == null) {
+				target.find('.weui-uploader__file').attr('data-id') == undefined ||
+				target.find('.weui-uploader__file').attr('data-id') == null) {
 				if(!(target.closest('.weui-cell').hasClass('hide'))) {
 					check = false;
 					return check;
