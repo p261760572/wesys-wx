@@ -563,8 +563,8 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-                        searchPage.search();
-                        weui.page.back();
+						window.location.reload();
+                    //    searchPage.search();
                     });
                 } else {
                     weui.alert(data.errmsg, {
