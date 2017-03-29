@@ -48,6 +48,15 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
+                        <label class="weui-label">商户类型</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" id="mchnt_type" pattern="" placeholder="请选择商户类型">
+                        <input type="hidden" name="mchnt_type">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
                         <label class="weui-label">联系人<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
@@ -244,6 +253,10 @@
                     <span class="weui-form-preview__value" id="preview-mchnt_id"></span>
                 </div>
                 <div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">商户类型</label>
+                    <span class="weui-form-preview__value" id="preview-mchnt_type_nm"></span>
+                </div>
+                <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">联系人</label>
                     <span class="weui-form-preview__value" id="preview-linkman"></span>
                 </div>
@@ -406,6 +419,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     data.data.cert_type_nm = $$.formatField($$.param['cert_type'], data.data.cert_type);
+					data.data.mchnt_type_nm = $$.formatField($$.param['mchnt_type'], data.data.mchnt_type);
                     for (var name in data.data) {
                         $('#preview-' + name).html(data.data[name]);
                     }
@@ -636,7 +650,10 @@
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
-
+		
+		$('#mchnt_type').on('focus', function() {
+			$$.showPicker(this, $$.param['mchnt_type']);
+		})
         $('#license-date-picker').on('focus', function() {
             $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
