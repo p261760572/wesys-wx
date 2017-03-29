@@ -27,9 +27,7 @@
     <script type="text/javascript">
     function logout() {
         $$.request('/action/user/logout', {}, function(data) {
-            if (data.errcode == 0) {
-                window.location.href = '../login.html';
-            }
+             window.location.href = '../login.html';
         });
     }
     </script>
