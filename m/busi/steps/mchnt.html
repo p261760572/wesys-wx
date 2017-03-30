@@ -287,10 +287,10 @@
 		}
 	}
     $(function() {
-		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-			WeixinJSBridge.call('hideToolbar');
-			WeixinJSBridge.call('hideOptionMenu');
-		});
+		history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
 		var type = [
 			{value: '1', text: '企业入网'},
 			{value: '2', text: '个人入网'},
