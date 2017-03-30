@@ -110,7 +110,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-                        window.location.href = 'select-busi.html?' + $.param({
+                        window.location.href = 'select-busi.html?' + $.param(query, {
                             mchnt_id: data.data.mchnt_id
                         });
                     });
