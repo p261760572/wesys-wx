@@ -260,6 +260,7 @@
     }
 
 	function LoadForm() {
+		var id;
 		if(query.mchnt_id && query.mchnt_id != "" &&
 		  	query.mchnt_param_id && query.mchnt_param_id != "") {
 			weui.page.show('#page1');
@@ -270,12 +271,17 @@
 							$('#s10').prop('checked', false).change();
 						}
 						weui.form.load('#form', data.data);
-						uploaderData = data.images;
+						var images = data.images;
 						
-						$.each(uploaderData, function(index, item) {
+						$.each(images, function(index, item) {
 							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
 							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
-							weui.uploader(target).appendFile(url);
+							id = weui.uploader(target).appendFile(url);
+							uploaderData[id] = {
+								status: '1',
+								serverid: item.serverid,
+								elec_info_type: item.elec_info_type
+							}
 						})
 						
 					} else {
