@@ -136,11 +136,11 @@
                 // return false; // 阻止文件上传
             },
             onSuccess: function(ret) {
-                uploaderData.push({
-                    status: '1',
-                    serverid: ret.serverid,
-                    elec_info_type: elec_info_type
-                });
+                uploaderData[this.id] = {
+					status: '1',
+					serverid: ret.serverid,
+					elec_info_type: elec_info_type
+				};
             },
             onError: function(err) {
                 console.log(this, err);
@@ -156,7 +156,9 @@
 		var check = true;
 		$('#form').find('.weui-uploader.required').each(function(index, item){
 			var target = $(this);
-			if(target.find('.weui-uploader__file').length == 0) {
+			if(target.find('.weui-uploader__file').length == 0 ||
+				target.find('.weui-uploader__file').attr('data-id') == undefined ||
+				target.find('.weui-uploader__file').attr('data-id') == null) {
 				if(!(target.closest('.weui-cell').hasClass('hide'))) {
 					check = false;
 					return check;
@@ -185,7 +187,9 @@
 
         $('#form').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
-            elec_info.push(uploaderData[id-1]);
+			if(id != undefined && id != null) {
+				elec_info.push(uploaderData[id]);
+			}
         });
 
         param.elec_info = elec_info;
