@@ -188,6 +188,10 @@
 		}
 	}
     $(function() {
+		history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
         $('#submit-btn').on('click', onSubmit);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);

@@ -93,6 +93,10 @@
 	function back() {
 		window.location.href = 'base.html?' + $.param(query);
 	}
+	history.pushState(null, null, document.URL);
+	window.addEventListener('popstate', function () {
+		history.pushState(null, null, document.URL);
+	});
 	weui.searchPage('#page2', {
 		resultTpl: '#acq-template',
 		loader: function(param, success, error) {

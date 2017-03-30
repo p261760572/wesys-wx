@@ -215,6 +215,10 @@
     }
 
     $(function() {
+		history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
         $('#submit-btn').on('click', onSubmit);
 
         $('#form').find('.weui-uploader').each(function() {

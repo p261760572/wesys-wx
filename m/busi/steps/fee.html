@@ -110,6 +110,10 @@
 		}
 	}
     $(function() {
+		history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
 		LoadForm();
     	var value = query.busi_type;
         $('#debit-card-fee-cell,#credit-card-fee-cell,#fee-cell').addClass('hide');
