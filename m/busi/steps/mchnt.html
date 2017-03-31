@@ -192,6 +192,7 @@
 	};
     
 	function valid_regular(data) {
+		alert(data.match(/[^\-]+$/)[0]+,+data.match(/[^\-]+$/)[1]);
 		data = data.match(/[^\-]+$/)[0].replace(/(\.)/g,'');
 	}
 		
