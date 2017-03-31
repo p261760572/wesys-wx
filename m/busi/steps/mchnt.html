@@ -187,9 +187,11 @@
 		var url =  $$.wrapUrl('/action/uploads/') + param.serverid;
 		var file = new FileReader();
 		file.readAsDataURL(url);  
+		alert(file.result);
+		alert(param.serverid);
 		var Default = {
 			image: file.result,
-			serverid: $(target).serverid
+			serverid: param.serverid
 		};
 		$.extend(Default, ocr_map[param.elec_info_type].param);
 		$$.request(ocr_map[param.elec_info_type].url, Default, {
