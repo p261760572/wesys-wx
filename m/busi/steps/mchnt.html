@@ -182,13 +182,31 @@
 			ret:[]
 		},
 	};
-        
+    
+	function imageToDataUrl(url, callback) {
+		var canvas = document.createElement("canvas");
+		var ctx = canvas.getContext("2d");
+
+		var img = new Image();
+		img.onload = function () {        
+			var w = img.width;
+			var h = img.height;
+			var dataURL;
+
+			canvas.width = w;
+			canvas.height = h;
+			ctx.drawImage(img, 0, 0);
+
+			var dataURL =  canvas.toDataURL('image/jpeg');
+			console.log(dataURL);
+			callback(dataURL);
+		}
+		img.src = url;		
+	}
+		
 	function auto_recognize(target, param) {
 		var url =  $$.wrapUrl('/action/uploads/') + param.serverid;
-		var file = new FileReader();
-		file.readAsDataURL(url);  
-		alert(file.result);
-		alert(param.serverid);
+		imageToDataUrl(url);
 		var Default = {
 			image: file.result,
 			serverid: param.serverid
@@ -231,7 +249,7 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
-				auto_recognize(this, uploaderData[this.id]);
+				//auto_recognize(this, uploaderData[this.id]);
             },
             onError: function(err) {
                 console.log(this, err);
@@ -310,9 +328,10 @@
 			$$.request('/action/bm/mchnt-base-info/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
+						/*
 						if(data.data.mchnt_type == '2') {
 							$('#s10').prop('checked', false).change();
-						}
+						}*/
 						weui.form.load('#form', data.data);
 						var images = data.images;
 						
@@ -359,14 +378,15 @@
 			},
 			onClickItem: function(row) {
 				$('#mchnt_type').val(row.value);
+				/*
 				if(row.value == '2') {
 					$('#s10').prop('checked', false).change();
 				} else {
 					$('#s10').prop('checked', true).change();
-				}
+				}*/
 				weui.page.show('#page1');
 			}
-		}).search();;
+		}).search();
 		$('#s10').on('change', function() {
 			if ($(this).prop('checked')) {
 				$(this).closest('.weui-cell').siblings().removeClass('hide');
