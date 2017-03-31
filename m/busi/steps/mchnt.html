@@ -166,7 +166,44 @@
     var uploaderData = [];
 		
 	var hash = window.location.hash;
+	
+	var ocr_map = {
+		'sfzzm':{
+			url: '/gateway/ocr/idcard', 
+			param: {id_card_side: 'front'}, 
+			ret: [
+				{tag: '公民身份号码', target: '#cert_id'}, 
+				{tag: '姓名', target: '#cert_name'}
+			]
+		},
+		'sfzfm':{
+			url:'/gateway/ocr/idcard', 
+			param: {id_card_side: 'back'}, 
+			ret:[]
+		},
+	};
         
+	function auto_recognize(target, param) {
+		var Default = {
+			image: $(target).style.background-image,
+			serverid: $(target).serverid
+		};
+		$.extend(Default, ocr_map[param.elec_info_type].param);
+		$$.request(ocr_map[param.elec_info_type].url, Default, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+						if(data.data.words_result[item.tag]) {
+							$(item.target).val(data.data.words_result[item.tag]);
+						}
+					});
+				} else {
+					
+				}
+				
+			}
+		});
+	}
     function initUploader(selector, elec_info_type) {
 
         weui.ajaxUploader(selector, {
@@ -189,6 +226,7 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
+				auto_recognize(this, uploaderData[this.id]);
             },
             onError: function(err) {
                 console.log(this, err);
@@ -277,6 +315,7 @@
 							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
 							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
 							id = weui.uploader(target).appendFile(url);
+							weui.uploader(target).clearFileStatus(id);
 							uploaderData[id] = {
 								status: '1',
 								serverid: item.serverid,
@@ -297,14 +336,22 @@
         window.addEventListener('popstate', function () {
             history.pushState(null, null, document.URL);
         });
-		var type = [
-			{value: '1', text: '企业入网'},
-			{value: '2', text: '个人入网'},
-			{value: '9', text: '其他'}
-		];
 		weui.searchPage('#page2', {
 			resultTpl: '#list-template',
-			data: type,
+			onload: function(param, success, error) {
+				$$.request('/action/bm/mchnt-type/list', {}, {
+					success: function(data) {
+						if (data.errcode == 0) {
+							success(data.rows);
+						} else {
+							weui.alert(data.errmsg, error, {
+								title: '提示'
+							});
+						}
+					},
+					error: error()
+				})
+			},
 			onClickItem: function(row) {
 				$('#mchnt_type').val(row.value);
 				if(row.value == '2') {
