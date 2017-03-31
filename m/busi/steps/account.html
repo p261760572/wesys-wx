@@ -164,6 +164,9 @@
 				if (data.errcode == 0) {
 					$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
 						if(data.data[item.tag] && data.data[item.tag]!=undefined) {
+							if(item.callback) {
+								item.callback(data.data[item.tag]);
+							}
 							$(item.target).val(data.data[item.tag]);
 						}
 					});
