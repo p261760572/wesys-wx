@@ -192,7 +192,8 @@
 	};
     
 	function valid_regular(data) {
-		data = data.match(/[^\-]+$/)[1].replace(/(\.)/g,'');
+		data = data.match(/[^\-]+$/)[0];
+		data = data.replace(/(\.)/g,'');
 	}
 		
 	function imageToDataUrl(url, callback, param) {
