@@ -271,7 +271,8 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
-				if($(this).closest('.weui-uploader').hasClass('_auto')) {
+				var target = $(this);
+				if(target.closest('.weui-uploader').hasClass('_auto')) {
 					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
 					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
 				}
