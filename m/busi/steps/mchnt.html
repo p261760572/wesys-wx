@@ -272,7 +272,7 @@
 					elec_info_type: elec_info_type
 				};
 				var target = $(this);
-				alert(target.closest('.weui-uploader').prop('class'));
+				alert(target.closest('.weui-uploader').className);
 				if(target.closest('.weui-uploader').hasClass('recognize')) {
 					alert(target.prop('class'));
 					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
