@@ -103,7 +103,7 @@
                         <label class="weui-label">证件姓名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_name" required="" placeholder="请输入证件姓名">
+                        <input class="weui-input" type="text" name="cert_name" id="cert_name" required="" placeholder="请输入证件姓名">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -111,7 +111,15 @@
                         <label class="weui-label">证件号码<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_id" required="" placeholder="请输入证件号码" validType="idnum" invalidTips="请输入有效的证件号码">
+                        <input class="weui-input" type="text" name="cert_id" id="cert_id" required="" placeholder="请输入证件号码" validType="idnum" invalidTips="请输入有效的证件号码">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件有效期</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="cert_date" placeholder="请输入证件有效期" id="cert-date-picker" readonly>
                     </div>
                 </div>
             </div>
@@ -172,14 +180,14 @@
 			url: '/gateway/ocr/idcard', 
 			param: {id_card_side: 'front'}, 
 			ret: [
-				{tag: '公民身份号码', target: '#cert_id'}, 
-				{tag: '姓名', target: '#cert_name'}
+				{tag: 'id', target: '#cert_id'}, 
+				{tag: 'name', target: '#cert_name'}
 			]
 		},
 		'sfzfm':{
 			url:'/gateway/ocr/idcard', 
 			param: {id_card_side: 'back'}, 
-			ret:[]
+			ret:[{tag: 'valid_date', target: '#cert-date-picker'}]
 		},
 	};
     
@@ -214,8 +222,8 @@
 			success: function(data) {
 				if (data.errcode == 0) {
 					$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
-						if(data.data.words_result[item.tag]) {
-							$(item.target).val(data.data.words_result[item.tag]);
+						if(data.data[item.tag] && data.data[item.tag]!=undefined) {
+							$(item.target).val(data.data[item.tag]);
 						}
 					});
 				} else {
@@ -225,6 +233,7 @@
 			}
 		});
 	}
+		
     function initUploader(selector, elec_info_type) {
 
         weui.ajaxUploader(selector, {
@@ -393,6 +402,9 @@
 				$(this).closest('.weui-cell').siblings().addClass('hide').find('input').val("");
 			}
 		});
+		$('#cert-date-picker').on('focus', function() {
+            $$.showDatePicker(this, {format: 'yyyyMMdd'});
+        });
         $('#submit-btn').on('click', onSubmit);
 		LoadForm();
         $('#form').find('.weui-uploader').each(function () {

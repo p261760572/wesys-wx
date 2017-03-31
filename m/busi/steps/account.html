@@ -75,7 +75,7 @@
                     <label class="weui-label">银行账号<span class="required">*</span></label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" name="account_no" required="" type="number" placeholder="请输入银行账号">
+                    <input class="weui-input" name="account_no" id="account_no" required="" type="number" placeholder="请输入银行账号">
                 </div>
             </div>
             <!--div class="weui-cell">
@@ -119,6 +119,57 @@
 	var hash = window.location.hash;
     var uploaderData = [];
 
+	var ocr_map = {
+		'sfzfm':{
+			url:'/gateway/ocr/bankcard', 
+			param: {}, 
+			ret:[{tag: 'valid_date', target: '#account_no'}]
+		},
+	};
+    
+	function imageToDataUrl(url, callback, param) {
+		var canvas = document.createElement("canvas");
+		var ctx = canvas.getContext("2d");
+
+		var img = new Image();
+		img.onload = function () {        
+			var w = img.width;
+			var h = img.height;
+			var dataURL;
+
+			canvas.width = w;
+			canvas.height = h;
+			ctx.drawImage(img, 0, 0);
+
+			var dataURL =  canvas.toDataURL('image/jpeg');
+			console.log(dataURL);
+			callback(dataURL, param);
+		}
+		img.src = url;		
+	}
+		
+	function auto_recognize(data, param) {
+		var Default = {
+			image: data,
+			serverid: param.serverid
+		};
+		$.extend(Default, ocr_map[param.elec_info_type].param);
+		$$.request(ocr_map[param.elec_info_type].url, Default, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+						if(data.data[item.tag] && data.data[item.tag]!=undefined) {
+							$(item.target).val(data.data[item.tag]);
+						}
+					});
+				} else {
+					
+				}
+				
+			}
+		});
+	}
+		
     function initUploader(selector, elec_info_type) {
 
         weui.ajaxUploader(selector, {
@@ -141,6 +192,8 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
+				var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
+				imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
             },
             onError: function(err) {
                 console.log(this, err);
