@@ -28,7 +28,7 @@
             </div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <div class="weui-uploader required" data-type="zhzm">
+                    <div class="weui-uploader required _auto" data-type="zhzm">
                         <div class="weui-uploader__hd">
                             <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
                         </div>
@@ -120,7 +120,7 @@
     var uploaderData = [];
 
 	var ocr_map = {
-		'sfzfm':{
+		'zhzm':{
 			url:'/gateway/ocr/bankcard', 
 			param: {}, 
 			ret:[{tag: 'valid_date', target: '#account_no'}]
@@ -153,7 +153,12 @@
 			image: data,
 			serverid: param.serverid
 		};
-		$.extend(Default, ocr_map[param.elec_info_type].param);
+		$.extend(Default, ocr_map[param.elec_info_type].param || {});
+		
+		$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+			$(item.target).attr('readonly', true);
+		});
+		
 		$$.request(ocr_map[param.elec_info_type].url, Default, {
 			success: function(data) {
 				if (data.errcode == 0) {
@@ -167,6 +172,10 @@
 				}
 				
 			}
+		});
+		
+		$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+			$(item.target).removeAttr('readonly');
 		});
 	}
 		
@@ -192,8 +201,10 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
-				var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
-				imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
+				if($(this).closest('.weui-uploader').hasClass('_auto')) {
+					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
+					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
+				}
             },
             onError: function(err) {
                 console.log(this, err);
