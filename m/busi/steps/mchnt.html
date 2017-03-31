@@ -214,7 +214,7 @@
 			console.log(dataURL);
 			callback(dataURL, param);
 		}
-		img.src = url;		
+		img.src = url;
 	}
 		
 	function auto_recognize(data, param) {
@@ -222,6 +222,7 @@
 			image: data,
 			serverid: param.serverid
 		};
+		alert(param.serverid);
 		$.extend(Default, ocr_map[param.elec_info_type].param || {});
 		
 		$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
@@ -273,6 +274,7 @@
 				};
 				var target = $(this);
 				if(target.closest('.weui-uploader').hasClass('recognize')) {
+					alert(target.prop('class'));
 					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
 					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
 				}
