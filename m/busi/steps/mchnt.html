@@ -192,8 +192,8 @@
 	};
     
 	function valid_regular(data) {
-		data = data.match(/[^\-]+$/)[0];
-		data = data.replace(/(\.)/g,'');
+		data = data.match(/([^\-]+)$/)[0].replace(/(\.)/g,'');
+		alert(data);
 	}
 		
 	function imageToDataUrl(url, callback, param) {
@@ -232,10 +232,12 @@
 				if (data.errcode == 0) {
 					$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
 						if(data.data[item.tag] && data.data[item.tag]!=undefined) {
+							alert(data.data[item.tag]);
 							if(item.callback) {
 								item.callback(data.data[item.tag]);
 							}
 							$(item.target).val(data.data[item.tag]);
+							alert(data.data[item.tag]);
 						}
 					});
 				} else {
