@@ -250,7 +250,7 @@
 	}
 		
     function initUploader(selector, elec_info_type) {
-
+		var target = $(selector);
         weui.ajaxUploader(selector, {
             url: $$.wrapUrl('/action/upload'),
             auto: true,
@@ -271,10 +271,8 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
-				var target = $(this);
-				alert(target.closest('.weui-uploader').className);
-				if(target.closest('.weui-uploader').hasClass('recognize')) {
-					alert(target.prop('class'));
+				
+				if(target.hasClass('recognize')) {
 					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
 					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
 				}
