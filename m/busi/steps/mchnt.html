@@ -68,7 +68,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required _auto" data-type="sfzzm">
+                        <div class="weui-uploader required recognize" data-type="sfzzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
                             </div>
@@ -84,7 +84,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader _auto" data-type="sfzfm">
+                        <div class="weui-uploader recognize" data-type="sfzfm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证反面照片</p>
                             </div>
@@ -272,7 +272,7 @@
 					elec_info_type: elec_info_type
 				};
 				var target = $(this);
-				if(target.closest('.weui-uploader').hasClass('_auto')) {
+				if(target.closest('.weui-uploader').hasClass('recognize')) {
 					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
 					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
 				}
