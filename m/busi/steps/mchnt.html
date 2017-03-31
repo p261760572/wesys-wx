@@ -362,7 +362,7 @@
         });
 		weui.searchPage('#page2', {
 			resultTpl: '#list-template',
-			onload: function(param, success, error) {
+			loader: function(param, success, error) {
 				$$.request('/action/bm/mchnt-type/list', {}, {
 					success: function(data) {
 						if (data.errcode == 0) {
