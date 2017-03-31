@@ -192,8 +192,7 @@
 	};
     
 	function valid_regular(data) {
-		data = data.substr(data.indexOf('-')+1).replace(/(\.)/g,'');
-		return data;
+		data = data.match(/[^\-]+$/).replace(/(\.)/g,'');
 	}
 		
 	function imageToDataUrl(url, callback, param) {
