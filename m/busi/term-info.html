@@ -123,6 +123,14 @@
                         <input type="hidden" name="equi_type">
                     </div>
                 </div>
+                <div class="weui-cell hide" id="term_num">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">终端数量</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="term_num" placeholder="请输入终端数量">
+                    </div>
+                </div>
                 <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">装机日期</label>
@@ -466,6 +474,7 @@
     function onClickAdd() {
         operateType = 'create';
         weui.page.show('#detail-page');
+		$('#term_num').show();
         weui.form.clear('#form');
         weui.form.load('#form', {
             mchnt_id: query.mchnt_id
