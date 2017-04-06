@@ -58,7 +58,7 @@
                         <label class="weui-label">终端数量</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" placeholder="请输入终端数量" type="number" value="1" name="term_num">
+                        <input class="weui-input" placeholder="请输入终端数量" type="number" name="term_num">
                     </div>
                 </div>
             </div>
@@ -116,7 +116,7 @@
 				error: function() {}
 			});
 		} else {
-			$('#term_num').show();
+			$('#term_num').show().val(1);
 		}
 	}
     $(function() {
