@@ -112,7 +112,10 @@
 						if(data.data.debit_card_fee == "" && data.data.credit_card_fee == "" && data.data.fee == "" ) {
 							$('#term_num').show();
 							$('input[name="term_num"]').val(1);
+						} else {
+							$('#term_num').style.display = 'none';
 						}
+						
 					} else {
 
 					}
