@@ -109,7 +109,7 @@
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.form.load('#form', data.data);
-						if(data.data.debit_card_fee == "" && data.data.credit_card_fee == "" && data.data.fee == "" ) {
+						if(data.data.debit_card_fee == null && data.data.credit_card_fee == null && data.data.fee == null ) {
 							$('#term_num').show();
 							$('input[name="term_num"]').val(1);
 						} else {
