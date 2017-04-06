@@ -474,7 +474,8 @@
     function onClickAdd() {
         operateType = 'create';
         weui.page.show('#detail-page');
-		$('#term_num').show().val(1);
+		$('#term_num').show();
+		$('input[name="term_num"]').val(1);
         weui.form.clear('#form');
         weui.form.load('#form', {
             mchnt_id: query.mchnt_id

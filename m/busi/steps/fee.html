@@ -116,7 +116,8 @@
 				error: function() {}
 			});
 		} else {
-			$('#term_num').show().val(1);
+			$('#term_num').show();
+			$('input[name="term_num"]').val(1);
 		}
 	}
     $(function() {
