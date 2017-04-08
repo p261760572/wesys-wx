@@ -323,6 +323,12 @@
         $('#form').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
             if(id != undefined && id != null) {
+				if(uploaderData[id] == null) {
+					weui.alert('图片加载中，请稍候提交', {
+						title: '提示'
+					});
+					return;
+				}
 				elec_info.push(uploaderData[id]);
 			}
         });

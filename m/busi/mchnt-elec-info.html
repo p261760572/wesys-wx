@@ -270,6 +270,12 @@
 
         $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
+			if(uploaderData[id] == null) {
+				weui.alert('图片加载中，请稍候提交', {
+					title: '提示'
+				});
+				return;
+			}
             data.images.push(uploaderData[id]);
         });
 
