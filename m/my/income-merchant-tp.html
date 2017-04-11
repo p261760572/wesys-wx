@@ -5,15 +5,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>收益</title>
+    <title><span id="mcht_name"></span>-<span id="income_type"></span></title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
     <link rel="stylesheet" href="../css/ui-base.css">
 </head>
 
 <body>
-    <div id="infinite" class="page__content">
-        <div id="income-list" style="background-color: #f8f8f8;">
+    <div class="page page_show" id="income-list">
+		<div class="weui-search-bar">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
+		<div class="weui-cells searchbar-result">
+		</div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
@@ -35,7 +49,7 @@
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">{{row.settle_date | formatDate}}</label>
+                    <label class="weui-form-preview__label">{{formatDate(row.settle_date)}}</label>
                     <em class="weui-form-preview__value">¥{{row.allot_ins_income1}}</em>
                 </div>
             </div>
@@ -57,7 +71,7 @@
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">{{row.settle_mon | formatMonth}}</label>
+                    <label class="weui-form-preview__label">{{formatMonth(row.settle_mon)}}</label>
                     <em class="weui-form-preview__value">¥{{row.allot_ins_income1}}</em>
                 </div>
             </div>
@@ -81,60 +95,59 @@
         text: '拓展收益'
     }];
 
-    template.helper('formatDate', function(d) {
+    function formatDate(d) {
         return d.substr(0, 4) + '-' + d.substr(4, 2) + '-' + d.substr(6, 2);
-    });
+    }
 
-    template.helper('formatMonth', function(m) {
+    function formatMonth(m) {
         return m.substr(0, 4) + '-' + m.substr(4, 2);
-    });
+    }
 
     function getUrl() {
         return (query.income_type == 'TZ') ? '/action/user/merchant/expand-income-history' : '/action/user/merchant/allot-income-history';
     }
 
     function getTemplate() {
-        return query.income_type == 'TZ' ? 'expand-income-templ' : 'allot-income-templ';
+        return query.income_type == 'TZ' ? '#expand-income-templ' : '#allot-income-templ';
     }
 
-    function searchIncome() {
-        var processing = false;
+    function searchIncome(param, success, error) {
         var data = {
             income_type: query.income_type,
             settle_mon: query.settle_mon,
-            mcht_id: query.mcht_id
+            mchnt_id: query.mchnt_id
         };
 
-        $('#income-list').html('');
-        $('#income-list').pagination({
-            url: $$.wrapUrl(getUrl()),
-            pageNumber: 1,
-            queryParams: data,
-            onLoadSuccess: function(data) {
-                processing = false;
-                var html = template(getTemplate(), data);
-                $('#income-list').append(html);
+		var queryParams = $.extend(data, param);
+        $$.request(getUrl(), queryParams, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+					
+                }
             },
-            onLoadError: function() {
-                processing = false;
-            }
-        })
-
-        $('#infinite').infinite().on('infinite', function() {
-            if (!processing) {
-                processing = true;
-                $('#income-list').pagination('next');
+            error: function() {
+                error();
             }
         });
     }
 
+	var searchMerchantIncomeType = weui.searchPage('#income-list', {
+		resultTpl: getTemplate(),
+		loader: searchIncome,
+		onInput: function() {
+			console.log(this, arguments);
+		},
+		onClickItem: function(row) {
+			console.log(this, arguments);
+		}
+	}).search();
     $(function() {
         $$.load({
             mcht_name: query.mcht_name,
             income_type: $$.formatField(incomeTypeData, query.income_type)
         });
-
-        searchIncome();
     });
     </script>
 </body>

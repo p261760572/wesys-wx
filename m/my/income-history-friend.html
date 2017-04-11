@@ -11,17 +11,31 @@
 </head>
 
 <body>
-    <div id="infinite" class="page__content">
-        <div id="income-list" class="weui-cells"></div>
+    <div class="page page_show" id="income-list">
+		<div class="weui-search-bar">
+            <!-- <a href="javascript:" class="search-bar__btn" onclick="weui.page.back()">返回</a> -->
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+		<div class="weui-cells searchbar-result">
+		</div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="income-templ" type="text/html">
         {{each rows as row i}}
-        <!-- <div class="weui-cells__title">{{row.settle_mon}}</div> -->
         <div class="weui-cell weui-cell_access" data-mon="{{row.settle_mon}}" data-tp="{{row.income_type}}">
             <div class="weui-cell__bd">
-                <p>{{row.settle_mon | formatMonth}} {{row.income_type | formatIncomeType}}</p>
+                <p>{{formatMonth(row.settle_mon)}} {{$$.formatField(incomeTypeData, row.income_type)}}</p>
             </div>
             <div class="weui-cell__ft">
                 <p>¥ {{row.allot_ins_income2}}</p>
@@ -40,63 +54,52 @@
         text: '拓展收益'
     }];
 
-    template.helper('formatMonth', function(month) {
+    function formatMonth(month) {
         return month.substr(0, 4) + '-' + month.substr(4);
-    });
-
-    template.helper('formatIncomeType', function(type) {
-        return $$.formatField(incomeTypeData, type);
-    });
-
-    function searchIncome() {
-        var processing = false;
+    }
+		
+	function searchIncome(param, success, error) {
         var data = {
             userid: query.userid
         };
-        $('#income-list').html('');
-        $('#income-list').pagination({
-            url: $$.wrapUrl('/action/user/friend/income-history'),
-            pageNumber: 1,
-            queryParams: data,
-            onLoadSuccess: function(data) {
-                processing = false;
-                var html = template('income-templ', data);
-                $('#income-list').append(html);
+        var queryParams = $.extend(data, param);
+        $$.request('/action/user/merchant/income-history', queryParams, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+					
+                }
             },
-            onLoadError: function() {
-                processing = false;
-            }
-        })
-
-        $('#infinite').infinite().on('infinite', function() {
-            if (!processing) {
-                processing = true;
-                $('#income-list').pagination('next');
+            error: function() {
+                error();
             }
         });
     }
-
-    $(function() {
-        $$.load({
-            nickname: query.nickname
-        });
-
-        searchIncome();
-
-        $('#income-list').on('click', 'div.weui-cell.weui-cell_access', function() {
-            // showActions(this);
-            var settle_mon = $(this).attr('data-mon');
+	var searchFriendIncome = weui.searchPage('#income-list', {
+		resultTpl: '#income-templ',
+		loader: searchIncome,
+		onInput: function() {
+			console.log(this, arguments);
+		},
+		onClickItem: function(row) {
+			console.log(this, arguments);
+			//weui.page.back();
+			var settle_mon = $(this).attr('data-mon');
             var income_type = $(this).attr('data-tp');
             var page = 'income-friend-tp.html';
-            // if (income_type == '拓展收益') {
-            //     page = 'income-history-tp2.html';
-            // }
             window.location.href = page + '?' + $.param({
                 userid: query.userid,
                 settle_mon: settle_mon,
                 income_type: income_type,
                 nickname: query.nickname
             });
+		}
+	}).search();
+		
+    $(function() {
+        $$.load({
+            nickname: query.nickname
         });
     });
     </script>
