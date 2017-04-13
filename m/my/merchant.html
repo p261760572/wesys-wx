@@ -81,10 +81,8 @@
 		onClickItem: function(row) {
 			console.log(this, arguments);
 			//weui.page.back();
-			alert('click');
 			var id = $(this).attr('data-id');
             var name = $(this).attr('data-name');
-			alert('tunnel');
             window.location.href = 'income-history-merchant.html?' + $.param({
                 mchnt_id: id,
                 mcht_name: name
