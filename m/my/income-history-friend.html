@@ -33,14 +33,14 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
     <script id="income-templ" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access" data-mon="{{row.settle_mon}}" data-tp="{{row.income_type}}">
+        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-mon="{{row.settle_mon}}" data-tp="{{row.income_type}}">
             <div class="weui-cell__bd">
                 <p>{{formatMonth(row.settle_mon)}} {{$$.formatField(incomeTypeData, row.income_type)}}</p>
             </div>
             <div class="weui-cell__ft">
                 <p>¥ {{row.allot_ins_income2}}</p>
             </div>
-        </div>
+        </a>
         {{/each}}
     </script>
     <script type="text/javascript">
