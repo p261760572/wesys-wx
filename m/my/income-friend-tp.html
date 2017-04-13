@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title><span id="nickname"></span>-<span id="income_type"></span></title>
+    <title>好友类收益</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
     <link rel="stylesheet" href="../css/ui-base.css">
 </head>
@@ -106,7 +106,7 @@
     }
 
     function getUrl() {
-        return (query.income_type == 'TZ') ? '/action/user/friend/expand-income-history' : '/action/user/friend/allot-income-history';
+        return (query.income_type == 'TZ') ? '/action/bm/friend/expand-income-history' : '/action/bm/friend/allot-income-history';
     }
 
     function getTemplate() {
@@ -146,10 +146,7 @@
 	}).search();
 		
     $(function() {
-        $$.load({
-            nickname: query.nickname,
-            income_type: $$.formatField(incomeTypeData, query.income_type)
-        });
+		
     });
     </script>
 </body>

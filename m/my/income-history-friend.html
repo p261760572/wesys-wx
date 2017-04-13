@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title><span id="nickname"></span>-贡献收益</title>
+    <title>贡献收益</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
     <link rel="stylesheet" href="../css/ui-base.css">
 </head>
@@ -63,7 +63,7 @@
             userid: query.userid
         };
         var queryParams = $.extend(data, param);
-        $$.request('/action/user/merchant/income-history', queryParams, {
+        $$.request('/action/bm/merchant/income-history', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
@@ -98,9 +98,7 @@
 	}).search();
 		
     $(function() {
-        $$.load({
-            nickname: query.nickname
-        });
+		
     });
     </script>
 </body>

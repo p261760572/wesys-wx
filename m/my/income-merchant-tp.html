@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title><span id="mcht_name"></span>-<span id="income_type"></span></title>
+    <title>商户类收益</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
     <link rel="stylesheet" href="../css/ui-base.css">
 </head>
@@ -104,7 +104,7 @@
     }
 
     function getUrl() {
-        return (query.income_type == 'TZ') ? '/action/user/merchant/expand-income-history' : '/action/user/merchant/allot-income-history';
+        return (query.income_type == 'TZ') ? '/action/bm/merchant/expand-income-history' : '/action/bm/merchant/allot-income-history';
     }
 
     function getTemplate() {
@@ -144,10 +144,7 @@
 		}
 	}).search();
     $(function() {
-        $$.load({
-            mcht_name: query.mcht_name,
-            income_type: $$.formatField(incomeTypeData, query.income_type)
-        });
+		
     });
     </script>
 </body>
