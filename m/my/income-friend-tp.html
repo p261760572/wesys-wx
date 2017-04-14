@@ -96,17 +96,14 @@
         value: 'TZ',
         text: '拓展收益'
     }];
-
-    function formatDate(d) {
+    
+	template.helper('formatDate', function(d) {
         return d.substr(0, 4) + '-' + d.substr(4, 2) + '-' + d.substr(6, 2);
-    }
+    });
 
-    function formatMonth(m) {
+    template.helper('formatMonth', function(m) {
         return m.substr(0, 4) + '-' + m.substr(4, 2);
-    }
-
-	template.helper("formatMonth", formatMonth); 
-	template.helper("formatDate", formatDate); 
+    });
 		
     function getUrl() {
         return (query.income_type == 'TZ') ? '/action/bm/friend/expand-income-history' : '/action/bm/friend/allot-income-history';
