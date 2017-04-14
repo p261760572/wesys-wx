@@ -59,10 +59,7 @@
     }
 		
     function searchIncome(param, success, error) {
-        var data = {
-            mcht_id: query.mcht_id
-        };
-        var queryParams = $.extend(data, param);
+        var queryParams = $.extend(query, param);
         $$.request('/action/bm/merchant/income-history', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {

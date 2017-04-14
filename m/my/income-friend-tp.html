@@ -114,12 +114,7 @@
     }
 
     function searchIncome(param, success, error) {
-        var data = {
-            income_type: query.income_type,
-            settle_mon: query.settle_mon,
-            userid: query.userid
-        };
-		var queryParams = $.extend(data, param);
+		var queryParams = $.extend(query, param);
         $$.request(getUrl(), queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
