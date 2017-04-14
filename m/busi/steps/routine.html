@@ -40,22 +40,24 @@
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
-            <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.mchnt_abbr}}</p>
-            </div>
-        </a>
-        <div class="weui-media-box weui-media-box_text">
-            <div class="weui-media-box__desc">地址：{{row.addr}}</div>
-			<div class="weui-media-box__desc">联系方式：{{row.mobile}}</div>
-			<div class="weui-media-box__desc">业务类型：{{row.busi_type_nm}}</div>
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
-            </ul>
-			<ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">创建人：{{row.created_by}}</li>
-			</ul>
-        </div>
+		<a class="searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
+			<div class="weui-cell weui-cell_access searchbar-result__item">
+				<div class="weui-cell__bd weui-cell_primary">
+					<p>{{row.mchnt_abbr}}</p>
+				</div>
+			</div>
+			<div class="weui-media-box weui-media-box_text">
+				<div class="weui-media-box__desc">地址：{{row.addr}}</div>
+				<div class="weui-media-box__desc">联系方式：{{row.mobile}}</div>
+				<div class="weui-media-box__desc">业务类型：{{row.busi_type_nm}}</div>
+				<ul class="weui-media-box__info">
+					<li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
+				</ul>
+				<ul class="weui-media-box__info">
+					<li class="weui-media-box__info__meta">创建人：{{row.created_by}}</li>
+				</ul>
+			</div>
+		</a>
         {{/each}}
     </script>
     <script>
