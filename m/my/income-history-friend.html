@@ -35,7 +35,7 @@
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd">
-                <p>{{formatMonth(row.settle_mon)}} {{$$.formatField(incomeTypeData, row.income_type)}}</p>
+				<p>{{row.settle_mon | formatMonth}} {{incomeTypeData | formatField : row.income_type}}</p>
             </div>
             <div class="weui-cell__ft">
                 <p>¥ {{row.allot_ins_income2}}</p>
@@ -57,6 +57,9 @@
     function formatMonth(month) {
         return month.substr(0, 4) + '-' + month.substr(4);
     }
+		
+	template.helper("formatMonth", formatMonth); 
+	template.helper("formatField", $$.formatField); 
 		
 	function searchIncome(param, success, error) {
         var queryParams = $.extend(query, param);

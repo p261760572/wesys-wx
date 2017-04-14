@@ -81,7 +81,6 @@
 		onClickItem: function(row) {
 			console.log(this, arguments);
 			//weui.page.back();
-			alert(JSON.stringify(row));
             window.location.href = 'income-history-merchant.html?' + $.param({
                 mchnt_id: row.mchnt_id,
                 mcht_name: row.mcht_name

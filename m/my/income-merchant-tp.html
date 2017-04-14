@@ -49,7 +49,7 @@
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">{{formatDate(row.settle_date)}}</label>
+                    <label class="weui-form-preview__label">{{row.settle_date | formatDate}}</label>
                     <em class="weui-form-preview__value">¥{{row.allot_ins_income1}}</em>
                 </div>
             </div>
@@ -71,7 +71,7 @@
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">{{formatMonth(row.settle_mon)}}</label>
+                    <label class="weui-form-preview__label">{{row.settle_mon | formatMonth}}</label>
                     <em class="weui-form-preview__value">¥{{row.allot_ins_income1}}</em>
                 </div>
             </div>
@@ -103,6 +103,9 @@
         return m.substr(0, 4) + '-' + m.substr(4, 2);
     }
 
+	template.helper("formatMonth", formatMonth); 
+	template.helper("formatDate", formatDate); 
+		
     function getUrl() {
         return (query.income_type == 'TZ') ? '/action/bm/merchant/expand-income-history' : '/action/bm/merchant/allot-income-history';
     }

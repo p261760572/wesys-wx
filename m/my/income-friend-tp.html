@@ -105,6 +105,9 @@
         return m.substr(0, 4) + '-' + m.substr(4, 2);
     }
 
+	template.helper("formatMonth", formatMonth); 
+	template.helper("formatDate", formatDate); 
+		
     function getUrl() {
         return (query.income_type == 'TZ') ? '/action/bm/friend/expand-income-history' : '/action/bm/friend/allot-income-history';
     }
