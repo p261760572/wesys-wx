@@ -82,12 +82,9 @@
 		onClickItem: function(row) {
 			console.log(this, arguments);
 			//weui.page.back();
-			var id = $(this).attr('data-id');
-            var name = $(this).attr('data-name');
-
             window.location.href = 'income-history-friend.html?' + $.param({
-                userid: id,
-                nickname: name
+                userid: row.userid,
+                nickname: row.nickname
             });
 		}
 	}).search();
