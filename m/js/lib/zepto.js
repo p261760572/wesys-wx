@@ -2720,7 +2720,7 @@ window.$ === undefined && (window.$ = Zepto)
                 return /^(https?|ftp):\/\/([\w-]+\.)+[\w-]+(\/[\w-.\/?%&=]*)?$/.test(value);
             },
             length: function(value, param) {
-                var len = $.trim(_44).length;
+                var len = $.trim(value).length;
                 return len >= param[0] && len <= param[1];
             },
             remote: function(value, param) {
@@ -2734,6 +2734,9 @@ window.$ === undefined && (window.$ = Zepto)
                     }
                 });
                 return errcode == 0;
+            },
+            equal: function(value, param) {
+                return value == $(param[0]).val();
             },
             mobile: function(value) {
                 return /^1[34578]{1}\d{9}$/.test(value);
@@ -2775,7 +2778,7 @@ window.$ === undefined && (window.$ = Zepto)
                     return item[opts.textField];
                 });
 
-                $target.val(text.join(' ')).change();
+                $target.val(text.join(' '));
 
                 var $temp = $target;
                 for (var i = 0; i < result.length; i++) {
@@ -2866,31 +2869,21 @@ window.$ === undefined && (window.$ = Zepto)
 window.basedir = '/p';
 
 (function() {
-
-    var flows = {
-        sd: [{
-            url: 'mchnt.html'
-        }, {
-            url: 'fee.html'
-        }, {
-            url: 'account.html'
-        }, {
-            url: '../../index.html'
-        }],
-        dmf: [{
-            url: 'mchnt.html'
-        }, {
-            url: 'fee.html'
-        }, {
-            url: 'account.html'
-        }, {
-            url: '../../index.html'
-        }]
-    };
-
-
-    function start(flowId, param, step) {
-        var flow = flows[flowId];
+	
+    var flow = [];
+    function start(type, flowId, param, step) {
+		$$.request('/action/bm/flow_step/list', {
+			type: type,
+			flow_id: flowId
+		}, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					flow = data.flow;
+				} else {
+					
+				}
+			}
+		});
         var step = step || 1;
 
         var query = $$.parseQueryString();
@@ -2910,7 +2903,7 @@ window.basedir = '/p';
             var arr = hash.substr(6).split('/');
             var flowId = arr[0];
             var step = parseInt(arr[1]);
-            var flow = flows[flowId];
+            //var flow = flows[flowId];
 
             step += diff;
 
@@ -2944,6 +2937,7 @@ window.basedir = '/p';
 
 
 (function() {
+	/*
     var flowConfig = [{
         busi_type: 'SDZL',
         acq_inst_id: '48215500',
@@ -2961,8 +2955,7 @@ window.basedir = '/p';
         acq_inst_id: '48025500',
         flow: 'sd'
     }];
-
-
+	
     function findFlow(busi_type, acq_inst_id) {
         for (var i = 0; i < flowConfig.length; i++) {
             var config = flowConfig[i];
@@ -2972,11 +2965,23 @@ window.basedir = '/p';
         }
 
         return null;
-    }
+    }*/
 
     function start(busi_type, acq_inst_id) {
-        var flowId = findFlow(busi_type, acq_inst_id);
-        flows.start(flowId, {
+        var flowId;
+		$$.request('/action/bm/acq-inst-busi/list', {
+			acq_inst_id: acq_inst_id,
+			busi_type: busi_type
+		}, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					flowId = data.flow_id;
+				} else {
+					
+				}
+			}
+		});
+        flows.start('BUSI', flowId, {
             busi_type: busi_type,
             acq_inst_id: acq_inst_id
         });
