@@ -4,7 +4,6 @@ window.basedir = '/p';
 	
     var flow = [];
     function start(type, flowId, param, step) {
-		alert(type+ ','+ flowId);
 		$$.request('/action/bm/flow_step/list', {
 			type: type,
 			flow_id: flowId
@@ -101,24 +100,23 @@ window.basedir = '/p';
     }*/
 
     function start(busi_type, acq_inst_id) {
-        var flowId;
+        
 		$$.request('/action/bm/acq-inst-busi/view', {
 			acq_inst_id: acq_inst_id,
 			busi_type: busi_type
 		}, {
 			success: function(data) {
 				if (data.errcode == 0) {
-					flowId = data.data.flow_id;
+					var flowId = data.data.flow_id;
+					flows.start('BUSI', flowId, {
+						busi_type: busi_type,
+						acq_inst_id: acq_inst_id
+					});
 				} else {
 					
 				}
 			}
 		});
-		alert(flowId);
-        flows.start('BUSI', flowId, {
-            busi_type: busi_type,
-            acq_inst_id: acq_inst_id
-        });
     }
 
     window.flows.busi = {
