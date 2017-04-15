@@ -1,7 +1,7 @@
 window.basedir = '/p';
 
 (function() {
-	var flow = [];
+	
     function start(type, flowId, param, step) {
 		$$.request('/action/bm/flow-step/list', {
 			type: type,
@@ -9,19 +9,16 @@ window.basedir = '/p';
 		}, {
 			success: function(data) {
 				if (data.errcode == 0) {
-					flow = data.flow;
+					var flow = data.flow;
 					var step = step || 1;
-
 					var query = $$.parseQueryString();
 					$.extend(query, param || {});
 
 					if (flow.length >= step) {
-						window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step/' + flowId + '/' + step;
+						window.location.href = flow[step - 1].url+'?'+$.param(query)+'#step/'+type+'/'+flowId+'/'+step;
 					} else {
 						console.warn(flow);
 					}
-				} else {
-					
 				}
 			}
 		});
@@ -32,22 +29,13 @@ window.basedir = '/p';
 
         if (hash.substr(0, 6) == '#step/') {
             var arr = hash.substr(6).split('/');
-            var flowId = arr[0];
-            var step = parseInt(arr[1]);
-            //var flow = flows[flowId];
-
+            var flowId = arr[1];
+            var step = parseInt(arr[2]);
+			var type = arr[0];
             step += diff;
 
-            console.log(flow);
-
             var query = $$.parseQueryString();
-            $.extend(query, param || {});
-
-            if (flow.length >= step) {
-                window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step/' + flowId + '/' + step;
-            } else {
-                console.warn(flow);
-            }
+			start(type, flowId, query, step);
         }
     }
 
@@ -68,38 +56,7 @@ window.basedir = '/p';
 
 
 (function() {
-	/*
-    var flowConfig = [{
-        busi_type: 'SDZL',
-        acq_inst_id: '48215500',
-        flow: 'sd'
-    }, {
-        busi_type: 'SDJL',
-        acq_inst_id: '48215500',
-        flow: 'sd'
-    }, {
-        busi_type: 'DMF',
-        acq_inst_id: '48215500',
-        flow: 'dmf'
-    }, {
-        busi_type: 'SD',
-        acq_inst_id: '48025500',
-        flow: 'sd'
-    }];
-	
-    function findFlow(busi_type, acq_inst_id) {
-        for (var i = 0; i < flowConfig.length; i++) {
-            var config = flowConfig[i];
-            if (config.busi_type == busi_type && config.acq_inst_id == acq_inst_id) {
-                return config.flow;
-            }
-        }
-
-        return null;
-    }*/
-
     function start(busi_type, acq_inst_id) {
-        
 		$$.request('/action/bm/acq-inst-busi/view', {
 			acq_inst_id: acq_inst_id,
 			busi_type: busi_type
