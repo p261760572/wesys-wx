@@ -35,7 +35,7 @@
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd">
-				<p>{{row.settle_mon | formatMonth}} {{row.income_type | formatIncomeType}}</p>
+				<p>{{formatMonth(row.settle_mon)}} {{formatIncomeType(row.income_type)}}</p>
             </div>
             <div class="weui-cell__ft">
                 <p>¥ {{row.allot_ins_income2}}</p>
@@ -54,11 +54,11 @@
         text: '拓展收益'
     }];
 		
-	template.helper('formatMonth', function(month) {
+	$.template.helper('formatMonth', function(month) {
         return month.substr(0, 4) + '-' + month.substr(4);
     });
 
-    template.helper('formatIncomeType', function(type) {
+    $.template.helper('formatIncomeType', function(type) {
         return $$.formatField(incomeTypeData, type);
     });
 		

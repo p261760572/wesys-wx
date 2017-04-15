@@ -49,7 +49,7 @@
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">{{row.settle_date | formatDate}}</label>
+                    <label class="weui-form-preview__label">{{formatDate(row.settle_date)}}</label>
                     <em class="weui-form-preview__value">¥{{row.allot_ins_income1}}</em>
                 </div>
             </div>
@@ -71,7 +71,7 @@
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">{{row.settle_mon | formatMonth}}</label>
+                    <label class="weui-form-preview__label">{{formatMonth(row.settle_mon)}}</label>
                     <em class="weui-form-preview__value">¥{{row.allot_ins_income1}}</em>
                 </div>
             </div>
@@ -95,11 +95,11 @@
         text: '拓展收益'
     }];
 
-    template.helper('formatDate', function(d) {
+    $.template.helper('formatDate', function(d) {
         return d.substr(0, 4) + '-' + d.substr(4, 2) + '-' + d.substr(6, 2);
     });
 
-    template.helper('formatMonth', function(m) {
+    $.template.helper('formatMonth', function(m) {
         return m.substr(0, 4) + '-' + m.substr(4, 2);
     });
 		

@@ -54,11 +54,11 @@
         text: '拓展收益'
     }];
 	
-	template.helper('formatMonth', function(month) {
+	$.template.helper('formatMonth', function(month) {
         return month.substr(0, 4) + '-' + month.substr(4);
     });
 
-    template.helper('formatIncomeType', function(type) {
+    $.template.helper('formatIncomeType', function(type) {
         return $$.formatField(incomeTypeData, type);
     });
 		
