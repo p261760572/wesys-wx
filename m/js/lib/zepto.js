@@ -2969,7 +2969,7 @@ window.basedir = '/p';
 
     function start(busi_type, acq_inst_id) {
         var flowId;
-		$$.request('/action/bm/acq-inst-busi/list', {
+		$$.request('/action/bm/acq-inst-busi/view', {
 			acq_inst_id: acq_inst_id,
 			busi_type: busi_type
 		}, {
