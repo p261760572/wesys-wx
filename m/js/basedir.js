@@ -107,7 +107,7 @@ window.basedir = '/p';
 		}, {
 			success: function(data) {
 				if (data.errcode == 0) {
-					flowId = data.flow_id;
+					flowId = data.data.flow_id;
 				} else {
 					
 				}
