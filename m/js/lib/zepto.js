@@ -2884,6 +2884,7 @@ window.basedir = '/p';
 
 					if (flow.length >= step) {
 						window.location.href = flow[step - 1].url+'?'+$.param(query)+'#step/'+type+'/'+flowId+'/'+step;
+						alert(flow[step - 1].url+'?'+$.param(query)+'#step/'+type+'/'+flowId+'/'+step);
 					} else {
 						console.warn(flow);
 					}
@@ -2901,9 +2902,7 @@ window.basedir = '/p';
             var step = parseInt(arr[2]);
 			var type = arr[0];
             step += diff;
-
-            var query = $$.parseQueryString();
-			start(type, flowId, query, step);
+			start(type, flowId, {}, step);
         }
     }
 
