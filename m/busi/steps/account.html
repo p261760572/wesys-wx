@@ -46,9 +46,45 @@
             </div>
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <div class="weui-uploader" data-type="zhfm">
+                    <div class="weui-uploader recognize" data-type="sfzzm">
                         <div class="weui-uploader__hd">
-                            <p class="weui-uploader__title">账户反面照片</p>
+                            <p class="weui-uploader__title">非法人入账证件正面照</p>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <ul class="weui-uploader__files">
+                                <!-- <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
+                            <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                            </ul>
+                            <div class="weui-uploader__input-box">
+                                <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader" data-type="sfzfm">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">非法人入账证件反面照</p>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <ul class="weui-uploader__files">
+                                <!-- <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>
+                            <li class="weui-uploader__file" style="background-image:url(./images/pic_160.png)"></li>-->
+                            </ul>
+                            <div class="weui-uploader__input-box">
+                                <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader" data-type="rzsqs">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">非法人入账授权书</p>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files">
@@ -67,7 +103,7 @@
                     <label class="weui-label">账户户名<span class="required">*</span></label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" name="account_name" required="" type="text" placeholder="请输入账户户名">
+                    <input class="weui-input" id="account_name" name="account_name" required="" type="text" placeholder="请输入账户户名">
                 </div>
             </div>
             <div class="weui-cell">
@@ -124,6 +160,13 @@
 			url:'/gateway/ocr/bankcard', 
 			param: {}, 
 			ret:[{tag: 'bank_card_number', target: '#account_no'}]
+		},
+		'sfzzm':{
+			url: '/gateway/ocr/idcard', 
+			param: {id_card_side: 'front'}, 
+			ret: [
+				{tag: 'name', target: '#account_name'}
+			]
 		},
 	};
     
