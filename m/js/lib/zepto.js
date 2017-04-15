@@ -2878,15 +2878,12 @@ window.basedir = '/p';
 			success: function(data) {
 				if (data.errcode == 0) {
 					var flow = data.flow;
-					alert(step);
 					step = step || 1;
-					alert(step);
 					var query = $$.parseQueryString();
 					$.extend(query, param || {});
 
 					if (flow.length >= step) {
 						window.location.href = flow[step - 1].url+'?'+$.param(query)+'#step/'+type+'/'+flowId+'/'+step;
-						alert(flow[step - 1].url+'?'+$.param(query)+'#step/'+type+'/'+flowId+'/'+step);
 					} else {
 						console.warn(flow);
 					}
@@ -2904,7 +2901,6 @@ window.basedir = '/p';
             var step = parseInt(arr[2]);
 			var type = arr[0];
             step += diff;
-			alert(step);
 			start(type, flowId, {}, step);
         }
     }
