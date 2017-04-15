@@ -2878,7 +2878,9 @@ window.basedir = '/p';
 			success: function(data) {
 				if (data.errcode == 0) {
 					var flow = data.flow;
-					var step = step || 1;
+					alert(step);
+					step = step || 1;
+					alert(step);
 					var query = $$.parseQueryString();
 					$.extend(query, param || {});
 
@@ -2902,6 +2904,7 @@ window.basedir = '/p';
             var step = parseInt(arr[2]);
 			var type = arr[0];
             step += diff;
+			alert(step);
 			start(type, flowId, {}, step);
         }
     }
