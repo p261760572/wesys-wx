@@ -2901,7 +2901,7 @@ window.basedir = '/p';
             var step = parseInt(arr[2]);
 			var type = arr[0];
             step += diff;
-			start(type, flowId, {}, step);
+			start(type, flowId, param, step);
         }
     }
 
