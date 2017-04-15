@@ -317,8 +317,8 @@
         var elec_info = [];
 		if (hash.substr(0, 6) == '#step/') {
             var arr = hash.substr(6).split('/');
-			param['flow'] = arr[0];
-			param['step'] = parseInt(arr[1]);
+			param['flow'] = arr[1];
+			param['step'] = parseInt(arr[2]);
 		}
 		var flag = true;
         $('#form').find('.weui-uploader__file').forEach(function(item) {
