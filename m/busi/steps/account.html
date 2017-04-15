@@ -21,8 +21,8 @@
                 </div>
                 <div class="weui-cell__bd">
                     <select class="weui-select" name="account_type" id="account_type">
-                        <option value="1">对私账户</option>
                         <option value="2">对公账户</option>
+                        <option value="1">对私账户</option>
                     </select>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                     <label class="weui-label">银行账号<span class="required">*</span></label>
                 </div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" name="account_no" id="account_no" required="" type="number" placeholder="请输入银行账号">
+                    <input class="weui-input" name="account_no" id="account_no" required="" type="number" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
                 </div>
             </div>
             <!--div class="weui-cell">
@@ -281,13 +281,29 @@
         });
     }
 
+	function LoadForm() {
+		if(query.mchnt_id && query.mchnt_id != "") {
+			$$.request('/action/bm/mchnt-base-info/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						var name = ($('#account_type').val() == '1')?data.data.cert_name:data.data.mchnt_abbr;
+						$('input[name="account_name"]').val(name);
+					} else {
+
+					}
+				},
+				error: function() {}
+			});
+		}
+	}
+		
     $(function() {
 		history.pushState(null, null, document.URL);
         window.addEventListener('popstate', function () {
             history.pushState(null, null, document.URL);
         });
         $('#submit-btn').on('click', onSubmit);
-
+		LoadForm();
         $('#form').find('.weui-uploader').each(function() {
             initUploader(this, $(this).attr('data-type'));
         });

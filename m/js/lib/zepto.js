@@ -2872,6 +2872,7 @@ window.basedir = '/p';
 	
     var flow = [];
     function start(type, flowId, param, step) {
+		alert(type+ ','+ flowId);
 		$$.request('/action/bm/flow_step/list', {
 			type: type,
 			flow_id: flowId
@@ -2981,6 +2982,7 @@ window.basedir = '/p';
 				}
 			}
 		});
+		alert(flowId);
         flows.start('BUSI', flowId, {
             busi_type: busi_type,
             acq_inst_id: acq_inst_id
