@@ -2869,31 +2869,30 @@ window.$ === undefined && (window.$ = Zepto)
 window.basedir = '/p';
 
 (function() {
-	
-    var flow = [];
+	var flow = [];
     function start(type, flowId, param, step) {
-		$$.request('/action/bm/flow_step/list', {
+		$$.request('/action/bm/flow-step/list', {
 			type: type,
 			flow_id: flowId
 		}, {
 			success: function(data) {
 				if (data.errcode == 0) {
 					flow = data.flow;
+					var step = step || 1;
+
+					var query = $$.parseQueryString();
+					$.extend(query, param || {});
+
+					if (flow.length >= step) {
+						window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step/' + flowId + '/' + step;
+					} else {
+						console.warn(flow);
+					}
 				} else {
 					
 				}
 			}
 		});
-        var step = step || 1;
-
-        var query = $$.parseQueryString();
-        $.extend(query, param || {});
-
-        if (flow.length >= step) {
-            window.location.href = flow[step - 1].url + '?' + $.param(query) + '#step/' + flowId + '/' + step;
-        } else {
-            console.warn(flow);
-        }
     }
 
     function _go(diff, param) {
