@@ -434,10 +434,7 @@
 		}
 		
 		function submitDetail() {
-			if (!$('#detail-sign').form('validate')) {
-				return false;
-			}
-
+			if (!weui.form.validate('#detail-sign', $$.rules)) return;
 			var data = serializeDetailForm();
 
 			var url = '/action/bm/workorder/' + query.operateType;

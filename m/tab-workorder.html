@@ -104,11 +104,9 @@
 		
 		function showActions(row) {
 			var work_order_no = row.work_order_no;
-			var term_no = row.term_no;
 			var proc_st = row.proc_st;
 			var params = $.param({
-				work_order_no: work_order_no,
-				term_no: term_no
+				work_order_no: work_order_no
 			});
 			var actions = [{
 				label: '查看',
