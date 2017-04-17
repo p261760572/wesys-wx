@@ -56,12 +56,14 @@
             <div class="weui-cell__ft" style="color: #f6383a;">{{row.proc_st_nm}}</div>
         </a>
         <div class="weui-media-box weui-media-box_text">
-            <p class="weui-media-box__desc">{{row.shop_name}}</p>
-            <p class="weui-media-box__desc">{{row.addr}}</p>
+            <p class="weui-media-box__desc">{{row.mchnt_abbr}}</p>
+			<ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">{{row.linkman}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.mobile}}</li>
+            </ul>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">{{row.created_time}}</li>
                 <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.created_by}}</li>
-                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.tms_captcha}}</li>
             </ul>
         </div>
         {{/each}}
