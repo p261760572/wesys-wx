@@ -464,7 +464,7 @@
 			$$.request('/action/bm/workorder/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
-						loadDetailForm(form, data.data);
+						loadDetailForm(form, data);
 					}
 				}
 			});
