@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>工作台</title>
+    <link rel="stylesheet" href="../lib/weui/style/weui.min.css">
+    <link rel="stylesheet" href="../lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
+</head>
+
+<body>
+    <div id="search-page" class="page page_show">
+        <div class="weui-search-bar">
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="支持工作单号、门店名称、联系人">
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
+        </div>
+    </div>
+    <div class="weui-tabbar">
+        <a href="index.html" class="weui-tabbar__item">
+            <!-- <img src="../images/icon_nav_button.png" alt="" class="weui-tabbar__icon"> -->
+            <i class="icon-home"></i>
+            <p class="weui-tabbar__label">首页</p>
+        </a>
+        <a href="tab-workorder.html" class="weui-tabbar__item  weui-bar__item_on">
+            <!-- <img src="../images/icon_nav_article.png" alt="" class="weui-tabbar__icon"> -->
+            <i class="icon-list"></i>
+            <p class="weui-tabbar__label">工作台</p>
+        </a>
+        <a href="tab-my.html" class="weui-tabbar__item">
+            <!-- <img src="../images/icon_nav_cell.png" alt="" class="weui-tabbar__icon"> -->
+            <i class="icon-my"></i>
+            <p class="weui-tabbar__label">我</p>
+        </a>
+    </div>
+    <script type="text/javascript" src="js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
+    <script id="workorder-templ" type="text/html">
+        {{each rows as row i}}
+        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
+            <div class="weui-cell__bd">
+                <p>{{row.work_order_no}} {{row.work_order_tp_nm}}</p>
+            </div>
+            <div class="weui-cell__ft" style="color: #f6383a;">{{row.proc_st_nm}}</div>
+        </a>
+        <div class="weui-media-box weui-media-box_text">
+            <p class="weui-media-box__desc">{{row.shop_name}}</p>
+            <p class="weui-media-box__desc">{{row.addr}}</p>
+            <ul class="weui-media-box__info">
+                <li class="weui-media-box__info__meta">{{row.created_time}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.created_by}}</li>
+                <li class="weui-media-box__info__meta weui-media-box__info__meta_extra">{{row.tms_captcha}}</li>
+            </ul>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+		var query = $$.parseQueryString();
+		var operateType;
+		var searchPage = weui.searchPage('#search-page', {
+			resultTpl: '#workorder-templ',
+			loader: searchWorkorder,
+			onInput: function() {
+				console.log(this, arguments);
+			},
+			onClickItem: function(row) {
+				console.log(this, arguments);
+				// weui.page.back();
+				showActions(row);
+			}
+		}).search();
+		
+		function searchWorkorder(param, success, error) {
+			var queryParams = $.extend(query, param);
+			$$.request('/action/bm/workorder/search', queryParams, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						success(data.rows);
+					} else {
+						weui.alert(data.errmsg, error, {
+							title: '提示'
+						});
+					}
+				},
+				error: function() {
+					error();
+				}
+			});
+		}
+		
+		function showActions(row) {
+			var work_order_no = row.work_order_no;
+			var term_no = row.term_no;
+			var proc_st = row.proc_st;
+			var params = $.param({
+				work_order_no: work_order_no,
+				term_no: term_no
+			});
+			var actions = [{
+				label: '查看',
+				onClick: function() {
+					console.log(this, arguments);
+					window.location.href = 'work/workorder.html?operateType=view&' + params;
+				}
+			}];
+
+			if (proc_st == '1') {
+				actions.push({
+					label: "提交",
+					onClick: function() {
+						window.location.href = 'work/workorder.html?operateType=sign&' + params;
+					}
+				});
+				/*
+				actions.push({
+					text: "信息维护",
+					className: "actionsheet__cell_primary",
+					onClick: function() {
+						window.location.href = 'work/term-info.html?' + params;
+					}
+				});
+
+				actions.push({
+					text: "绑定设备",
+					className: "actionsheet__cell_warning",
+					onClick: function() {
+						window.location.href = 'work/bind-device.html?' + params;
+					}
+				});*/
+			}
+
+			weui.actionSheet(actions, [{
+				label: '取消',
+				onClick: function() {
+					console.log(this, arguments);
+				}
+			}]);
+		}
+	</script>
+</body>
+
+</html>
