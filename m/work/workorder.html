@@ -434,6 +434,7 @@
 		}
 		
 		function submitDetail() {
+			alert($('[name="work_result"]').val());
 			if (!weui.form.validate('#detail-sign', $$.rules)) return;
 			var data = serializeDetailForm();
 
