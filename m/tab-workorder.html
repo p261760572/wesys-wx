@@ -91,9 +91,9 @@
 					if (data.errcode == 0) {
 						success(data.rows);
 					} else {
-						weui.alert(data.errmsg, error, {
-							title: '提示'
-						});
+						weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
 					}
 				},
 				error: function() {
