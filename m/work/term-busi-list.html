@@ -65,12 +65,15 @@
 			}
 		}).search();
 		
-		function searchTerm() {
+		function searchTerm(param, success, error) {
 			$$.request('/action/bm/workorder/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
 						success(data.term);
 					}
+				},
+				error: function() {
+					error();
 				}
 			});
 		}

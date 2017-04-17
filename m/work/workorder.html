@@ -149,7 +149,7 @@
                         <label class="weui-label">备注</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="remark" type="text" class="weui-input" placeholder="">
+                        <input name="sign_remark" type="text" class="weui-input" placeholder="">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -288,7 +288,7 @@
                         <label class="weui-label">备注</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="remark" type="text" class="weui-input" placeholder="请输入备注">
+                        <input name="sign_remark" type="text" class="weui-input" placeholder="请输入备注">
                     </div>
                 </div>
             </div>
@@ -378,7 +378,7 @@
 			var work_flag = [],
 				i;
 
-			for (i = 0; i < value.length; i++) {
+			for (i = 0; value && i < value.length; i++) {
 				if (value.charAt(i) == '1') {
 					work_flag.push(flag[i]);
 				}
