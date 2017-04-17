@@ -70,6 +70,10 @@
 				success: function(data) {
 					if (data.errcode == 0) {
 						success(data.term);
+					} else {
+						weui.alert(data.errmsg, error, {
+							title: '提示'
+						});
 					}
 				},
 				error: function() {

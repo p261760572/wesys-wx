@@ -103,7 +103,7 @@
                         <label class="weui-label">执行人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_nm" type="text" class="weui-input">
+                        <input name="work_nm" type="text" class="weui-input" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -111,7 +111,7 @@
                         <label class="weui-label">派单人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="created_by" type="text" class="weui-input" placeholder="">
+                        <input name="created_by" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -119,7 +119,7 @@
                         <label class="weui-label">派单时间</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="created_time" type="text" class="weui-input" placeholder="">
+                        <input name="created_time" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -127,7 +127,7 @@
                         <label class="weui-label">处理状态</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="proc_st_nm" type="text" class="weui-input weui-cell_warn" placeholder="">
+                        <input name="proc_st_nm" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -141,7 +141,7 @@
                         <label class="weui-label">执行日期</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_date" type="text" class="weui-input">
+                        <input name="work_date" type="text" class="weui-input" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -149,7 +149,7 @@
                         <label class="weui-label">备注</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="sign_remark" type="text" class="weui-input" placeholder="">
+                        <input name="sign_remark" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -157,7 +157,7 @@
                         <label class="weui-label">签收人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="sign_by" type="text" class="weui-input" placeholder="">
+                        <input name="sign_by" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -165,7 +165,7 @@
                         <label class="weui-label">签收时间</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="sign_time" type="text" class="weui-input" placeholder="">
+                        <input name="sign_time" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
             </div>
@@ -250,7 +250,7 @@
                         <label class="weui-label">执行人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_nm" type="text" class="weui-input">
+                        <input name="work_nm" type="text" class="weui-input" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -258,7 +258,7 @@
                         <label class="weui-label">派单人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="created_by" type="text" class="weui-input" placeholder="">
+                        <input name="created_by" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -266,7 +266,7 @@
                         <label class="weui-label">派单时间</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="created_time" type="text" class="weui-input" placeholder="">
+                        <input name="created_time" type="text" class="weui-input" placeholder="" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -443,6 +443,10 @@
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.page.back();
+					} else {
+						weui.alert(data.errmsg, error, {
+							title: '提示'
+						});
 					}
 				}
 			});
@@ -462,6 +466,10 @@
 				success: function(data) {
 					if (data.errcode == 0) {
 						loadDetailForm(form, data);
+					} else {
+						weui.alert(data.errmsg, error, {
+							title: '提示'
+						});
 					}
 				}
 			});
