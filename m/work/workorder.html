@@ -34,10 +34,10 @@
                 </div>
                 <a name="term-busi-list" class="weui-cell weui-cell_access">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">门店名称</label>
+                        <label class="weui-label">商户简称</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <p name="shop_name"></p>
+                        <p name="mchnt_abbr"></p>
                         <!--<input name="shop_name" type="text" class="weui-input" readonly>-->
                     </div>
                     <div class="weui-cell__ft"></div>
@@ -47,10 +47,10 @@
                         <label class="weui-label">工作单内容</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_flag" type="text" class="weui-input" readonly>
+                        <input name="work_content" type="text" class="weui-input" readonly>
                     </div>
                 </div>
-                <div class="weui-cell">
+                <!--div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">押金条号</label>
                     </div>
@@ -97,13 +97,13 @@
                     <div class="weui-cell__bd">
                         <input name="money3" type="text" class="weui-input" readonly>
                     </div>
-                </div>
+                </div-->
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">执行人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_name" type="text" class="weui-input">
+                        <input name="work_nm" type="text" class="weui-input">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -133,7 +133,7 @@
                 <div class="weui-cell">
                     <div class="weui-cell__bd">是否完成任务</div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch" type="checkbox" name="install_flag" value="1" disabled>
+                        <input class="weui-switch" type="checkbox" name="work_result" value="1" disabled>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -149,7 +149,7 @@
                         <label class="weui-label">备注</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="note" type="text" class="weui-input" placeholder="">
+                        <input name="remark" type="text" class="weui-input" placeholder="">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -157,7 +157,7 @@
                         <label class="weui-label">签收人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="sign_id" type="text" class="weui-input" placeholder="">
+                        <input name="sign_by" type="text" class="weui-input" placeholder="">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -165,11 +165,11 @@
                         <label class="weui-label">签收时间</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="sign_date" type="text" class="weui-input" placeholder="">
+                        <input name="sign_time" type="text" class="weui-input" placeholder="">
                     </div>
                 </div>
             </div>
-            <div class="weui-cells__title">上传照片</div>
+            <!--div class="weui-cells__title">上传照片</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
@@ -203,7 +203,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div-->
         </form>
     </div>
     
@@ -230,10 +230,10 @@
                 </div>
                 <a name="term-busi-list" class="weui-cell weui-cell_access">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">门店名称</label>
+                        <label class="weui-label">商户简称</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <p name="shop_name"></p>
+                        <p name="mchnt_abbr"></p>
                     </div>
                     <div class="weui-cell__ft"></div>
                 </a>
@@ -242,7 +242,7 @@
                         <label class="weui-label">工作单内容</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_flag" type="text" class="weui-input" readonly>
+                        <input name="work_content" type="text" class="weui-input" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -250,7 +250,7 @@
                         <label class="weui-label">执行人</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="work_name" type="text" class="weui-input">
+                        <input name="work_nm" type="text" class="weui-input">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -270,17 +270,9 @@
                     </div>
                 </div>
                 <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">处理状态</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input name="proc_st_nm" type="text" class="weui-input weui-cell_warn" placeholder="">
-                    </div>
-                </div>
-                <div class="weui-cell">
                     <div class="weui-cell__bd">是否完成任务<span class="required">*</span></div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch validate" type="checkbox" name="install_flag" value="1" checked="checked" required="required" title="是否完成任务">
+                        <input class="weui-switch validate" type="checkbox" name="work_result" value="1" checked="checked" required="required" title="是否完成任务">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -296,11 +288,11 @@
                         <label class="weui-label">备注</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input name="note" type="text" class="weui-input" placeholder="请输入备注">
+                        <input name="remark" type="text" class="weui-input" placeholder="请输入备注">
                     </div>
                 </div>
-                </div>
-            <div class="weui-cells__title">上传照片</div>
+            </div>
+            <!--div class="weui-cells__title">上传照片</div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
@@ -334,7 +326,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div-->
             <input type="button" class="weui-btn weui-btn_primary" value="提交" onclick="submitDetail()">
         </form>
     </div>
@@ -347,11 +339,12 @@
 
 		var uploaderData = [];
 		function loadDetailForm(form, data) {
+			/*
 			//图片
 			$(form).find('.weui-uploader__files').each(function(i, element) {
 				$(element).html('');
 			});
-
+			
 			var images = data.images;
 			$.each(images, function(index, item) {
 				var target = $(form).find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
@@ -364,22 +357,24 @@
 					elec_info_type: item.elec_info_type
 				}
 			});
-
-			data.data.work_flag = formatWorkFlag(data.data.work_flag);
-			data.data.work_name = data.data.work_name || data.data.work_id;
-
+			*/
+			data.data.work_content = formatWorkFlag(data.data.work_content);
+			data.data.work_nm = data.data.work_nm || data.data.work_id;
+			/*
 			for (var i = 0; i < data.expense.length; i++) {
 				data.data['expense_no' + data.expense[i].type] = data.expense[i].expense_no;
 				data.data['money' + data.expense[i].type] = data.expense[i].money;
-			}
+			}*/
 			weui.form.load(form, data.data);
 
-			$(form).find('[name="shop_name"]').text(data.data.shop_name);
-			$(form).find('[name="term-busi-list"]').attr('href', 'term-busi-list.html?term_no=' + data.data.term_no);
+			$(form).find('[name="mchnt_abbr"]').text(data.data.mchnt_abbr);
+			if(data.term && data.term.length > 0) {
+				$(form).find('[name="term-busi-list"]').attr('href', 'term-busi-list.html?work_order_no=' + data.data.work_order_no);
+			}
 		}
 
 		function formatWorkFlag(value) {
-			var flag = ['装机', '调单', '移机', '培训', '其它', '换机'];
+			var flag = ['装机', '普通巡检', '风险巡检', '设备维护', '送纸', '调单', '移机', '培训', '其它'];
 			var work_flag = [],
 				i;
 
@@ -423,7 +418,7 @@
 
 		function serializeDetailForm() {
 			var data = $('#detail-sign').serializeObject();
-
+			/*
 			//照片处理
 			var images = [];
 			$('#detail-sign').find('.weui-uploader__file').each(function(i, element) {
@@ -433,7 +428,7 @@
 				}
 			});
 
-			data.images = images;
+			data.images = images;*/
 
 			return data;
 		}
@@ -447,9 +442,11 @@
 
 			var url = '/action/bm/workorder/' + query.operateType;
 
-			$$.request(url, data, function(data) {
-				if (data.errcode == 0) {
-					weui.page.back();
+			$$.request(url, data, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						weui.page.back();
+					}
 				}
 			});
 		}
@@ -464,15 +461,17 @@
 				form = '#detail-sign';
 			}
 			
-			$$.request('/action/bm/workorder/view', query, function(data) {
-				if (data.errcode == 0) {
-					loadDetailForm(form, data);
+			$$.request('/action/bm/workorder/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						loadDetailForm(form, data.data);
+					}
 				}
 			});
-			
+			/*
 			$('#detail-sign').find('.weui-uploader').each(function () {
 				initUploader(this, $(this).attr('data-type'));
-			});     
+			});     */
 		});
 	</script>
 </body>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>终端业务信息</title>
+    <title>工作单-终端信息</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
     <link rel="stylesheet" href="../css/ui-base.css">
     <style>
@@ -33,38 +33,29 @@
         <div class="weui-cells searchbar-result">
         </div>
     </div>
-    <div class="page__content">
-        <div id="busi-list" class="weui-cells">
-        </div>
-    </div>
     <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
-    <script id="busi-templ" type="text/html">
+    <script id="term-templ" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell">
-            <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.marchant_name}}</p>
-            </div>
-        </div>
-        <div class="weui-media-box weui-media-box_text">
-            {{if row.fee_chan=='Z' && row.qrcode}}
-            <div class="qrcode" data-qrcode="{{row.qrcode}}"></div>
-            <!--<img src="qrcode.png" alt="二维码"></img>-->
-            {{/if}}
-            <p class="weui-media-box__desc">渠道: {{row.fee_chan_nm}}</p>
-            <p class="weui-media-box__desc">商户号: {{row.mchnt_cd}}</p>
-            <p class="weui-media-box__desc">终端号: {{row.term_id}}</p>
-            <p class="weui-media-box__desc">户名: {{row.account_name}}</p>
-            <p class="weui-media-box__desc">账号: {{row.account_no}}</p>
-        </div>
+			<div class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
+				<div class="weui-cell__bd weui-cell_primary">
+					<p>{{row.shop_name}}</p>
+				</div>
+			</div>
+			<div class="weui-media-box weui-media-box_text">
+				<p class="weui-media-box__desc">联系人: {{row.linkman}}</p>
+				<p class="weui-media-box__desc">联系方式: {{row.mobile}}</p>
+				<p class="weui-media-box__desc">终端号: {{row.term_no}}</p>
+				<p class="weui-media-box__desc">地区: {{row.district_name}}</p>
+			</div>
         {{/each}}
     </script>
     <script>
 		var query = $$.parseQueryString();
 		
 		var searchPage = weui.searchPage('#search-page', {
-			resultTpl: '#busi-templ',
-			loader: searchbusi,
+			resultTpl: '#term-templ',
+			loader: searchTerm,
 			onInput: function() {
 				console.log(this, arguments);
 			},
@@ -74,17 +65,12 @@
 			}
 		}).search();
 		
-		function searchbusi() {
-			$$.request('/action/ms/term-info/list-busi', query, function(data) {
-				if (data.errcode == 0) {
-					$('#busi-list div.qrcode').each(function(index, element) {
-						var qrcode = new QRCode(element, {
-							width: 200,
-							height: 200,
-							correctLevel: QRCode.CorrectLevel.H
-						});
-						qrcode.makeCode($(element).attr('data-qrcode'));
-					});
+		function searchTerm() {
+			$$.request('/action/bm/workorder/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						success(data.term);
+					}
 				}
 			});
 		}
