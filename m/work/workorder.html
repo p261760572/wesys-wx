@@ -133,7 +133,7 @@
                 <div class="weui-cell">
                     <div class="weui-cell__bd">是否完成任务</div>
                     <div class="weui-cell__ft">
-                        <input class="weui-switch" type="checkbox" name="work_result" disabled>
+                        <input class="weui-switch" type="checkbox" name="work_result" value="1" disabled>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -434,9 +434,14 @@
 		}
 		
 		function submitDetail() {
-			alert($('[name="work_result"]').val());
+			var data = {};
+			if ($('#detail-sign').find('[name="work_result"]').prop('checked')) {
+				data.work_result = "1";
+			} else {
+				data.work_result = "0";
+			}
 			if (!weui.form.validate('#detail-sign', $$.rules)) return;
-			var data = serializeDetailForm();
+			data = serializeDetailForm();
 
 			var url = '/action/bm/workorder/' + query.operateType;
 
