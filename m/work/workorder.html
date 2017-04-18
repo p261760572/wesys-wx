@@ -447,7 +447,7 @@
 			$$.request(url, data, {
 				success: function(data) {
 					if (data.errcode == 0) {
-						weui.page.back();
+						history.go(-1);
 					} else {
 						weui.alert(data.errmsg, {
 							title: '提示'
