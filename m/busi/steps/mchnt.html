@@ -68,7 +68,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required recognize" data-type="sfzzm">
+                        <div class="weui-uploader required recognize" data-type="frzjzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
                             </div>
@@ -84,7 +84,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader recognize" data-type="sfzfm">
+                        <div class="weui-uploader recognize" data-type="frzjfm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证反面照片</p>
                             </div>
@@ -176,7 +176,7 @@
 	var hash = window.location.hash;
 	
 	var ocr_map = {
-		'sfzzm':{
+		'frzjzm':{
 			url: '/gateway/ocr/idcard', 
 			param: {id_card_side: 'front'}, 
 			ret: [
@@ -184,7 +184,7 @@
 				{tag: 'name', target: '#cert_name'}
 			]
 		},
-		'sfzfm':{
+		'frzjfm':{
 			url:'/gateway/ocr/idcard', 
 			param: {id_card_side: 'back'}, 
 			ret:[{tag: 'valid_date', target: '#cert-date-picker', callback: valid_regular}]
