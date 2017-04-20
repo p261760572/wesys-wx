@@ -130,7 +130,7 @@
                 if (data.errcode == 0) {
                     success(data.rows);
                 } else {
-                    weui.alert(data.errmsg, error, {
+                    weui.alert(data.errmsg, {
                         title: '提示'
                     });
                 }
@@ -318,7 +318,8 @@
         $('#submit-btn').on('click', onSubmit);
 
         $$.request('/action/bm/parameter/list', {
-            elec_info_type: '1'
+            elec_info_type: '1',
+			type: '1'
         }, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -334,7 +335,7 @@
                         });
                     });
                 } else {
-                    weui.alert(data.errmsg, error, {
+                    weui.alert(data.errmsg, {
                         title: '提示'
                     });
                 }

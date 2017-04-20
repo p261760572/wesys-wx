@@ -118,7 +118,7 @@
                 } else if (data.errcode == 5) {
                     window.location.href = $$.wrapUrl('/m/login.html');
                 } else {
-                    weui.alert(data.errmsg, error, {
+                    weui.alert(data.errmsg, {
                         title: '提示'
                     });
                 }
