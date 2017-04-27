@@ -300,16 +300,17 @@
 		history.pushState(null, null, document.URL);
 	});
 	function serializeForm(form) {
-		var data = {};
+		var data = {}, base = {}, busi = {};
 		$(form).each(function(element) {
 			if($(element).hasClass('base'))
-				data.base[$(element).attr('name')] = $(element).val();
+				base[$(element).attr('name')] = $(element).val();
 			else if($(element).hasClass('busi'))
-				data.busi[$(element).attr('name')] = $(element).val();
+				busi[$(element).attr('name')] = $(element).val();
 		});
-		alert(AcqInstid+','+BusiType);
-		data.busi['acq_inst_id'] = AcqInstid;
-		data.busi['busi_type'] = BusiType;
+		busi['acq_inst_id'] = AcqInstid;
+		busi['busi_type'] = BusiType;
+		data.base = base;
+		data.busi = busi;
 		return data;
 	}
     function onSubmit() {
