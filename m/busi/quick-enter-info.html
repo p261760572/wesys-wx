@@ -301,11 +301,11 @@
 	});
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
-		$(form).find('.base').each(function(element) {
-			base[$(element).attr('name')] = $(element).val();
+		$(form).find('.base').each(function() {
+			base[$(this).attr('name')] = $(this).val();
 		});
-		$(form).find('.busi').each(function(element) {
-			busi[$(element).attr('name')] = $(element).val();
+		$(form).find('.busi').each(function() {
+			busi[$(this).attr('name')] = $(this).val();
 		});
 		busi['acq_inst_id'] = AcqInstid;
 		busi['busi_type'] = BusiType;
