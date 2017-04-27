@@ -209,10 +209,10 @@
                 </div>
                 <div class="weui-cell weui-cell_vcode">
                     <div class="weui-cell__hd">
-                        <label class="weui-label" style="color:gray">手续费</label>
+                        <label class="weui-label">手续费</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input busi" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="当面付(选填项)" invalidTips="请输入正确的手续费">
+                        <input class="weui-input busi" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="当面付扫码类必填" invalidTips="请输入正确的手续费">
                     </div>
                     <div class="weui-cell__ft">
                         <button class="weui-vcode-btn">‰</button>
@@ -269,7 +269,7 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;backgroup-color:blue">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;backgroud-color:blue">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.busi_type_nm}}
@@ -281,7 +281,7 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;backgroup-color:blue">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;backgroud-color:blue">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.acq_inst_nm}}
@@ -297,8 +297,13 @@
 		
 	function serializeForm(form) {
 		var data = {};
-		data.base = $(form).find('.base').val();
-		data.busi = $(form).find('.busi').val();
+		$(form).find('.base').each(index, function(element) {
+			$.extend(data.base, {$(element).attr('name'): $(element).val()});
+		});
+		$(form).find('.busi').each(index, function(element) {
+			$.extend(data.busi, {$(element).attr('name'): $(element).val()});
+		});
+		$.extend(data.busi, {acq_inst_id: acq_inst_id, busi_type: busi_type};
 		return data;
 	}
     function onSubmit() {
