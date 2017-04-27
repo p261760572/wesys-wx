@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>电子资料</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
+    <style type="text/css">
+
+    </style>
+</head>
+
+<body>
+    <div id="elec-page" class="page">
+        <div class="weui-search-bar hide">
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="" readonly>
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <!--i class="weui-icon-search"></i-->
+                    <span></span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells__title">影印件上传</div>
+        <div class="weui-cells weui-cells_form searchbar-result" id="uploader">
+            
+        </div>
+        <div class="weui-btn-area btn-area">
+            <!--a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a-->
+            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+        </div>
+    </div>
+    <script type="text/javascript" src="../js/lib/zepto.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
+    <script id="result-template" type="text/html">
+        {{each rows as row i}}
+        	<div class="weui-cell searchbar-result__item" data-index="{{total+i}}" data-type="{{row.type}}">
+                <div class="weui-cell__bd">
+                    <div class="weui-uploader" data-type="{{row.elec_info_type}}">
+                        <div class="weui-uploader__hd">
+                            <p class="weui-uploader__title">{{row.elec_info_type_nm}}</p>
+                        </div>
+                        <div class="weui-uploader__bd">
+                            <ul class="weui-uploader__files">
+                            </ul>
+                            <div class="weui-uploader__input-box">
+                                <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </script>
+    <script>
+    var query = $$.parseQueryString();
+    var operateType;
+	history.pushState(null, null, document.URL);
+	window.addEventListener('popstate', function () {
+		history.pushState(null, null, document.URL);
+	});
+    var searchPage = weui.searchPage('#elec-page', {
+        resultTpl: '#result-template',
+        loader: onSearch,
+        onInput: function() {
+            console.log(this, arguments);
+        },
+        onClickItem: function(row) {
+            console.log(this, arguments);
+            // weui.page.back();
+        }
+    }).search();
+
+    function onSearch(param, success, error) {
+        var queryParams = $.extend(query, param);
+        $$.request('/action/bm/elec-info-enter/search', queryParams, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {
+                error();
+            }
+        });
+    }
+
+    function onSubmit() {
+
+        var data = {
+            mchnt_id: query.mchnt_id,
+			mchnt_param_id: query.mchnt_param_id,
+			base_images: [],
+            busi_images: []
+        };
+		var flag = true;
+        $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
+            var id = parseInt($(item).attr('data-id'));
+			var type = $(item).attr('data-type');
+			if(uploaderData[id] == null) {
+				flag = false;
+				return flag;
+			}
+			if(type == '1')
+            	data.base_images.push(uploaderData[id]);
+			else if(type == '2')
+				data.busi_images.push(uploaderData[id]);
+        });
+
+		if(flag == false) {
+			weui.alert('图片加载中，请稍候提交', {
+				title: '提示'
+			});
+			return;
+		}
+        $$.request('/action/bm/elec-info-enter/create', data, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('入网成功', function() {
+                        windows.location.href = '../index.html';
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function initUploader(selector, elec_info_type) {
+		var target = $(selector);
+        weui.ajaxUploader(selector, {
+            url: $$.wrapUrl('/action/upload'),
+            auto: true,
+            type: 'file',
+            fileVal: 'file',
+            compress: {
+                width: 1600,
+                height: 1600,
+                quality: 0.92
+            },
+            onBeforeSend: function(data, headers) {
+                console.log(this, arguments);
+                // return false; // 阻止文件上传
+            },
+            onSuccess: function(ret) {
+				uploaderData[this.id] = {
+					status: '1',
+					serverid: ret.serverid,
+					elec_info_type: elec_info_type
+				};
+            },
+            onError: function(err) {
+                console.log(this, err);
+            }
+        });
+    }
+    var uploaderData = [];
+    $(function() {
+        $('#submit-btn').on('click', onSubmit);
+		
+		$('#uploader').find('.weui-uploader').each(function () {
+            initUploader(this, $(this).attr('data-type'));
+        });
+    });
+    </script>
+</body>
+
+</html>

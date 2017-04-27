@@ -1,0 +1,499 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>基本信息</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <div id="page1" class="page">
+        <div class="weui-search-bar hide">
+            <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="" readonly>
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <!--i class="weui-icon-search"></i-->
+                    <span>业务类型</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells__title">产品列表</div>
+        <div class="weui-cells searchbar-result">
+            
+        </div>
+    </div>
+    
+    <div id="page2" class="page page_show">
+        <div class="weui-search-bar hide">
+            <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="" readonly>
+                    <a href="javascript:" class="weui-icon-clear"></a>
+                </div>
+                <label class="weui-search-bar__label">
+                    <!--i class="weui-icon-search"></i-->
+                    <span>收单机构</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn hide">取消</a>
+        </div>
+        <div class="weui-cells__title">机构入网列表</div>
+        <div class="weui-cells searchbar-result">
+            
+        </div>
+    </div>
+    
+    <div id="detail-page" class="page">
+        <form id="form">
+            <div class="weui-cells__title">商户基本信息</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商户类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select base" name="mchnt_type" required missingTips="请选择商户类型">
+                            <option value="1">企业</option>
+                            <option value="2">个体户</option>
+                            <option value="9">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">联系人<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="linkman" required="" pattern="" placeholder="请输入联系人">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">手机号<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="mobile" required="" placeholder="请输入手机号" validType="mobile" invalidTips="请输入有效的手机号">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商户简称<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="mchnt_abbr" required="" placeholder="请输入商户简称">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">所在地区<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="district_name" required="" placeholder="请选择所在地区" id="city-picker" readonly>
+                        <input class="base" type="hidden" name="province">
+                        <input class="base" type="hidden" name="city">
+                        <input class="base" type="hidden" name="district">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">详细地址<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="addr" required="" placeholder="请输入详细地址" id="addr">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">营业执照号<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照" onkeyup="this.value=this.value.toUpperCase()">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">营业执照期限<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="license_date" required placeholder="请选择营业执照期限"  id="license-date-picker" readonly>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">注册地址<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="license_addr" required placeholder="请输入注册地址">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">终端数量<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="term_num" required="" placeholder="请输入终端数量">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">证件类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select base" name="cert_type" required missingTips="请选择证件类型">
+                            <option value="01">身份证</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件姓名<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="cert_name" required="" placeholder="请输入证件姓名">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件号码<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="cert_id" required="" placeholder="请输入证件号码" validType="idnum" invalidTips="请输入有效的证件号码">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件有效期<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input base" type="text" name="cert_date" required placeholder="请输入证件有效期" id="cert-date-picker" readonly>
+                    </div>
+                </div>
+                <div class="weui-cell" id="mcc-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">MCC<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="text" name="mcc_nm" required placeholder="请选择商户类别" id="mcc-select2">
+                        <input type="hidden" name="mcc">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">借记卡手续费</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="text" name="debit_card_fee_nm" placeholder="传统收单类必填" id="debit-card-fee-select2">
+                        <input type="hidden" name="debit_card_fee">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">贷记卡手续费</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="text" name="credit_card_fee_nm" placeholder="传统收单类必填" id="credit-card-fee-select2">
+                        <input type="hidden" name="credit_card_fee">
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_vcode">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label" style="color:gray">手续费</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="当面付(选填项)" invalidTips="请输入正确的手续费">
+                    </div>
+                    <div class="weui-cell__ft">
+                        <button class="weui-vcode-btn">‰</button>
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">账户类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select busi" name="account_type" required missingTips="请选择证件类型">
+                            <option value="1">对私</option>
+                            <option value="2">对公</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">开户名称<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="text" name="account_name" required="" placeholder="请输入开户名称">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">开户支行<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="text" required="" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
+                        <input type="hidden" name="account_bank_branch_cd">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">银行账号<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="text" name="account_no" required="" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="weui-btn-area btn-area">
+                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');">返回</a>
+                <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
+    <script type="text/javascript" src="../js/lib/zepto.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
+    <script type="text/javascript" src="../js/district.js"></script>
+    <script type="text/javascript" src="../js/param.js"></script>
+    <script id="list-template" type="text/html">
+        {{each rows as row i}}
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;backgroup-color:blue">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>
+                    {{row.busi_type_nm}}
+                </p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        {{/each}}
+    </script>
+    <script id="acq-template" type="text/html">
+        {{each rows as row i}}
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;backgroup-color:blue">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>
+                    {{row.acq_inst_nm}}
+                </p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+	var query = $$.parseQueryString();
+	var acq_inst_id, busi_type;
+		
+	function serializeForm(form) {
+		var data = {};
+		data.base = $(form).find('.base').val();
+		data.busi = $(form).find('.busi').val();
+		return data;
+	}
+    function onSubmit() {
+        if (!weui.form.validate('#form', $$.rules)) return;
+		var param = serializeForm('#form');
+
+        $$.request('/action/bm/mchnt-busi/save-info', $.extend(query, param), {
+            success: function(data) {
+                if (data.errcode == 0) {
+					var data = {
+						acq_inst_id: acq_inst_id,
+						busi_type: busi_type,
+						mchnt_id: data.mchnt_id,
+						mchnt_param_id: data.mchnt_param_id
+					};
+					windows.location.href = 'quick-enter-elec.html?' + $.param(data);
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function setPickerValues(target, items, arr) {
+        var result = [];
+        
+        function getValue(items, depth) {
+            for (var i = 0; i < items.length; i++) {
+                if(items[i].text == arr[depth]) {
+                    result[depth] = items[i].value;
+                    if(items[i].children && items[i].children.length) {
+                        getValue(items[i].children, depth+1);   
+                    }
+                    break;
+                }
+            }
+        }
+
+        getValue(items, 0);
+
+        var $target = $(target);
+        var $temp = $target;
+        for (var i = 0; i < result.length; i++) {
+            $temp = $temp.next();
+            $temp.val(result[i]);
+        }
+        $target.val(arr.join(' ')).change(); //触发change
+
+        return result;
+    }
+
+    function getLocation(success) {
+        var geolocation = new BMap.Geolocation();
+        geolocation.getCurrentPosition(function(r) {
+            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                
+                var geoc = new BMap.Geocoder();
+                var pt = r.point;
+
+                geoc.getLocation(pt, function(rs) {
+                    console.log(this, arguments);
+                    // var addComp = rs.addressComponents;
+                    // alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+                    if(success) success(rs.addressComponents);
+                });
+            } else {
+                console.log(this, arguments);
+            }
+        }, {
+            enableHighAccuracy: true
+        });
+    }
+	
+	function SearchAcq(param, success, error) {
+		$$.request('/action/bm/acq-inst/search', {}, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					success(data.rows);
+				} else {
+					weui.alert(data.errmsg, {
+						title: '提示'
+					});
+				}
+			},
+			error: error()
+		})
+	}
+		
+	function SearchBusi(param, success, error) {
+		console.log(arguments);
+		$$.request('/action/bm/acq-inst-busi/list', {
+			acq_inst_id: acq_inst_id
+		}, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					success(data.rows);
+				} else {
+					weui.alert(data.errmsg, {
+						title: '提示'
+					});
+				}
+			},
+			error: error
+		});
+	}
+	
+	weui.searchPage('#page2', {
+		resultTpl: '#acq-template',
+		loader: SearchAcq,
+		onClickItem: function(row) {
+			weui.page.show('#page1');
+			acq_inst_id = row.acq_inst_id;
+			weui.searchPage('#page1', {
+				resultTpl: '#list-template',
+				loader: SearchBusi,
+				onInput: function() {
+					console.log(arguments);
+				},
+				onClickItem: function(row) {
+					busi_type = row.busi_type;
+					weui.page.show('#detail-page');
+				}
+			}).search()
+        }
+    }).search();
+    $(function() {
+        $('#submit-btn').on('click', onSubmit);
+		$('input[name="term_num"]').val(1);
+        //init component
+        $('#city-picker').on('focus', function() {
+            $$.showPicker(this, districtData);
+        });
+		
+		$('#mchnt_type').on('focus', function() {
+			$$.showPicker(this, $$.param['mchnt_type']);
+		});
+        $('#license-date-picker').on('focus', function() {
+            $$.showDatePicker(this, {format: 'yyyyMMdd'});
+        });
+
+        $('#cert-date-picker').on('focus', function() {
+            $$.showDatePicker(this, {format: 'yyyyMMdd'});
+        });
+		
+		getLocation(function(addr) {
+            setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
+            $('#addr').val(addr.street + addr.streetNumber);
+        });
+		
+		$('#account-bank-branch-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索开户支行',
+                valueField: 'bank_branch_cd',
+                textField: 'bank_branch_nm',
+                url: '/action/bm/bank-branch/search'
+            }).search();
+        });
+
+        $('#mcc-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索商户类别',
+                valueField: 'mcc',
+                textField: 'mcc_nm',
+                url: '/action/bm/mcc/search'
+            }).search();
+        });
+		
+		$('#debit-card-fee-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索手续费',
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    // debit_flag: '1'
+                }
+            }).search();
+        });
+
+        $('#credit-card-fee-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索手续费',
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    credit_flag: '1'
+                }
+            }).search();
+        });
+    });
+    </script>
+</body>
+
+</html>
