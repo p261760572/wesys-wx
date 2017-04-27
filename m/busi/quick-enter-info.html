@@ -307,9 +307,8 @@
 			else if($(element).hasClass('busi'))
 				data.busi[$(element).attr('name')] = $(element).val();
 		});
-		alert(acq_inst_id + ',' + busi_type);
-		$.extend(data.busi, {acq_inst_id: acq_inst_id, busi_type: busi_type});
-		
+		data.busi['acq_inst_id'] = acq_inst_id;
+		data.busi['busi_type'] = busi_type;
 		return data;
 	}
     function onSubmit() {
