@@ -135,7 +135,7 @@
                         <label class="weui-label">注册地址<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input base" type="text" name="license_addr" required placeholder="请输入注册地址">
+                        <input class="weui-input base" type="text" name="license_addr" id="license_addr" required placeholder="请输入注册地址">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -307,7 +307,7 @@
 			else if($(element).hasClass('busi'))
 				data.busi[$(element).attr('name')] = $(element).val();
 		});
-		
+		alert(AcqInstid+','+BusiType);
 		data.busi['acq_inst_id'] = AcqInstid;
 		data.busi['busi_type'] = BusiType;
 		return data;
@@ -444,6 +444,10 @@
         $('#submit-btn').on('click', onSubmit);
 		$('input[name="term_num"]').val(1);
         //init component
+		$('#license_addr').on('focus', function(){
+			$('#license_addr').val($('#addr').val());
+		});
+		
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
