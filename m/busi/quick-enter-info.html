@@ -269,9 +269,9 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font:36px" align="center">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:36px;" align="center">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>
+                <p>font:12px "宋体"
                     {{row.busi_type_nm}}
                 </p>
             </div>
@@ -281,7 +281,7 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font:36px" align="center">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:36px;" align="center">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.acq_inst_nm}}
@@ -301,7 +301,7 @@
 	});
 	function serializeForm(form) {
 		var data = {};
-		$(form).find('.base,.busi').each(function(element) {
+		$(form).each(function(element) {
 			if($(element).hasClass('base'))
 				data.base[$(element).attr('name')] = $(element).val();
 			else if($(element).hasClass('busi'))
