@@ -297,11 +297,13 @@
 		
 	function serializeForm(form) {
 		var data = {};
-		$(form).find('.base').each(index, function(element) {
-			$.extend(data.base, {$(element).attr('name'): $(element).val()});
-		});
-		$(form).find('.busi').each(index, function(element) {
-			$.extend(data.busi, {$(element).attr('name'): $(element).val()});
+		$(form).find('.base,.busi').each(index, function(element) {
+			var tag = $(element).attr('name');
+			var value = $(element).val();
+			if($(element).hasClass('base'))
+				$.extend(data.base, {tag: value});
+			else if($(element).hasClass('busi'))
+				$.extend(data.busi, {tag: value});
 		});
 		$.extend(data.busi, {acq_inst_id: acq_inst_id, busi_type: busi_type};
 		return data;
