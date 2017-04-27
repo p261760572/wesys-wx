@@ -257,7 +257,7 @@
                 
             </div>
             <div class="weui-btn-area btn-area">
-                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');weui.page.hide('#detail-page');">返回</a>
+                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');">返回</a>
                 <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
             </div>
         </form>
@@ -269,7 +269,7 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:blue">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22c2ff">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.busi_type_nm}}
@@ -281,7 +281,7 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:blue">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22c2ff">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.acq_inst_nm}}
@@ -399,20 +399,22 @@
 		
 	function SearchBusi(param, success, error) {
 		console.log(arguments);
-		$$.request('/action/bm/acq-inst-busi/list', {
-			acq_inst_id: acq_inst_id
-		}, {
-			success: function(data) {
-				if (data.errcode == 0) {
-					success(data.rows);
-				} else {
-					weui.alert(data.errmsg, {
-						title: '提示'
-					});
-				}
-			},
-			error: error
-		});
+		if($('#page1').find('.searchbar-result__item').length == 0) {
+			$$.request('/action/bm/acq-inst-busi/list', {
+				acq_inst_id: acq_inst_id
+			}, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						success(data.rows);
+					} else {
+						weui.alert(data.errmsg, {
+							title: '提示'
+						});
+					}
+				},
+				error: error
+			});
+		}
 	}
 	
 	weui.searchPage('#page2', {
@@ -420,7 +422,6 @@
 		loader: SearchAcq,
 		onClickItem: function(row) {
 			weui.page.show('#page1');
-			weui.page.hide('#page2');
 			acq_inst_id = row.acq_inst_id;
 			weui.searchPage('#page1', {
 				resultTpl: '#list-template',
@@ -431,7 +432,6 @@
 				onClickItem: function(row) {
 					busi_type = row.busi_type;
 					weui.page.show('#detail-page');
-					weui.page.hide('#page1');
 				}
 			}).search()
         }
