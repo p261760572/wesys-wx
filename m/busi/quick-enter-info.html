@@ -269,9 +269,9 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:36px;" align="center">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:24px;" align="center">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>font:12px "宋体"
+                <p>
                     {{row.busi_type_nm}}
                 </p>
             </div>
@@ -281,7 +281,7 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:36px;" align="center">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:24px;" align="center">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.acq_inst_nm}}
@@ -307,8 +307,9 @@
 			else if($(element).hasClass('busi'))
 				data.busi[$(element).attr('name')] = $(element).val();
 		});
+		alert(acq_inst_id + ',' + busi_type);
 		$.extend(data.busi, {acq_inst_id: acq_inst_id, busi_type: busi_type});
-		alert(data);
+		
 		return data;
 	}
     function onSubmit() {
@@ -402,7 +403,6 @@
 		
 	function SearchBusi(param, success, error) {
 		console.log(arguments);
-		alert($('#page1').find('.searchbar-result__item').length);
 		if($('#page1').find('.searchbar-result__item').length == 0) {
 			$$.request('/action/bm/acq-inst-busi/list', {
 				acq_inst_id: acq_inst_id
