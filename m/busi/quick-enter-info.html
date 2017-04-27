@@ -293,7 +293,7 @@
     </script>
     <script>
 	var query = $$.parseQueryString();
-	var acq_inst_id, busi_type;
+	var AcqInstid, BusiType;
 		
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
@@ -307,8 +307,9 @@
 			else if($(element).hasClass('busi'))
 				data.busi[$(element).attr('name')] = $(element).val();
 		});
-		data.busi['acq_inst_id'] = acq_inst_id;
-		data.busi['busi_type'] = busi_type;
+		
+		data.busi['acq_inst_id'] = AcqInstid;
+		data.busi['busi_type'] = BusiType;
 		return data;
 	}
     function onSubmit() {
@@ -319,8 +320,8 @@
             success: function(data) {
                 if (data.errcode == 0) {
 					var data = {
-						acq_inst_id: acq_inst_id,
-						busi_type: busi_type,
+						acq_inst_id: AcqInstid,
+						busi_type: BusiType,
 						mchnt_id: data.mchnt_id,
 						mchnt_param_id: data.mchnt_param_id
 					};
@@ -404,7 +405,7 @@
 		console.log(arguments);
 		if($('#page1').find('.searchbar-result__item').length == 0) {
 			$$.request('/action/bm/acq-inst-busi/list', {
-				acq_inst_id: acq_inst_id
+				acq_inst_id: AcqInstid
 			}, {
 				success: function(data) {
 					if (data.errcode == 0) {
@@ -425,7 +426,7 @@
 		loader: SearchAcq,
 		onClickItem: function(row) {
 			weui.page.show('#page1');
-			acq_inst_id = row.acq_inst_id;
+			AcqInstid = row.acq_inst_id;
 			weui.searchPage('#page1', {
 				resultTpl: '#list-template',
 				loader: SearchBusi,
@@ -433,7 +434,7 @@
 					console.log(arguments);
 				},
 				onClickItem: function(row) {
-					busi_type = row.busi_type;
+					BusiType = row.busi_type;
 					weui.page.show('#detail-page');
 				}
 			}).search()
