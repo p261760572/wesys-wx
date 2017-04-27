@@ -269,7 +269,7 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font:36px" align="center">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.busi_type_nm}}
@@ -281,7 +281,7 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font:36px" align="center">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.acq_inst_nm}}
@@ -295,17 +295,20 @@
 	var query = $$.parseQueryString();
 	var acq_inst_id, busi_type;
 		
+	history.pushState(null, null, document.URL);
+	window.addEventListener('popstate', function () {
+		history.pushState(null, null, document.URL);
+	});
 	function serializeForm(form) {
 		var data = {};
 		$(form).find('.base,.busi').each(function(element) {
-			var tag = $(element).attr('name');
-			var value = $(element).val();
 			if($(element).hasClass('base'))
-				$.extend(data.base, {tag: value});
+				data.base[$(element).attr('name')] = $(element).val();
 			else if($(element).hasClass('busi'))
-				$.extend(data.busi, {tag: value});
+				data.busi[$(element).attr('name')] = $(element).val();
 		});
 		$.extend(data.busi, {acq_inst_id: acq_inst_id, busi_type: busi_type});
+		alert(data);
 		return data;
 	}
     function onSubmit() {
