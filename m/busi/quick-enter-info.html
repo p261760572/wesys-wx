@@ -257,7 +257,7 @@
                 
             </div>
             <div class="weui-btn-area btn-area">
-                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');">返回</a>
+                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');$('#detail-page').removeClass('page_show');">返回</a>
                 <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
             </div>
         </form>
@@ -301,11 +301,11 @@
 	});
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
-		$(form).each(function(element) {
-			if($(element).hasClass('base'))
-				base[$(element).attr('name')] = $(element).val();
-			else if($(element).hasClass('busi'))
-				busi[$(element).attr('name')] = $(element).val();
+		$(form).find('.base').each(function(element) {
+			base[$(element).attr('name')] = $(element).val();
+		});
+		$(form).find('.busi').each(function(element) {
+			busi[$(element).attr('name')] = $(element).val();
 		});
 		busi['acq_inst_id'] = AcqInstid;
 		busi['busi_type'] = BusiType;
@@ -404,22 +404,21 @@
 		
 	function SearchBusi(param, success, error) {
 		console.log(arguments);
-		if($('#page1').find('.searchbar-result__item').length == 0) {
-			$$.request('/action/bm/acq-inst-busi/list', {
-				acq_inst_id: AcqInstid
-			}, {
-				success: function(data) {
-					if (data.errcode == 0) {
-						success(data.rows);
-					} else {
-						weui.alert(data.errmsg, {
-							title: '提示'
-						});
-					}
-				},
-				error: error
-			});
-		}
+		
+		$$.request('/action/bm/acq-inst-busi/list', {
+			acq_inst_id: AcqInstid
+		}, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					success(data.rows);
+				} else {
+					weui.alert(data.errmsg, {
+						title: '提示'
+					});
+				}
+			},
+			error: error
+		});
 	}
 	
 	weui.searchPage('#page2', {
@@ -427,6 +426,7 @@
 		loader: SearchAcq,
 		onClickItem: function(row) {
 			weui.page.show('#page1');
+			$('#page2').removeClass('page_show');
 			AcqInstid = row.acq_inst_id;
 			weui.searchPage('#page1', {
 				resultTpl: '#list-template',
@@ -437,6 +437,7 @@
 				onClickItem: function(row) {
 					BusiType = row.busi_type;
 					weui.page.show('#detail-page');
+					$('#page1').removeClass('page_show');
 				}
 			}).search()
         }
