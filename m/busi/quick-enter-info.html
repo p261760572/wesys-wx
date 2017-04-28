@@ -185,8 +185,8 @@
                         <label class="weui-label">MCC<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input busi" type="text" name="mcc_nm" required placeholder="请选择商户类别" id="mcc-select2">
-                        <input type="hidden" name="mcc">
+                        <input class="weui-input" type="text" name="mcc_nm" required placeholder="请选择商户类别" id="mcc-select2">
+                        <input class="busi" type="hidden" name="mcc">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -194,8 +194,8 @@
                         <label class="weui-label">借记卡手续费</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input busi" type="text" name="debit_card_fee_nm" placeholder="传统收单类必填" id="debit-card-fee-select2">
-                        <input type="hidden" name="debit_card_fee">
+                        <input class="weui-input" type="text" name="debit_card_fee_nm" placeholder="传统收单类必填" id="debit-card-fee-select2">
+                        <input class="busi" type="hidden" name="debit_card_fee">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -203,8 +203,8 @@
                         <label class="weui-label">贷记卡手续费</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input busi" type="text" name="credit_card_fee_nm" placeholder="传统收单类必填" id="credit-card-fee-select2">
-                        <input type="hidden" name="credit_card_fee">
+                        <input class="weui-input" type="text" name="credit_card_fee_nm" placeholder="传统收单类必填" id="credit-card-fee-select2">
+                        <input class="busi" type="hidden" name="credit_card_fee">
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_vcode">
@@ -242,8 +242,8 @@
                         <label class="weui-label">开户支行<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input busi" type="text" required="" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
-                        <input type="hidden" name="account_bank_branch_cd">
+                        <input class="weui-input" type="text" required="" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
+                        <input class="busi" type="hidden" name="account_bank_branch_cd">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -307,8 +307,11 @@
 		$(form).find('.busi').each(function() {
 			busi[$(this).attr('name')] = $(this).val();
 		});
-		busi['acq_inst_id'] = AcqInstid;
-		busi['busi_type'] = BusiType;
+		base.mchnt_name = base.mchnt_abbr;
+		base.shop_name = base.mchnt_abbr;
+		busi.acq_inst_id = AcqInstid;
+		busi.busi_type = BusiType;
+		busi.mchnt_name = base.mchnt_abbr;
 		data.base = base;
 		data.busi = busi;
 		return data;
