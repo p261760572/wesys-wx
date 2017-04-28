@@ -45,7 +45,7 @@
                 <div class="weui-cell__bd">
                     <div class="weui-uploader {{if row.must=='1'}}required{{/if}}" data-type="{{row.elec_info_type}}">
                         <div class="weui-uploader__hd">
-                            <p class="weui-uploader__title">{{row.elec_info_type_nm}} {{if row.must=='1'}}<span class="required">*</span>{{/if}} </p>
+                            <p class="weui-uploader__title">{{row.elec_info_type_nm}}{{if row.must=='1'}}<span class="required">*</span>{{/if}} </p>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files">
@@ -84,6 +84,9 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
+					$('#uploader').find('.weui-uploader').each(function () {
+						initUploader(this, $(this).attr('data-type'));
+					});
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -192,10 +195,6 @@
     var uploaderData = [];
     $(function() {
         $('#submit-btn').on('click', onSubmit);
-		
-		$('#uploader').find('.weui-uploader').each(function () {
-            initUploader(this, $(this).attr('data-type'));
-        });
     });
     </script>
 </body>
