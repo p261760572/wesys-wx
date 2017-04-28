@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div id="elec-page" class="page">
+    <div id="elec-page" class="page page_show">
         <div class="weui-search-bar hide">
             <form class="weui-search-bar__form" method="post" action="">
                 <div class="weui-search-bar__box">
@@ -41,7 +41,7 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script id="result-template" type="text/html">
         {{each rows as row i}}
-        	<div class="weui-cell searchbar-result__item" data-index="{{total+i}}" data-type="{{row.type}}">
+        	<div class="weui-cell searchbar-result__item {{if row.must=='1'}} required {{/if}}" data-index="{{total+i}}" data-type="{{row.type}}">
                 <div class="weui-cell__bd">
                     <div class="weui-uploader" data-type="{{row.elec_info_type}}">
                         <div class="weui-uploader__hd">
@@ -96,8 +96,29 @@
         });
     }
 
+	function checkMustPic() {
+		var check = true;
+		$('#elec-page').find('.weui-uploader.required').each(function(index, item){
+			var target = $(this);
+			if(target.find('.weui-uploader__file').length == 0 ||
+				target.find('.weui-uploader__file').attr('data-id') == undefined ||
+				target.find('.weui-uploader__file').attr('data-id') == null) {
+				if(!(target.closest('.weui-cell').hasClass('hide'))) {
+					check = false;
+					return check;
+				}
+			}
+		});
+		return check;
+	}
     function onSubmit() {
-
+		if (!checkMustPic()) {
+			weui.alert('请完善电子资料', {
+				title: '提示'
+			});
+			return;
+		}
+		
         var data = {
             mchnt_id: query.mchnt_id,
 			mchnt_param_id: query.mchnt_param_id,
