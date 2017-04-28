@@ -41,11 +41,11 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script id="result-template" type="text/html">
         {{each rows as row i}}
-        	<div class="weui-cell searchbar-result__item {{if row.must=='1'}} required {{/if}}" data-index="{{total+i}}" data-type="{{row.type}}">
+        	<div class="weui-cell searchbar-result__item" data-index="{{total+i}}" data-type="{{row.type}}">
                 <div class="weui-cell__bd">
-                    <div class="weui-uploader" data-type="{{row.elec_info_type}}">
+                    <div class="weui-uploader {{if row.must=='1'}}required{{/if}}" data-type="{{row.elec_info_type}}">
                         <div class="weui-uploader__hd">
-                            <p class="weui-uploader__title">{{row.elec_info_type_nm}}</p>
+                            <p class="weui-uploader__title">{{row.elec_info_type_nm}} {{if row.must=='1'}}<span class="required">*</span>{{/if}} </p>
                         </div>
                         <div class="weui-uploader__bd">
                             <ul class="weui-uploader__files">
