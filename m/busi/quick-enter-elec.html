@@ -131,7 +131,7 @@
 		var flag = true;
         $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
-			var type = $(item).attr('data-type');
+			var type = $(item).closest('.weui-uploader').attr('data-type');
 			if(uploaderData[id] == null) {
 				flag = false;
 				return flag;
