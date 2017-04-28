@@ -128,7 +128,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('入网成功', function() {
-                        windows.location.href = '../index.html';
+                        window.location.href = '../index.html';
                     });
                 } else {
                     weui.alert(data.errmsg, {
