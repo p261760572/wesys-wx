@@ -295,7 +295,6 @@
 	var query = $$.parseQueryString();
 	var AcqInstid, BusiType;
 	
-	history.pushState(null, null, '../index.html');
 	window.addEventListener('popstate', function () {
 		weui.page.back();
 		history.pushState(null, null, document.URL);
