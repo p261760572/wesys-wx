@@ -269,7 +269,7 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:24px;" align="center">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:5px;font-weight:bold;font-size:24px;" align="center">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.busi_type_nm}}
@@ -281,7 +281,7 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:10px;font-weight:bold;font-size:24px;" align="center">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:5px;font-weight:bold;font-size:24px;" align="center">
             <div class="weui-cell__bd weui-cell_primary">
                 <p>
                     {{row.acq_inst_nm}}
@@ -297,7 +297,7 @@
 	
 	//history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
-		//history.pushState(null, null, document.URL);
+		history.pushState(null, null, document.URL);
 		weui.page.back();
 	});
 	function serializeForm(form) {
