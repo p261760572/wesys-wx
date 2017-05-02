@@ -28,7 +28,10 @@
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
         </div>
-        <div class="weui-cells__title"><i class="icon-return" onClick="weui.page.back()"></i>产品列表</div>
+        <div>
+        	<i class="icon-return" onClick="weui.page.back()"></i>
+        	<div class="weui-cells__title">产品列表</div>
+        </div>
         <div class="weui-cells searchbar-result">
             
         </div>
@@ -257,7 +260,7 @@
                 
             </div>
             <div class="weui-btn-area btn-area">
-                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');$('#detail-page').removeClass('page_show');">返回</a>
+                <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="$('#page2').addClass('page_show');$('#detail-page').removeClass('page_show');">返回</a>
                 <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
             </div>
         </form>
@@ -428,7 +431,7 @@
 		resultTpl: '#acq-template',
 		loader: SearchAcq,
 		onClickItem: function(row) {
-			weui.page.show('#page1');
+			$('#page1').addClass('page_show');
 			$('#page2').removeClass('page_show');
 			AcqInstid = row.acq_inst_id;
 			weui.searchPage('#page1', {
@@ -439,7 +442,7 @@
 				},
 				onClickItem: function(row) {
 					BusiType = row.busi_type;
-					weui.page.show('#detail-page');
+					$('#detail-page').addClass('page_show');
 					$('#page1').removeClass('page_show');
 				}
 			}).search()
