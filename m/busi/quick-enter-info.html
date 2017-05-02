@@ -428,26 +428,29 @@
 			error: error
 		});
 	}
-	
+		
+	var searchBusi = weui.searchPage('#page1', {
+		resultTpl: '#list-template',
+		loader: SearchBusi,
+		onInput: function() {
+			console.log(arguments);
+		},
+		onClickItem: function(row) {
+			BusiType = row.busi_type;
+			weui.page.show('#detail-page');
+		}
+	});
+		
 	weui.searchPage('#page2', {
 		resultTpl: '#acq-template',
 		loader: SearchAcq,
 		onClickItem: function(row) {
 			weui.page.show('#page1');
 			AcqInstid = row.acq_inst_id;
-			weui.searchPage('#page1', {
-				resultTpl: '#list-template',
-				loader: SearchBusi,
-				onInput: function() {
-					console.log(arguments);
-				},
-				onClickItem: function(row) {
-					BusiType = row.busi_type;
-					weui.page.show('#detail-page');
-				}
-			}).search()
+			searchBusi.search();
         }
     }).search();
+		
     $(function() {
         $('#submit-btn').on('click', onSubmit);
 		$('input[name="term_num"]').val(1);
