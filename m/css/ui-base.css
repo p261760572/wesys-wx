@@ -141,9 +141,3 @@ body {
     height: 28px;
     background-image: url('search.svg');
 }
-
-.icon-return {
-    width: 14px;
-    height: 14px;
-    background-image: url('return.svg');
-}
