@@ -296,11 +296,11 @@
 	var AcqInstid, BusiType;
 	
 	window.addEventListener('popstate', function () {
+		history.pushState(null, null, document.URL);
 		if($('#page2').hasClass('page_show'))
 			window.location.href = '../index.html';
 		else {
 			weui.page.back();
-			history.pushState(null, null, document.URL);
 		}
 	});
 	function serializeForm(form) {
