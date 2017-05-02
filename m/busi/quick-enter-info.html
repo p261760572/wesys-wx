@@ -296,9 +296,9 @@
 	var AcqInstid, BusiType;
 	
 	window.addEventListener('popstate', function () {
-		weui.page.back();
-		$('#page2').hasClass('page_show')?
-			history.pushState(null, null, '../index.html'):history.pushState(null, null, document.URL);
+		if($('#page2').hasClass('page_show'))
+			window.location.href = '../index.html';
+		else weui.page.back();
 	});
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
