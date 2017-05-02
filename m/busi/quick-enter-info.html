@@ -297,7 +297,8 @@
 	
 	window.addEventListener('popstate', function () {
 		weui.page.back();
-		history.pushState(null, null, document.URL);
+		$('#page2').hasClass('page_show')?
+			history.pushState(null, null, '../index.html'):history.pushState(null, null, document.URL);
 	});
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
