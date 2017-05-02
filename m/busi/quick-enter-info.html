@@ -297,8 +297,8 @@
 	
 	history.pushState(null, null, '../index.html');
 	window.addEventListener('popstate', function () {
-		history.pushState(null, null, document.URL);
 		weui.page.back();
+		history.pushState(null, null, document.URL);
 	});
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
