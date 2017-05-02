@@ -298,7 +298,10 @@
 	window.addEventListener('popstate', function () {
 		if($('#page2').hasClass('page_show'))
 			window.location.href = '../index.html';
-		else weui.page.back();
+		else {
+			weui.page.back();
+			history.pushState(null, null, document.URL);
+		}
 	});
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
