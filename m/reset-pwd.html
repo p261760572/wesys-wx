@@ -87,7 +87,7 @@
 
         var data = $('#form').serializeObject();
 
-        $$.required('/m/action/notify/mobilecode/reset-pwd', {
+        $$.request('/m/action/notify/mobilecode/reset-pwd', {
             mobile: data.mobile,
             vcode: data.vcode
         }, {
