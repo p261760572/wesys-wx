@@ -121,7 +121,7 @@
         data.login_pwd = encryptPassword(data.login_pwd);
 
         $.ajax({
-            url: '/m/action/user/reset-pwd',
+            url: '/p/m/action/user/reset-pwd',
             type: "POST",
             dataType: "json",
             data: data,
