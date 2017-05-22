@@ -64,7 +64,7 @@
         if (!weui.form.validate('#form')) return;
 
         var data = $('#form').serializeObject();
-		var save_data = data;
+		var save_data = $.extend({}, data);
         data.login_pwd = encryptPassword(data.login_pwd);
 
         $$.request('/m/action/user/login', data, {
