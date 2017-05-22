@@ -11,17 +11,18 @@
 </head>
 
 <body>
-    <div class="weui-tab">
+    <div class="weui-tab page page_show">
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel_bd">
-                <a href="my/info.html" class="weui-media-box weui-media-box_appmsg weui-cell_access">
+                <a href="javascript:;" class="weui-media-box weui-media-box_appmsg weui-cell_access" onclick="weui.page.show('#nickname-page')">
                     <div class="weui-media-box__hd">
                         <!-- <img class="weui-media-box__thumb" src="../images/icon_nav_dialog.png" alt=""> -->
                         <i class="icon-user"></i>
                     </div>
                     <div class="weui-media-box__bd">
                         <h4 class="weui-media-box__title" id="nickname"></h4>
-                        <p class="weui-media-box__desc">查看个人信息</p>
+                        <p class="weui-media-box__desc" id="mobile"></p>
+                        <p class="weui-media-box__desc" id="inst_name"></p>
                     </div>
                     <div class="weui-cell__ft">
                     </div>
@@ -121,6 +122,24 @@
             </a>
         </div>
     </div>
+    <div class="page" id="nickname-page">
+        <form id="nickname-form" method="post" action="/action/user/update-nickname">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">昵称</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="nickname" placeholder="请输入昵称" required="required">
+                    </div>
+                </div>
+            </div>
+            <div class="weui-btn-area btn-area">
+                <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">返回</a>
+                <a id="nickname-submit-btn" href="javascript:" class="weui-btn weui-btn_primary">保存</a>
+            </div>
+        </form>
+    </div>
     <script type="text/javascript" src="js/jweixin-1.0.0.js"></script>
     <script type="text/javascript" src="js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="js/lib/weuijs/weuijs.min.js"></script>
@@ -151,9 +170,31 @@
             }
         });
     }
+		
+	function onNicknameSubmit() {
+        if (!weui.form.validate('#nickname-form', $$.rules)) return;
+        var param = $('#nickname-form').serializeObject();
 
+        $$.request('/action/user/update-nickname', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功', function() {
+                        $('#nickname').html(param.nickname);
+                        weui.page.back();
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+		
     var curent_user;
     $(function() {
+		$('#nickname-submit-btn').on('click', onNicknameSubmit);
         $$.request('/action/user/view', {}, {
             success: function(data) {
                 if (data.errcode == 0) {
