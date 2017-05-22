@@ -64,14 +64,15 @@
         if (!weui.form.validate('#form')) return;
 
         var data = $('#form').serializeObject();
+		var save_data = data;
         data.login_pwd = encryptPassword(data.login_pwd);
 
         $$.request('/m/action/user/login', data, {
             success: function(data) {
                 if(data.errcode == 0) {
+					$$.setData('login_in', save_data);
                     weui.toast('登录成功', function () {
                         // window.history.back(-1);
-						$$.setData('login_in', data);
                         window.location.href = query.goto_page || $$.wrapUrl('/m/index.html');
                     });
                 } else {
