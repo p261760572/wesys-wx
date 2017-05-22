@@ -48,6 +48,10 @@
     <script type="text/javascript">
     var query = $$.parseQueryString();
 
+	var data = $$.getData('login');
+	if (data) {
+		$('#form').form('load', data);
+	}
     function encryptPassword(password) {
         //加密密码
         var crypt = new JSEncrypt();
@@ -66,6 +70,7 @@
                 if(data.errcode == 0) {
                     weui.toast('登录成功', function () {
                         // window.history.back(-1);
+						$$.setData('login', data);
                         window.location.href = query.goto_page || $$.wrapUrl('/m/index.html');
                     });
                 } else {
