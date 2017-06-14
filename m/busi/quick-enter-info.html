@@ -320,7 +320,7 @@
     <script>
 	var query = $$.parseQueryString();
 	var AcqInstid, BusiType;
-	var current_user = {};
+	var UserInfo = {};
 	
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
@@ -482,7 +482,7 @@
 		$$.request('/action/user/view', {}, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    current_user = data;
+                    UserInfo = data;
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -500,9 +500,9 @@
 			$('#license_addr').val($('#addr').val());
 		});
 		getUserinfo();
-		$('#expand-inst-select2').val(current_user.data.inst_id);
-		$('#term-inves-select2').val(current_user.data.inst_id);
-		$('#expand-select2').val(current_user.data.userid);
+		$('#expand-inst-select2').val(UserInfo.data.inst_id);
+		$('#term-inves-select2').val(UserInfo.data.inst_id);
+		$('#expand-select2').val(UserInfo.data.userid);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
