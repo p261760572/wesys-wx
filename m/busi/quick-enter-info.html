@@ -254,7 +254,33 @@
                         <input class="weui-input busi" type="number" name="account_no" required="" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
                     </div>
                 </div>
-                
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">拓展方<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="expand_inst_nm" required="" placeholder="请选择拓展方" id="expand-inst-select2" readonly>
+                        <input type="hidden" name="expand_inst_id">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">拓展人<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="expand_nm" required="" placeholder="请选择拓展人" id="expand-select2" readonly>
+                        <input type="hidden" name="expand_id">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">终端投资方<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="term_inves_nm" required="" placeholder="终端投资方" id="term-inves-select2" readonly>
+                        <input type="hidden" name="term_inves">
+                    </div>
+                </div>
             </div>
             <div class="weui-btn-area btn-area">
                 <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.show('#page2');">返回</a>
@@ -294,6 +320,7 @@
     <script>
 	var query = $$.parseQueryString();
 	var AcqInstid, BusiType;
+	var current_user = {};
 	
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
@@ -450,6 +477,20 @@
 			searchBusi.search();
         }
     }).search();
+	
+	function getUserinfo() {
+		$$.request('/action/user/view', {}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    current_user = data;
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            }
+        })
+	}
 		
     $(function() {
         $('#submit-btn').on('click', onSubmit);
@@ -458,7 +499,10 @@
 		$('#license_addr').on('focus', function(){
 			$('#license_addr').val($('#addr').val());
 		});
-		
+		getUserinfo();
+		$('#expand-inst-select2').val(current_user.inst_id);
+		$('#term-inves-select2').val(current_user.inst_id);
+		$('#expand-select2').val(current_user.userid);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
@@ -518,6 +562,28 @@
                 queryParams: {
                     credit_flag: '1'
                 }
+            }).search();
+        });
+		
+		$('#expand-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索拓展方',
+                url: '/action/bm/expand-inst/search'
+            }).search();
+        });
+
+        $('#expand-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索拓展人',
+                url: '/action/bm/expand/search'
+            }).search();
+        });
+		
+		$('#term-inves-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索终端投资方',
+                url: '/action/bm/parameter/list',
+				queryParams: {term_inves: '1'}
             }).search();
         });
     });
