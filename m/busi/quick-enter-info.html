@@ -500,9 +500,9 @@
 			$('#license_addr').val($('#addr').val());
 		});
 		getUserinfo();
-		$('#expand-inst-select2').val(current_user.inst_id);
-		$('#term-inves-select2').val(current_user.inst_id);
-		$('#expand-select2').val(current_user.userid);
+		$('#expand-inst-select2').val(current_user.data.inst_id);
+		$('#term-inves-select2').val(current_user.data.inst_id);
+		$('#expand-select2').val(current_user.data.userid);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
@@ -583,7 +583,8 @@
             $$.showSelect2(this, {
                 title: '搜索终端投资方',
                 url: '/action/bm/parameter/list',
-				queryParams: {term_inves: '1'}
+				queryParams: {term_inves: '1'},
+				rowsName: 'term_inves'
             }).search();
         });
     });
