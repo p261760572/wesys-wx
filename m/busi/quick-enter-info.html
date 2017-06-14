@@ -500,9 +500,9 @@
 			$('#license_addr').val($('#addr').val());
 		});
 		getUserinfo();
-		$('#expand-inst-select2').val(UserInfo.data.inst_id);
-		$('#term-inves-select2').val(UserInfo.data.inst_id);
-		$('#expand-select2').val(UserInfo.data.userid);
+		$('#expand-inst-select2').val(UserInfo.data.inst_name).next().val(UserInfo.data.inst_id);
+		$('#term-inves-select2').val(UserInfo.data.inst_name).next().val(UserInfo.data.inst_id);
+		$('#expand-select2').val(UserInfo.data.mobile).next().val(UserInfo.data.userid);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
