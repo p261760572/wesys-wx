@@ -319,7 +319,7 @@
     </script>
     <script>
 	var query = $$.parseQueryString();
-	var AcqInstid, BusiType, UserInfo;
+	var AcqInstid, BusiType;
 	
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
@@ -492,6 +492,7 @@
 	}
 		
     $(function() {
+		var UserInfo;
         $('#submit-btn').on('click', onSubmit);
 		$('input[name="term_num"]').val(1);
         //init component
