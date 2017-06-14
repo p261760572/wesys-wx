@@ -481,7 +481,9 @@
 		$$.request('/action/user/view', {}, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    UserInfo = data;
+                    $('#expand-inst-select2').val(data.data.inst_name).next().val(data.data.inst_id);
+					$('#term-inves-select2').val(data.data.inst_name).next().val(data.data.inst_id);
+					$('#expand-select2').val(data.data.mobile).next().val(data.data.userid);
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -492,7 +494,6 @@
 	}
 		
     $(function() {
-		var UserInfo;
         $('#submit-btn').on('click', onSubmit);
 		$('input[name="term_num"]').val(1);
         //init component
@@ -500,9 +501,7 @@
 			$('#license_addr').val($('#addr').val());
 		});
 		getUserinfo();
-		$('#expand-inst-select2').val(UserInfo.data.inst_name).next().val(UserInfo.data.inst_id);
-		$('#term-inves-select2').val(UserInfo.data.inst_name).next().val(UserInfo.data.inst_id);
-		$('#expand-select2').val(UserInfo.data.mobile).next().val(UserInfo.data.userid);
+		
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
