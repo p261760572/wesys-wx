@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>设备绑定</title>
+    <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../css/ui-base.css">
+    <style></style>
+</head>
+
+<body class="page_show">
+        <form id="detail-fm">
+            <input type="hidden" name="rec_id">
+            <input type="hidden" name="term_no">
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">门店名称</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <p id="shop_name"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-cells weui-cells_form">
+                <!-- <div class="weui-cells__title">绑定设备</div>                 -->
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">主机序列号</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input name="zj_device_no" type="text" class="weui-input validate" id="zj_device_no" placeholder="请输入主机序列号">
+                    </div>
+                    <div class="weui-cell__ft">
+                        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" onclick="scanDeviceNo('zj_device_no')">扫一扫</a>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <input type="button" class="weui-btn weui-btn_primary" value="提交" onclick="submitDetail()">
+        </form>
+    </div>
+    <script type="text/javascript" src="../js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../js/lib/weuijs/weuijs.min.js"></script>
+    <script type="text/javascript" src="../js/wx.js"></script>
+    <script>
+		var query = $$.parseQueryString();
+		wxConfig({
+			jsApiList: ['scanQRCode'],
+			ready: function() {
+				share()
+			}
+		});
+		
+		function scanDeviceNo(id) {
+			 wxScanQRCode(['barCode'], function(resultStr) {
+				 var index = resultStr.indexOf(",");
+				 if (index >= 0) {
+					 resultStr = resultStr.substr(index + 1);
+				 }
+				 $('#' + id).val(resultStr);
+			 });
+		}
+		
+		function submitDetail() {
+			 var data = serializeDetailForm();
+
+			 var url = '/action/ms/term-info/bind-device';
+
+			 $$.request(url, $.extend(query, data), function(data) {
+				 if (data.errcode == 0) {
+					 weui.toast('操作成功', function() {
+                        history.back();
+                     });
+				 }
+			 });
+		 }
+		
+		$(function() {
+			$$.request('/action/bm/term-info/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						$('#shop_name').text(data.data.shop_name);
+					} else {
+						weui.alert(data.errmsg, {
+							title: '提示'
+						});
+					}
+				},
+				error: function() {}
+			});
+		})
+    </script>
+</body>
+
+</html>

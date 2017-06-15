@@ -428,6 +428,18 @@
                 }
             });
         }
+		
+		if (row.equi_type <> '9') {
+            actions.push({
+                label: '绑定设备',
+                onClick: function() {
+                    console.log(this, arguments);
+                    window.location.href = '../work/bind-device.html?' + $.param({
+						term_no: row.term_no
+					});
+                }
+            });
+        }
 
         actions.push({
             label: '终端参数',
