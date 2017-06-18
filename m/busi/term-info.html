@@ -440,7 +440,8 @@
                 });
             }
         });
-		if (row.proc_st == '8' && row.mchnt_cd != '' && row.equi_type != '9') {
+		if (row.proc_st == '8' && row.equi_type != '9' &&
+		     row.mchnt_cd != 'null') {
             actions.push({
                 label: '快速装机',
                 onClick: function() {
