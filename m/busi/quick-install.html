@@ -75,7 +75,7 @@
 			 $$.request(url, $.extend(query, data), function(data) {
 				 if (data.errcode == 0) {
 					 weui.toast('操作成功', function() {
-                        history.back();
+                        weui.page.back();
                      });
 				 } else {
 					weui.alert(data.errmsg, {
