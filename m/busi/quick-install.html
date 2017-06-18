@@ -58,7 +58,8 @@
 		
 		function scanDeviceNo(id) {
 			 wxScanQRCode({needResult: '1', 
-						   success: function(resultStr) {
+						   success: function(res) {
+							   			 var resultStr = res.resultStr;
 										 var index = resultStr.indexOf(",");
 										 if (index >= 0) {
 											 resultStr = resultStr.substr(index + 1);
