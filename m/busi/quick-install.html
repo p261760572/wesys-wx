@@ -52,7 +52,7 @@
 		wxConfig({
 			jsApiList: ['scanQRCode'],
 			ready: function() {
-				share()
+				
 			}
 		});
 		
@@ -69,7 +69,7 @@
 		function submitDetail() {
 			 var data = serializeDetailForm();
 
-			 var url = '/action/ms/term-info/bind-device';
+			 var url = '/action/ms/term-info/quick-install';
 
 			 $$.request(url, $.extend(query, data), function(data) {
 				 if (data.errcode == 0) {
