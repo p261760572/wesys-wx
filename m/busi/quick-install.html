@@ -13,8 +13,6 @@
 
 <body class="page_show">
         <form id="detail-fm">
-            <input type="hidden" name="rec_id">
-            <input type="hidden" name="term_no">
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
@@ -64,8 +62,8 @@
 										 if (index >= 0) {
 											 resultStr = resultStr.substr(index + 1);
 										 }
-										 $('#' + id).val(resultStr);
-									 }
+										 $('#' + id).val(resultStr);						   
+						   }
 						  });
 		}
 		
@@ -79,6 +77,10 @@
 					 weui.toast('操作成功', function() {
                         history.back();
                      });
+				 } else {
+					weui.alert(data.errmsg, {
+						title: '提示'
+					});
 				 }
 			 });
 		 }
