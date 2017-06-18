@@ -70,7 +70,7 @@
 		}
 		
 		function submitDetail() {
-			 var data = serializeDetailForm();
+			 var data = $('#detail-fm').serializeObject();
 
 			 var url = '/action/ms/term-info/quick-install';
 
