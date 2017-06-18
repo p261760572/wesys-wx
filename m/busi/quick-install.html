@@ -57,13 +57,15 @@
 		});
 		
 		function scanDeviceNo(id) {
-			 wxScanQRCode(['barCode'], function(resultStr) {
-				 var index = resultStr.indexOf(",");
-				 if (index >= 0) {
-					 resultStr = resultStr.substr(index + 1);
-				 }
-				 $('#' + id).val(resultStr);
-			 });
+			 wxScanQRCode({needResult: '1', 
+						   success: function(resultStr) {
+										 var index = resultStr.indexOf(",");
+										 if (index >= 0) {
+											 resultStr = resultStr.substr(index + 1);
+										 }
+										 $('#' + id).val(resultStr);
+									 }
+						  });
 		}
 		
 		function submitDetail() {
