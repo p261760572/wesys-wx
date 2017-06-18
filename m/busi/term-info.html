@@ -298,7 +298,7 @@
             <div class="weui-media-box__desc">地址：{{row.addr}}</div>
 			<div class="weui-media-box__desc">商户号:{{row.mchnt_cd}}</div>
 			<div class="weui-media-box__desc">终端号：{{row.term_id}}</div>
-			<div class="weui-media-box__desc">随机验证码：{{row.capacha}}</div>
+			<div class="weui-media-box__desc">随机验证码：{{row.captcha}}</div>
             <div class="weui-media-box__desc">审核备注：{{row.checked_reason}}</div>
             <ul class="weui-media-box__info">
                 <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
@@ -440,7 +440,7 @@
                 });
             }
         });
-		if (row.proc_st = '8' && row.mchnt_cd != '' && row.equi_type != '9') {
+		if (row.proc_st == '8' && row.mchnt_cd != '' && row.equi_type != '9') {
             actions.push({
                 label: '快速装机',
                 onClick: function() {
