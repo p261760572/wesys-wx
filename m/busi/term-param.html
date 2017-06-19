@@ -39,14 +39,14 @@
             <input type="hidden" name="proc_st">
             <div class="weui-cells__title">终端参数</div>
             <div class="weui-cells weui-cells_form">
-                <div class="weui-cell">
+                <!--div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">终端标识<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="term_no" required="" placeholder="请输入终端标识" readonly>
                     </div>
-                </div>
+                </div-->
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">门店名称<span class="required">*</span></label>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户参数<span class="required">*</span></label>
+                        <label class="weui-label">业务参数<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" name="mchnt_cd" required="" placeholder="请选择商户参数" id="mchnt-cd-select2" readonly>
@@ -210,8 +210,8 @@
     }).search();
 
     function onSearch(param, success, error) {
-        var queryParams = $.extend(param, query);
-        $$.request('/action/bm/term-param/search', queryParams, {
+        var queryParams = $.extend(query, param);
+        $$.request('/action/bm/term-param/search_move', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
@@ -391,9 +391,9 @@
                 valueField: 'mchnt_param_id',
                 textField: 'mchnt_name',
                 formatter: function(row) {
-                    return row.mchnt_cd + ' ' + row.mchnt_name;
+                    return row.acq_inst_nm + ' ' + row.busi_type_nm + ' ' + row.account_no;
                 },
-                url: '/action/bm/mchnt-param/search',
+                url: '/action/bm/mchnt-param/search_move',
                 queryParams: {
                     term_no: query.term_no
                 }
