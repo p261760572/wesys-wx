@@ -106,7 +106,7 @@
                         <input id="menu_id" name="menu_id" type="hidden" value="">
                         <input type="text" name="fun_set_name" id="fun_set_name">
                     </td>
-                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="datagrid:'#fun-set-dg'" style="padding:0 5px;" onclick="$$.search(this)">查询</a>
+                    <td><a href="javascript:void(0)" class="easyui-linkbutton" data-options="datagrid:'#fun-set-dg',url:$$.wrapUrl('/action/admin/menu-info/exist-fun-set')" style="padding:0 5px;" onclick="$$.search(this)">查询</a>
                     </td>
                 </tr>
             </table>
@@ -268,9 +268,12 @@
     function onDropMenu(target, source, point) {
         var targetNode = $('#tt').tree('getNode', target);
         var pointMap = {
-            'append': 'inner',
-            'top': 'prev',
-            'bottom': 'next'
+            // 'append': 'inner',
+            // 'top': 'prev',
+            // 'bottom': 'next'
+            'append': 'append',
+            'top': 'top',
+            'bottom': 'bottom'
         };
         var sendData = {};
         sendData.menu_id = source.id;

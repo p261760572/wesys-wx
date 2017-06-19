@@ -57,8 +57,10 @@
                         </td>
                         <td>
                             <select name="user_level">
-                                <option value="">-请选择-</option>
-                                <option value="0">普通</option>
+                                <option value="">--请选择--</option>
+                                <option value="0">普通用户</option>
+                                <option value="2">个人代理</option>
+                                <option value="3">员工</option>
                                 <option value="5">机构</option>
                             </select>
                         </td>
@@ -85,18 +87,18 @@
                 <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-group'" onClick="$('#data-role-dlg').dialog('center').dialog('open')">数据角色分配</a>
                 <a href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',datagrid:'#search-dg',url:'/action/admin/userinfo/batch-delete',onSuccess:$$.batchSubmitSuccess" onClick="$$.batchSubmit(this)">删除</a>
             </div>
-            <table id="search-dg" class="easyui-datagrid" title="用户信息列表" data-options="fitColumns:true,toolbar:'#search-dg-tb',idField:'userid',transition:userinfoTransition">
+            <table id="search-dg" class="easyui-datagrid" title="用户信息列表" data-options="fitColumns:false,toolbar:'#search-dg-tb',idField:'userid',transition:userinfoTransition">
                 <thead>
                     <tr>
-                        <th data-options="field:'chk',checkbox:true"></th>
-                        <th data-options="field:'userid'">用户ID</th>
-                        <th data-options="field:'login_name'">登录名</th>
-                        <th data-options="field:'mobile'">手机号</th>
-                        <th data-options="field:'nickname'">昵称</th>
-                        <th data-options="field:'inst_name'">机构名称</th>
-                        <th data-options="field:'user_level',formatter:formatUserLevel">用户级别</th>
-                        <th data-options="field:'fun_role_name'">功能角色</th>
-                        <th data-options="field:'data_role_name'">数据角色</th>
+                        <th data-options="width:100,field:'chk',checkbox:true"></th>
+                        <th data-options="width:100,field:'userid'">用户ID</th>
+                        <th data-options="width:100,field:'login_name'">登录名</th>
+                        <th data-options="width:100,field:'mobile'">手机号</th>
+                        <th data-options="width:100,field:'nickname'">昵称</th>
+                        <th data-options="width:100,field:'inst_name'">机构名称</th>
+                        <th data-options="width:100,field:'user_level',formatter:formatUserLevel">用户级别</th>
+                        <th data-options="width:100,field:'fun_role_name'">功能角色</th>
+                        <th data-options="width:100,field:'data_role_name'">数据角色</th>
                     </tr>
                 </thead>
             </table>
@@ -191,6 +193,27 @@
                                 <option value="1">启用</option>
                             </select>
                             <span class="required">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td>
+                            <label>用户类型：</label>
+                        </td>
+                        <td>
+                            <select name="user_level" class="easyui-validatebox" data-options="required:true">
+                            	<option value="">--请选择--</option>
+                                <option value="0">普通用户</option>
+                                <option value="2">个人代理</option>
+                                <option value="3">员工</option>
+                                <option value="5">机构</option>
+                            </select>
+                            <span class="required">*</span>
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            
                         </td>
                     </tr>
                     <tr class="invisible visible-view">
@@ -352,14 +375,20 @@
     function formatUserLevel(value) {
         var rows = [{
             value: '0',
-            text: '普通'
+            text: '普通用户'
+        },{
+            value: '2',
+            text: '个人代理'
+        },{
+            value: '3',
+            text: '员工'
         },{
             value: '5',
             text: '机构'
         },{
             value: '9',
             text: '管理员'
-        }]
+        }];
         return $$.formatField(rows, value);
     }
 
