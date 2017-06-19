@@ -76,7 +76,7 @@
 				 success: function(data) {
 					 if (data.errcode == 0) {
 						 weui.toast('操作成功', function() {
-							weui.page.back();
+							history.back();
 						 });
 					 } else {
 						weui.alert(data.errmsg, {
