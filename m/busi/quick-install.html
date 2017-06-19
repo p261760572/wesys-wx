@@ -72,16 +72,19 @@
 
 			 var url = '/action/ms/term-info/quick-install';
 
-			 $$.request(url, $.extend(query, data), function(data) {
-				 if (data.errcode == 0) {
-					 weui.toast('操作成功', function() {
-                        weui.page.back();
-                     });
-				 } else {
-					weui.alert(data.errmsg, {
-						title: '提示'
-					});
-				 }
+			 $$.request(url, $.extend(query, data), {
+				 success: function(data) {
+					 if (data.errcode == 0) {
+						 weui.toast('操作成功', function() {
+							weui.page.back();
+						 });
+					 } else {
+						weui.alert(data.errmsg, {
+							title: '提示'
+						});
+					 }
+				 },
+				 error: function() {}
 			 });
 		 }
 		
