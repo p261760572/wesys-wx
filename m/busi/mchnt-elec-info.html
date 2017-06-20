@@ -149,8 +149,12 @@
 		weui.page.show('#' + page);
 		current_elec_type = type;
 		alert(type + ',' + page);
-		if(type == '1') searchPage.search();
-		else if(type == '2') searchBusi.search();
+		if(type == '1') {
+			searchPage.search();
+		}
+		else if(type == '2') {
+			searchBusi.search();
+		}
 	}
 		
 	function param_elec_info(param, success, error) {
