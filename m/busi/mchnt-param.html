@@ -73,7 +73,7 @@
                         <input type="hidden" class="required" name="busi_type">
                     </div>
                 </div>
-                <div class="weui-cell">
+                <div class="weui-cell hide">
                     <div class="weui-cell__hd">
                         <label class="weui-label">商户号</label>
                     </div>
@@ -226,6 +226,14 @@
                             <option value="1">正常</option>
                             <option value="0">注销</option>
                         </select>
+                    </div>
+                </div>
+                <div class="weui-cell hide" id="term_num">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">新增终端数</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" name="term_num">
                     </div>
                 </div>
                 <!--div class="weui-cell">
@@ -561,13 +569,15 @@
     }
 
     function onClickAdd() {
-        operateType = 'create';
+        operateType = 'create_move';
         weui.page.show('#detail-page');
         weui.form.clear('#form');
         weui.form.load('#form', {
             mchnt_id: query.mchnt_id,
-            account_type: '1'
+            account_type: '1',
+			term_num: 1
         });
+		$('#term_num').removeClass('hide');
         $('#busi-type').change();
         $('#back-btn').show().siblings().show();
     }
@@ -577,7 +587,6 @@
             $('#add-btn').removeClass('hide').on('click', onClickAdd);
         }
         $('#submit-btn').on('click', onSubmit);
-
         //init component
         // $('#city-picker').on('focus', function() {
         //     $$.showPicker(this, districtData);

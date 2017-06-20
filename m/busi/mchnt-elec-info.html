@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div id="search-page" class="page page_show">
+    <div id="search-page" class="page">
         <div class="weui-search-bar">
             <a id="add-btn" href="javascript:" class="search-bar__btn">上传</a>
             <form class="weui-search-bar__form" method="post" action="">
@@ -56,35 +56,37 @@
             <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
         </div>
     </div>
-    <div id="preview-page" class="page">
-        <div class="weui-form-preview">
-            <div class="weui-form-preview__hd">
-                <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">商户电子资料</label>
+    <div id="preview-page" class="page page_show">
+       <div class="weui-cells">
+			<a class="weui-cell weui-cell_access searchbar-result__item" onclick="elec_info('1', 'search-page')">
+				<div class="weui-cell__bd weui-cell_primary">
+					<p>证件、信息类</p>
+				</div>
+				<div class="weui-cell__ft"></div>
+        	</a>
+      		<a class="weui-cell weui-cell_access searchbar-result__item" onclick="elec_info('2', 'busi-page')">
+				<div class="weui-cell__bd weui-cell_primary">
+					<p>业务、账务类</p>
+				</div>
+				<div class="weui-cell__ft"></div>
+			</a>
+       </div>
+    </div>
+    <div id="busi-page" class="page">
+        <div class="weui-search-bar hide">
+            <form class="weui-search-bar__form" method="post" action="">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" name="search" placeholder="搜索">
+                    <a href="javascript:" class="weui-icon-clear"></a>
                 </div>
-            </div>
-            <div class="weui-form-preview__bd">
-                <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">文件名</label>
-                    <span class="weui-form-preview__value" id="preview-mchnt_id"></span>
-                </div>
-                <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">服务端ID</label>
-                    <span class="weui-form-preview__value" id="preview-serverid"></span>
-                </div>
-                <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">影印件类型</label>
-                    <span class="weui-form-preview__value" id="preview-elec_info_type"></span>
-                </div>
-                <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">是否有效</label>
-                    <span class="weui-form-preview__value" id="preview-status"></span>
-                </div>
-            </div>
-            <div class="weui-form-preview__ft">
-                <a class="weui-form-preview__btn weui-form-preview__btn_default" href="javascript:" onclick="weui.page.back()">返回</a>
-                <!-- <button type="submit" class="weui-form-preview__btn weui-form-preview__btn_primary" href="javascript:">编辑</button> -->
-            </div>
+                <label class="weui-search-bar__label">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索商户电子资料</span> </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result">
         </div>
     </div>
     <script type="text/javascript" src="../js/lib/zepto.js"></script>
@@ -97,19 +99,21 @@
             </div>
             <div class="weui-cell__ft">{{row.created_time}}</div>
         </a>
-        <!-- <div class="weui-media-box weui-media-box_text">
-            <div class="weui-media-box__desc">证件类型：{{row.elec_info_type}}</div>
-            <div class="weui-media-box__desc">证件状态：{{row.status}}</div>
-            <div class="weui-media-box__desc">审核备注:{{row.checked_reason}}</div>
-            <ul class="weui-media-box__info">
-                <li class="weui-media-box__info__meta">创建时间：{{row.created_time}}</li>
-            </ul>
-        </div> -->
+        {{/each}}
+    </script>
+    <script id="result-busi" type="text/html">
+        {{each rows as row i}}
+        <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>{{row.acq_inst_nm}}</p>
+            </div>
+            <div class="weui-cell__ft">{{row.busi_type_nm}}</div>
+        </a>
         {{/each}}
     </script>
     <script>
     var query = $$.parseQueryString();
-    var operateType;
+    var operateType, current_elec_type;
     var searchPage = weui.searchPage('#search-page', {
         resultTpl: '#result-template',
         loader: onSearch,
@@ -121,10 +125,10 @@
             // weui.page.back();
             showActions(row);
         }
-    }).search();
+    });
 
     function onSearch(param, success, error) {
-        var queryParams = $.extend(param, query);
+        var queryParams = $.extend(query, param);
         $$.request('/action/bm/mchnt-elec-info/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -140,7 +144,78 @@
             }
         });
     }
+    
+	function elec_info(type, page) {
+		weui.page.show('#' + page);
+		current_elec_type = type;
+		if(type == '1') searchPage.search();
+		else if(type == '2') searchBusi.search();
+	}
+		
+	function param_elec_info(param, success, error) {
+        var queryParams = $.extend(query, param);
+        $$.request('/action/bm/mchnt-param-elec-info/search', queryParams, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {
+                error();
+            }
+        });
+    }
+		
+	var BusiElec = weui.searchPage('#search-page', {
+        resultTpl: '#result-template',
+        loader: param_elec_info,
+        onInput: function() {
+            console.log(this, arguments);
+        },
+        onClickItem: function(row) {
+            console.log(this, arguments);
+            // weui.page.back();
+            showActions(row);
+        }
+    });
+		
+	var searchBusi = weui.searchPage('#busi-page', {
+        resultTpl: '#result-busi',
+        loader: onSearchBusi,
+        onInput: function() {
+            console.log(this, arguments);
+        },
+        onClickItem: function(row) {
+            console.log(this, arguments);
+			$.extend(query, row);
+			weui.page.show('#search-page');
+			BusiElec.search();
+        }
+    });
 
+    function onSearchBusi(param, success, error) {
+        var queryParams = $.extend(query, param);
+        $$.request('/action/bm/mchnt-param/search', queryParams, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    success(data.rows);
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {
+                error();
+            }
+        });
+    }
+
+		
     function onPreview(param) {
         var gallery = weui.gallery($$.wrapUrl('/action/uploads/' + param.serverid), {
             deletable: false,
@@ -152,40 +227,9 @@
             }
         });
 
-        // weui.page.show('#preview-page');
-
-        // $$.request('/action/bm/mchnt-elec-info/view', param, {
-        //     success: function(data) {
-        //         if (data.errcode == 0) {
-        //             //data.data.equi_type_nm = $$.formatField($$.param['equi_type'], data.data.equi_type);
-        //             for (var name in data.data) {
-        //                 $('#preview-' + name).html(data.data[name]);
-        //             }
-        //         } else {
-        //             weui.alert(data.errmsg, {
-        //                 title: '提示'
-        //             });
-        //         }
-        //     },
-        //     error: function() {}
-        // });
     }
 
     function onView(param) {
-        // weui.page.show('#detail-page');
-
-        // $$.request('/action/bm/mchnt-elec-info/view', param, {
-        //     success: function(data) {
-        //         if (data.errcode == 0) {
-        //             weui.form.load('#form', data.data);
-        //         } else {
-        //             weui.alert(data.errmsg, {
-        //                 title: '提示'
-        //             });
-        //         }
-        //     },
-        //     error: function() {}
-        // });
 
     }
 
@@ -240,16 +284,6 @@
             });
         }
 
-        // actions.push({
-        //         label: '终端管理',
-        //         onClick: function() {
-        //             console.log(this, arguments);
-        //             window.location.href = 'term-info.html?' + $.param({
-        //                 mchnt_id: row.mchnt_id
-        //             });
-        //         }
-        //     });
-
         weui.actionSheet(actions, [{
             label: '取消',
             onClick: function() {
@@ -265,9 +299,11 @@
 
         var data = {
             mchnt_id: query.mchnt_id,
+			mchnt_param_id: query.mchnt_param_id,
             images: []
         };
 		var flag = true;
+		var url = current_elec_type == '1' ? '/action/bm/mchnt-elec-info/' : '/action/bm/mchnt-param-elec-info/create' || operateType;
         $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
 			if(uploaderData[id] == null) {
@@ -283,11 +319,13 @@
 			});
 			return;
 		}
-        $$.request('/action/bm/mchnt-elec-info/' + operateType, data, {
+        $$.request(url, data, {
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-                        searchPage.search();
+						if(current_elec_type == '1') searchPage.search();
+						else if(current_elec_type == '2') BusiElec.search();
+							
                         weui.page.back();
                     });
                 } else {
@@ -307,19 +345,9 @@
         weui.form.load('#form', {
             //mchnt_id: query.mchnt_id
         });
-        $('#back-btn').show().siblings().show();
-    }
-
-
-    var current_elec_info_type;
-    var uploaderData = [];
-    $(function() {
-        $('#add-btn').on('click', onClickAdd);
-        $('#submit-btn').on('click', onSubmit);
-
-        $$.request('/action/bm/parameter/list', {
+		$$.request('/action/bm/parameter/list', {
             elec_info_type: '1',
-			type: '1'
+			type: current_elec_type
         }, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -342,27 +370,16 @@
             }
         });
 
-        // //init component
-        // $('#city-picker').on('focus', function() {
-        //     $$.showPicker(this, districtData);
-        // });
+        $('#back-btn').show().siblings().show();
+    }
 
-        // $('#date-picker').on('focus', function() {
-        //     $$.showDatePicker(this);
-        // });
 
-        // $('#expand-inst-select2').on('focus', function() {
-        //     $$.showSelect2(this, {
-        //         url: '/action/bm/expand-inst/search'
-        //     });
-        // });
-
-        // $('#expand-select2').on('focus', function() {
-        //     $$.showSelect2(this, {
-        //         url: '/action/bm/expand/search'
-        //     });
-        // });
-
+    var current_elec_info_type;
+    var uploaderData = [];
+    $(function() {
+        $('#add-btn').on('click', onClickAdd);
+        $('#submit-btn').on('click', onSubmit);
+        
         var uploader = weui.ajaxUploader('#uploader', {
             url: $$.wrapUrl('/action/upload'),
             auto: true,
