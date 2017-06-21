@@ -521,8 +521,9 @@
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
             $('#addr').val(addr.street + addr.streetNumber);
         });
-		var local_area = $('input[name="province"]').val()+$('input[name="city"]').val()+$('input[name="district"]').val();
+		
 		$('#account-bank-branch-select2').on('focus', function() {
+			var local_area = $('input[name="province"]').val()+$('input[name="city"]').val()+$('input[name="district"]').val();
             $$.showSelect2(this, {
                 title: '搜索开户支行',
 				queryParams: {region_cd: local_area, account_no: $('input[name="account_no"]').val()},
