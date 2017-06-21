@@ -326,7 +326,6 @@
                     weui.toast('操作成功', function() {
 						if(current_elec_type == '1') searchPage();
 						else if(current_elec_type == '2') BusiElec();
-                        weui.page.back();
                     });
                 } else {
                     weui.alert(data.errmsg, {
