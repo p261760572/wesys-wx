@@ -105,9 +105,9 @@
         {{each rows as row i}}
         <a class="weui-cell weui-cell_access searchbar-result__item" href="javascript:;" data-index="{{total+i}}">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>{{row.acq_inst_nm}}</p>
+                <p>{{row.busi_type_nm}}</p>
             </div>
-            <div class="weui-cell__ft">{{row.busi_type_nm}}</div>
+            <div class="weui-cell__ft">{{row.acq_inst_nm}}</div>
         </a>
         {{/each}}
     </script>
@@ -148,7 +148,6 @@
 	function elec_info(type, page) {
 		weui.page.show('#' + page);
 		current_elec_type = type;
-		alert(type + ',' + page);
 		if(type == '1') {
 			searchPage.search();
 		}
