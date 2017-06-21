@@ -115,6 +115,7 @@
     var query = $$.parseQueryString();
     var operateType, current_elec_type;
     function searchPage() { 
+		weui.page.show('#search-page');
 		weui.searchPage('#search-page', {
 			resultTpl: '#result-template',
 			loader: onSearch,
@@ -166,6 +167,7 @@
     }
 		
 	function BusiElec() {
+		weui.page.show('#search-page');
 		weui.searchPage('#search-page', {
 			resultTpl: '#result-template',
 			loader: param_elec_info,
@@ -181,6 +183,7 @@
 	}
 		
 	function searchBusi() {
+		weui.page.show('#busi-page');
 		weui.searchPage('#busi-page', {
 			resultTpl: '#result-busi',
 			loader: onSearchBusi,
@@ -190,8 +193,7 @@
 			onClickItem: function(row) {
 				console.log(this, arguments);
 				$.extend(query, {mchnt_param_id: row.mchnt_param_id});
-				weui.page.show('#search-page');
-				BusiElec.search();
+				BusiElec();
 			}
 		}).search();
 	}
@@ -324,7 +326,6 @@
                     weui.toast('操作成功', function() {
 						if(current_elec_type == '1') searchPage();
 						else if(current_elec_type == '2') BusiElec();
-							
                         weui.page.back();
                     });
                 } else {
@@ -372,19 +373,16 @@
         $('#back-btn').show().siblings().show();
     }
 
-
     var current_elec_info_type;
     var uploaderData = [];
     $(function() {
         $('#add-btn').on('click', onClickAdd);
         $('#submit-btn').on('click', onSubmit);
         $('#elec_base').on('click', function () {
-			weui.page.show('#search_page');
 			current_elec_type = '1';
 			searchPage();
 		});
 		$('#elec_busi').on('click', function () {
-			weui.page.show('#busi_page');
 			current_elec_type = '2';
 			searchBusi();
 		});
