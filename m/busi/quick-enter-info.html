@@ -239,19 +239,19 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
+                        <label class="weui-label">银行账号<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input busi" type="number" name="account_no" required="" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
                         <label class="weui-label">开户支行<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="text" required="" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2" readonly>
                         <input class="busi" type="hidden" name="account_bank_branch_cd">
-                    </div>
-                </div>
-                <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">银行账号<span class="required">*</span></label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input busi" type="number" name="account_no" required="" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -521,13 +521,14 @@
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
             $('#addr').val(addr.street + addr.streetNumber);
         });
-		
+		var local_area = $('input[name="province"]').val()+$('input[name="city"]').val()+$('input[name="district"]').val();
 		$('#account-bank-branch-select2').on('focus', function() {
             $$.showSelect2(this, {
                 title: '搜索开户支行',
+				queryParams: {region_cd: local_area, account_no: $('input[name="account_no"]').val()},
                 valueField: 'bank_branch_cd',
                 textField: 'bank_branch_nm',
-                url: '/action/bm/bank-branch/search'
+                url: '/action/bm/bank-branch/search_move'
             }).search();
         });
 

@@ -114,18 +114,20 @@
     <script>
     var query = $$.parseQueryString();
     var operateType, current_elec_type;
-    var searchPage = weui.searchPage('#search-page', {
-        resultTpl: '#result-template',
-        loader: onSearch,
-        onInput: function() {
-            console.log(this, arguments);
-        },
-        onClickItem: function(row) {
-            console.log(this, arguments);
-            // weui.page.back();
-            showActions(row);
-        }
-    });
+    function searchPage() { 
+		weui.searchPage('#search-page', {
+			resultTpl: '#result-template',
+			loader: onSearch,
+			onInput: function() {
+				console.log(this, arguments);
+			},
+			onClickItem: function(row) {
+				console.log(this, arguments);
+				// weui.page.back();
+				showActions(row);
+			}
+		}).search();
+	};
 
     function onSearch(param, success, error) {
         var queryParams = $.extend({}, query, param);
@@ -163,32 +165,36 @@
         });
     }
 		
-	var BusiElec = weui.searchPage('#search-page', {
-        resultTpl: '#result-template',
-        loader: param_elec_info,
-        onInput: function() {
-            console.log(this, arguments);
-        },
-        onClickItem: function(row) {
-            console.log(this, arguments);
-            // weui.page.back();
-            showActions(row);
-        }
-    });
+	function BusiElec() {
+		weui.searchPage('#search-page', {
+			resultTpl: '#result-template',
+			loader: param_elec_info,
+			onInput: function() {
+				console.log(this, arguments);
+			},
+			onClickItem: function(row) {
+				console.log(this, arguments);
+				// weui.page.back();
+				showActions(row);
+			}
+		}).search();
+	}
 		
-	var searchBusi = weui.searchPage('#busi-page', {
-        resultTpl: '#result-busi',
-        loader: onSearchBusi,
-        onInput: function() {
-            console.log(this, arguments);
-        },
-        onClickItem: function(row) {
-            console.log(this, arguments);
-			$.extend(query, {mchnt_param_id: row.mchnt_param_id});
-			weui.page.show('#search-page');
-			BusiElec.search();
-        }
-    });
+	function searchBusi() {
+		weui.searchPage('#busi-page', {
+			resultTpl: '#result-busi',
+			loader: onSearchBusi,
+			onInput: function() {
+				console.log(this, arguments);
+			},
+			onClickItem: function(row) {
+				console.log(this, arguments);
+				$.extend(query, {mchnt_param_id: row.mchnt_param_id});
+				weui.page.show('#search-page');
+				BusiElec.search();
+			}
+		}).search();
+	}
 
     function onSearchBusi(param, success, error) {
         var queryParams = $.extend({}, query, param);
@@ -316,8 +322,8 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-						if(current_elec_type == '1') searchPage.search();
-						else if(current_elec_type == '2') BusiElec.search();
+						if(current_elec_type == '1') searchPage();
+						else if(current_elec_type == '2') BusiElec();
 							
                         weui.page.back();
                     });
@@ -375,12 +381,12 @@
         $('#elec_base').on('click', function () {
 			weui.page.show('#search_page');
 			current_elec_type = '1';
-			searchPage.search();
+			searchPage();
 		});
 		$('#elec_busi').on('click', function () {
 			weui.page.show('#busi_page');
 			current_elec_type = '2';
-			searchBusi.search();
+			searchBusi();
 		});
         var uploader = weui.ajaxUploader('#uploader', {
             url: $$.wrapUrl('/action/upload'),
