@@ -125,7 +125,7 @@
             // weui.page.back();
             showActions(row);
         }
-    });
+    }).search();
 
     function onSearch(param, success, error) {
         var queryParams = $.extend({}, query, param);
@@ -186,7 +186,7 @@
             // weui.page.back();
             showActions(row);
         }
-    });
+    }).search();
 		
 	var searchBusi = weui.searchPage('#busi-page', {
         resultTpl: '#result-busi',
