@@ -419,7 +419,7 @@
     }).search();
 
     function onSearch(param, success, error) {
-        var queryParams = $.extend(query, param);
+        var queryParams = $.extend({}, query, param);
         $$.request('/action/bm/mchnt-param/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -550,7 +550,7 @@
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
-		param = $.extend(query, param);
+		param = $.extend({}, query, param);
         $$.request('/action/bm/mchnt-param/' + operateType, param, {
             success: function(data) {
                 if (data.errcode == 0) {

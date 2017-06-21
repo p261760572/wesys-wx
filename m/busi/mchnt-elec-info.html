@@ -128,7 +128,7 @@
     });
 
     function onSearch(param, success, error) {
-        var queryParams = $.extend(query, param);
+        var queryParams = $.extend({}, query, param);
         $$.request('/action/bm/mchnt-elec-info/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -158,7 +158,7 @@
 	}
 		
 	function param_elec_info(param, success, error) {
-        var queryParams = $.extend(query, param);
+        var queryParams = $.extend({}, query, param);
         $$.request('/action/bm/mchnt-param-elec-info/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -196,14 +196,14 @@
         },
         onClickItem: function(row) {
             console.log(this, arguments);
-			$.extend(query, row);
+			$.extend(query, {mchnt_param_id: row.mchnt_param_id});
 			weui.page.show('#search-page');
 			BusiElec.search();
         }
     });
 
     function onSearchBusi(param, success, error) {
-        var queryParams = $.extend(query, param);
+        var queryParams = $.extend({}, query, param);
         $$.request('/action/bm/mchnt-param/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {
@@ -308,7 +308,7 @@
             images: []
         };
 		var flag = true;
-		var url = current_elec_type == '1' ? '/action/bm/mchnt-elec-info/' : '/action/bm/mchnt-param-elec-info/create' || operateType;
+		var url = (current_elec_type == '1' ? '/action/bm/mchnt-elec-info/' : '/action/bm/mchnt-param-elec-info/') + operateType;
         $('.weui-uploader').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
 			if(uploaderData[id] == null) {
