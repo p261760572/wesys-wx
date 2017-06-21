@@ -58,13 +58,13 @@
     </div>
     <div id="preview-page" class="page page_show">
        <div class="weui-cells">
-			<a class="weui-cell weui-cell_access searchbar-result__item" onclick="elec_info('1', 'search-page')">
+			<a class="weui-cell weui-cell_access searchbar-result__item" id="elec_base">
 				<div class="weui-cell__bd weui-cell_primary">
 					<p>证件、信息类</p>
 				</div>
 				<div class="weui-cell__ft"></div>
         	</a>
-      		<a class="weui-cell weui-cell_access searchbar-result__item" onclick="elec_info('2', 'busi-page')">
+      		<a class="weui-cell weui-cell_access searchbar-result__item" id="elec_busi">
 				<div class="weui-cell__bd weui-cell_primary">
 					<p>业务、账务类</p>
 				</div>
@@ -125,7 +125,7 @@
             // weui.page.back();
             showActions(row);
         }
-    }).search();
+    });
 
     function onSearch(param, success, error) {
         var queryParams = $.extend({}, query, param);
@@ -144,17 +144,6 @@
             }
         });
     }
-    
-	function elec_info(type, page) {
-		weui.page.show('#' + page);
-		current_elec_type = type;
-		if(type == '1') {
-			searchPage.search();
-		}
-		else if(type == '2') {
-			searchBusi.search();
-		}
-	}
 		
 	function param_elec_info(param, success, error) {
         var queryParams = $.extend({}, query, param);
@@ -185,7 +174,7 @@
             // weui.page.back();
             showActions(row);
         }
-    }).search();
+    });
 		
 	var searchBusi = weui.searchPage('#busi-page', {
         resultTpl: '#result-busi',
@@ -383,7 +372,16 @@
     $(function() {
         $('#add-btn').on('click', onClickAdd);
         $('#submit-btn').on('click', onSubmit);
-        
+        $('#elec_base').on('click', function () {
+			weui.page.show('#search_page');
+			current_elec_type = '1';
+			searchPage.search();
+		});
+		$('#elec_busi').on('click', function () {
+			weui.page.show('#busi_page');
+			current_elec_type = '2';
+			searchBusi.search();
+		});
         var uploader = weui.ajaxUploader('#uploader', {
             url: $$.wrapUrl('/action/upload'),
             auto: true,
