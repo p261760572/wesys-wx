@@ -274,7 +274,6 @@
 	
 	var save_base = $$.getData('save_base');
 	if(save_base) {
-		alert($.param(save_base));
 		weui.form.load('#form', save_base);
 	}
 		
@@ -291,13 +290,15 @@
 						var row = data.rows[i];
 						if (row.hide == '1') {
 							$('[name="' + row.name + '"]').closest('.weui-cell').addClass('hide');
+						} else if (row.hide == '0') {
+							$('[name="' + row.name + '"]').closest('.weui-cell').removeClass('hide');
 						}
 						if (row.required == '1') {
 							$('[name="' + row.name + '"]').addClass('required');
 						} else if(row.required == '0') {
 							$('[name="' + row.name + '"]').removeClass('required');
 						}
-						if (row.default_val && row.default_val != null) {
+						if (row.default_value && row.default_value != null) {
 							$('[name="' + row.name + '"]').val(row.default_value);
 						}
 					}
