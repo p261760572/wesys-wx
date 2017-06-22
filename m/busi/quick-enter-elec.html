@@ -79,7 +79,7 @@
     }).search();
 
     function onSearch(param, success, error) {
-        var queryParams = $.extend(query, param);
+        var queryParams = $.extend({}, query, param);
         $$.request('/action/bm/elec-info-enter/search', queryParams, {
             success: function(data) {
                 if (data.errcode == 0) {

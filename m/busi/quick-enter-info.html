@@ -13,52 +13,28 @@
 </head>
 
 <body>
-    <div id="page1" class="page">
-        <div class="weui-search-bar hide">
-            <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
-            <form class="weui-search-bar__form" method="post" action="">
-                <div class="weui-search-bar__box">
-                    <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" name="search" placeholder="" readonly>
-                    <a href="javascript:" class="weui-icon-clear"></a>
-                </div>
-                <label class="weui-search-bar__label">
-                    <!--i class="weui-icon-search"></i-->
-                    <span>业务类型</span> </label>
-            </form>
-            <a href="javascript:" class="weui-search-bar__cancel-btn">取消</a>
-        </div>
-		<div class="weui-cells__title">产品列表</div>
-        <div class="weui-cells searchbar-result">
-            
-        </div>
-    </div>
-    
-    <div id="page2" class="page page_show">
-        <div class="weui-search-bar hide">
-            <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
-            <form class="weui-search-bar__form" method="post" action="">
-                <div class="weui-search-bar__box">
-                    <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" name="search" placeholder="" readonly>
-                    <a href="javascript:" class="weui-icon-clear"></a>
-                </div>
-                <label class="weui-search-bar__label">
-                    <!--i class="weui-icon-search"></i-->
-                    <span>收单机构</span> </label>
-            </form>
-            <a href="javascript:" class="weui-search-bar__cancel-btn hide">取消</a>
-        </div>
-        <div class="weui-cells__title">机构入网列表</div>
-        <div class="weui-cells searchbar-result">
-            
-        </div>
-    </div>
-    
-    <div id="detail-page" class="page">
+    <div id="detail-page" class="page page_show">
         <form id="form">
-            <div class="weui-cells__title">商户基本信息<!--a onclick="save_data();" class="weui-btn weui-btn_mini weui-btn_primary" style="margin-left: 160px;">暂存</a--></div>
+            <div class="weui-cells__title">商户入网<a onclick="save_data();" style="color:greenyellow; float:right">暂存</a></div>
             <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">收单机构<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2">
+                        <input type="hidden" class="required busi" name="acq_inst_id">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">业务类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
+                        <input type="hidden" class="required busi" name="busi_type">
+                    </div>
+                </div>
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
                         <label class="weui-label">商户类型<span class="required">*</span></label>
@@ -293,49 +269,47 @@
     <script type="text/javascript" src="../js/lib/weuijs/weuijs.js"></script>
     <script type="text/javascript" src="../js/district.js"></script>
     <script type="text/javascript" src="../js/param.js"></script>
-    <script id="list-template" type="text/html">
-        {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:5px;font-weight:bold;font-size:24px;" align="center">
-            <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.busi_type_nm}}
-                </p>
-            </div>
-            <div class="weui-cell__ft"></div>
-        </div>
-        {{/each}}
-    </script>
-    <script id="acq-template" type="text/html">
-        {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:80px;background-color:#22efff;margin-bottom:5px;font-weight:bold;font-size:24px;" align="center">
-            <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.acq_inst_nm}}
-                </p>
-            </div>
-            <div class="weui-cell__ft"></div>
-        </div>
-        {{/each}}
-    </script>
     <script>
 	var query = $$.parseQueryString();
-	var AcqInstid, BusiType;
 	
 	var save_base = $$.getData('save_base');
 	if(save_base) {
 		weui.form.load('#form', save_base);
-		AcqInstid = save_base.acq_inst_id;
-		BusiType = save_base.busi_type;
 	}
-	history.pushState(null, null, document.URL);
-	window.addEventListener('popstate', function () {
-		history.pushState(null, null, document.URL);
-		if($('#page2').hasClass('page_show'))
-			window.location.href = '../index.html';
-		else {
-			weui.page.back();
-		}
-	});
+		
+	function initDom() {
+		var AcqInstid = $('input[name="acq_inst_id"]').val();
+		var BusiType = $('input[name="busi_type"]').val();
+		$$.request('/action/bm/acq-busi-dom/search', {
+			acq_inst_id: AcqInstid,
+			busi_type: BusiType
+		}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+					for(var i = 0; i<data.rows.length; i++) {
+						var row = data.rows[i];
+						if (row.hide == '1') {
+							$('[name="' + row.name + '"]').closest('.weui-cell').addClass('hide');
+						}
+						if (row.required == '1') {
+							$('[name="' + row.name + '"]').addClass('required');
+						} else if(row.required == '0') {
+							$('[name="' + row.name + '"]').removeClass('required');
+						}
+						if (row.default_val && row.default_val != '') {
+							$('[name="' + row.name + '"]').val(row.default_val);
+						}
+					}
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+	}
+		
 	function serializeForm(form) {
 		var data = {}, base = {}, busi = {};
 		$(form).find('.base').each(function() {
@@ -346,13 +320,12 @@
 		});
 		base.mchnt_name = base.mchnt_abbr;
 		base.shop_name = base.mchnt_abbr;
-		busi.acq_inst_id = AcqInstid;
-		busi.busi_type = BusiType;
 		busi.mchnt_name = base.mchnt_abbr;
 		data.base = base;
 		data.busi = busi;
 		return data;
 	}
+		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
 		var param = serializeForm('#form');
@@ -361,12 +334,13 @@
             success: function(data) {
                 if (data.errcode == 0) {
 					var data = {
-						acq_inst_id: AcqInstid,
-						busi_type: BusiType,
+						acq_inst_id: param.busi.acq_inst_id,
+						busi_type: param.busi.busi_type,
 						mchnt_id: data.mchnt_id,
 						mchnt_param_id: data.mchnt_param_id
 					};
 					window.location.href = 'quick-enter-elec.html?' + $.param(data);
+					$$.setData('save_base', '');
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -379,8 +353,8 @@
 
 	function save_data() {
 		var param = serializeForm('#form');
-		
 		$$.setData('save_base', $.extend({}, query, param));
+		weui.alert('保存成功!', {title: '提示'});
 	}
 		
     function setPickerValues(target, items, arr) {
@@ -433,62 +407,6 @@
         });
     }
 	
-	function SearchAcq(param, success, error) {
-		$$.request('/action/bm/acq-inst/search', {}, {
-			success: function(data) {
-				if (data.errcode == 0) {
-					success(data.rows);
-				} else {
-					weui.alert(data.errmsg, {
-						title: '提示'
-					});
-				}
-			},
-			error: error()
-		})
-	}
-		
-	function SearchBusi(param, success, error) {
-		console.log(arguments);
-		
-		$$.request('/action/bm/acq-inst-busi/list', {
-			acq_inst_id: AcqInstid
-		}, {
-			success: function(data) {
-				if (data.errcode == 0) {
-					success(data.rows);
-				} else {
-					weui.alert(data.errmsg, {
-						title: '提示'
-					});
-				}
-			},
-			error: error
-		});
-	}
-		
-	var searchBusi = weui.searchPage('#page1', {
-		resultTpl: '#list-template',
-		loader: SearchBusi,
-		onInput: function() {
-			console.log(arguments);
-		},
-		onClickItem: function(row) {
-			BusiType = row.busi_type;
-			weui.page.show('#detail-page');
-		}
-	});
-		
-	weui.searchPage('#page2', {
-		resultTpl: '#acq-template',
-		loader: SearchAcq,
-		onClickItem: function(row) {
-			weui.page.show('#page1');
-			AcqInstid = row.acq_inst_id;
-			searchBusi.search();
-        }
-    }).search();
-	
 	function getUserinfo() {
 		$$.request('/action/user/view', {}, {
             success: function(data) {
@@ -532,6 +450,35 @@
 		getLocation(function(addr) {
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
             $('#addr').val(addr.street + addr.streetNumber);
+        });
+		
+		$('#busi-type').on('change', function() {
+            initDom();
+        });
+
+        $('#acq-inst-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索收单机构',
+                valueField: 'acq_inst_id',
+                textField: 'acq_inst_nm',
+                url: '/action/bm/acq-inst/search'
+            }).search();
+        });
+		
+		$('#acq-inst-select2').on('change', function() {
+			$('#busi-type').val('');
+			$('input[name="busi_type"]').val('');
+        });
+		
+		$('#busi-type').on('focus', function() {
+			var acq_inst = $('input[name="acq_inst_id"]').val();
+            $$.showSelect2(this, {
+                title: '',
+                valueField: 'busi_type',
+                textField: 'busi_type_nm',
+				url: '/action/bm/acq-inst-busi/list_move',
+				queryParams: {acq_inst_id: acq_inst}
+            }).search();
         });
 		
 		$('#account-bank-branch-select2').on('focus', function() {
