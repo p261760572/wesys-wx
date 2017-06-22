@@ -34,7 +34,7 @@
         </div>
     </div>
     
-    <div id="page2" class="page page_show">
+    <div id="page2" class="page">
         <div class="weui-search-bar hide">
             <a href="javascript:" class="search-bar__btn" onclick="back()">返回</a>
             <form class="weui-search-bar__form" method="post" action="">
@@ -55,9 +55,9 @@
         </div>
     </div>
     
-    <div id="detail-page" class="page">
+    <div id="detail-page" class="page_show">
         <form id="form">
-            <div class="weui-cells__title">商户基本信息</div>
+            <div class="weui-cells__title">商户基本信息<a onclick="save_data();" class="weui-btn weui-btn_mini weui-btn_primary" style="margin-left: 60px">暂存</a></div>
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
                     <div class="weui-cell__hd">
@@ -321,6 +321,12 @@
 	var query = $$.parseQueryString();
 	var AcqInstid, BusiType;
 	
+	var save_base = $$.getData('save_base');
+	if(save_base) {
+		weui.form.load('#form', save_base);
+		AcqInstid = save_base.acq_inst_id;
+		BusiType = save_base.busi_type;
+	}
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
 		history.pushState(null, null, document.URL);
@@ -351,7 +357,7 @@
         if (!weui.form.validate('#form', $$.rules)) return;
 		var param = serializeForm('#form');
 
-        $$.request('/action/bm/mchnt-busi/save-info', $.extend(query, param), {
+        $$.request('/action/bm/mchnt-busi/save-info', $.extend({}, query, param), {
             success: function(data) {
                 if (data.errcode == 0) {
 					var data = {
@@ -371,6 +377,12 @@
         });
     }
 
+	function save_data() {
+		var param = serializeForm('#form');
+		
+		$$.setData('save_base', $.extend({}, query, param));
+	}
+		
     function setPickerValues(target, items, arr) {
         var result = [];
         
