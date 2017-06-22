@@ -31,7 +31,7 @@
                         <label class="weui-label">业务类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="busi_type_nm" required="" missingTips="请选择业务类型" id="busi-type">
+                        <input class="weui-input" type="text" name="busi_type_nm" required="" placeholder="请选择业务类型" id="busi-type">
                         <input type="hidden" class="required busi" name="busi_type">
                     </div>
                 </div>
@@ -274,6 +274,7 @@
 	
 	var save_base = $$.getData('save_base');
 	if(save_base) {
+		alert($.param(save_base));
 		weui.form.load('#form', save_base);
 	}
 		
@@ -296,8 +297,8 @@
 						} else if(row.required == '0') {
 							$('[name="' + row.name + '"]').removeClass('required');
 						}
-						if (row.default_val && row.default_val != '') {
-							$('[name="' + row.name + '"]').val(row.default_val);
+						if (row.default_val && row.default_val != null) {
+							$('[name="' + row.name + '"]').val(row.default_value);
 						}
 					}
                 } else {
