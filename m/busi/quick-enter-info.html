@@ -295,7 +295,7 @@
 		
 	function initDom() {
 		var AcqInstid = $('#acq_inst_id').val();
-		var BusiType = $('#busi-type').val();
+		var BusiType = $('input[name="busi_type"]').val();
 		$$.request('/action/bm/acq-busi-dom/search', {
 			acq_inst_id: AcqInstid,
 			busi_type: BusiType
