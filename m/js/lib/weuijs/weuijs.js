@@ -2071,7 +2071,7 @@ $.fn.scroll = function(options) {
 (function() {
 
     var searchTpl = '<div class="select2"><div class="weui-search-bar"><a href="javascript:" class="search-bar__btn select2__back-btn">返回</a><form class="weui-search-bar__form" method="post" action=""><div class="weui-search-bar__box"><i class="weui-icon-search"></i><input type="search" class="weui-search-bar__input" name="q" placeholder="{{title}}"><a href="javascript:" class="weui-icon-clear"></a></div><label class="weui-search-bar__label"><i class="weui-icon-search"></i><span>{{title}}</span> </label></form><a href="javascript:" class="weui-search-bar__cancel-btn">取消</a></div><div class="weui-cells searchbar-result"></div></div>';
-    var resultTpl = '{{each rows as row i}}<div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}"><div class="weui-cell__bd weui-cell_primary"><p>{{formatter(row)}}</p></div><div class="weui-cell__ft"></div></div>{{/each}}';
+    var resultTpl = '{{each rows as row i}}<div class="weui-cell searchbar-result__item" data-index="{{total+i}}"><div class="weui-cell__bd weui-cell_primary"><p>{{formatter(row)}}</p></div><div class="weui-cell__ft"></div></div>{{/each}}';
 
     var _sington;
 

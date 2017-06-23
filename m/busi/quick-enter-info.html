@@ -17,21 +17,22 @@
         <form id="form">
             <div class="weui-cells__title">商户入网<a onclick="save_data();" style="color:greenyellow; float:right">暂存</a></div>
             <div class="weui-cells weui-cells_form">
-                <div class="weui-cell">
+                <!--div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">收单机构<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2">
+                        <input class="weui-input" type="text" name="acq_inst_nm" required="" placeholder="请选择收单机构" id="acq-inst-select2" readonly>
                         <input type="hidden" class="required busi" name="acq_inst_id">
                     </div>
-                </div>
+                </div-->
+                <input type="hidden" class="required busi" name="acq_inst_id" id="acq_inst_id">
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">业务类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="busi_type_nm" required="" placeholder="请选择业务类型" id="busi-type">
+                        <input class="weui-input" type="text" name="busi_type_nm" required="" placeholder="请选择业务类型" id="busi-type" readonly>
                         <input type="hidden" class="required busi" name="busi_type">
                     </div>
                 </div>
@@ -271,15 +272,29 @@
     <script type="text/javascript" src="../js/param.js"></script>
     <script>
 	var query = $$.parseQueryString();
-	
 	var save_base = $$.getData('save_base');
 	if(save_base) {
 		weui.form.load('#form', save_base);
 	}
 		
+	var searchBusi = $$.request('/action/bm/acq-inst-busi/list_move', {}, {
+		success: function(data) {
+			if (data.errcode == 0) {
+				$('#busi-type').val(data.rows[0].busi_type_nm).next().val(data.rows[0].busi_type);
+				$('#busi-type').change();
+				$('#acq_inst_id').val(data.rows[0].acq_inst_id);
+			} else {
+				weui.alert(data.errmsg, {
+					title: '提示'
+				});
+			}
+		}
+	});
+	
+		
 	function initDom() {
-		var AcqInstid = $('input[name="acq_inst_id"]').val();
-		var BusiType = $('input[name="busi_type"]').val();
+		var AcqInstid = $('#acq_inst_id').val();
+		var BusiType = $('#busi-type').val();
 		$$.request('/action/bm/acq-busi-dom/search', {
 			acq_inst_id: AcqInstid,
 			busi_type: BusiType
@@ -298,8 +313,9 @@
 						} else if(row.required == '0') {
 							$('[name="' + row.name + '"]').removeClass('required');
 						}
-						if (row.default_value && row.default_value != null) {
-							$('[name="' + row.name + '"]').val(row.default_value);
+						if (row.default_value) {
+							var value = row.default_value == null? '':row.default_value;
+							$('[name="' + row.name + '"]').val(value);
 						}
 					}
                 } else {
@@ -473,13 +489,17 @@
         });
 		
 		$('#busi-type').on('focus', function() {
-			var acq_inst = $('input[name="acq_inst_id"]').val();
+			//var acq_inst = $('input[name="acq_inst_id"]').val();
             $$.showSelect2(this, {
                 title: '',
                 valueField: 'busi_type',
                 textField: 'busi_type_nm',
 				url: '/action/bm/acq-inst-busi/list_move',
-				queryParams: {acq_inst_id: acq_inst}
+				formatter: function(row){
+					$('#acq_inst_id').val(row.acq_inst_id);
+					return row.busi_type_nm;
+				}
+			//	queryParams: {acq_inst_id: acq_inst}
             }).search();
         });
 		
