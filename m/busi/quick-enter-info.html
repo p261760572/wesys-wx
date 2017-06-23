@@ -314,7 +314,6 @@
 						} else if(row.required == '0') {
 							$('[name="' + row.name + '"]').removeClass('required');
 						}
-						
 						var value = row.default_value == null? '':row.default_value;
 						$('[name="' + row.name + '"]').val(value);
 					}
