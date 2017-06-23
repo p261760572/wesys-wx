@@ -283,6 +283,7 @@
 				$('#busi-type').val(data.rows[0].busi_type_nm).next().val(data.rows[0].busi_type);
 				$('#busi-type').change();
 				$('#acq_inst_id').val(data.rows[0].acq_inst_id);
+				initDom();
 			} else {
 				weui.alert(data.errmsg, {
 					title: '提示'
