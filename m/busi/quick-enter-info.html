@@ -466,7 +466,7 @@
 		
 		getLocation(function(addr) {
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
-            $('#addr').val(addr.street + addr.streetNumber);
+            $('#addr').val(addr.province + addr.city + addr.district + addr.street + addr.streetNumber);
         });
 		
 		$('#busi-type').on('change', function() {
