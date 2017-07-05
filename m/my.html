@@ -235,8 +235,7 @@
     }
 	
 	function searchWithdraw(param, success, error) {
-		var queryParams = $.extend(query, param);
-        $$.request('/action/bm/account/withdraw-history', queryParams, {
+        $$.request('/action/bm/account/withdraw-history', {}, {
             success: function(data) {
                 if (data.errcode == 0) {
                     success(data.rows);
@@ -250,16 +249,18 @@
         });
     }
 	
-	var searchWithdrawList = weui.searchPage('#withdraw-list', {
-		resultTpl: '#withdraw-his-templ',
-		loader: searchWithdraw,
-		onInput: function() {
-			console.log(this, arguments);
-		},
-		onClickItem: function(row) {
-			console.log(this, arguments);
-		}
-	});
+	function searchWithdrawList() {
+		weui.searchPage('#withdraw-list', {
+			resultTpl: '#withdraw-his-templ',
+			loader: searchWithdraw,
+			onInput: function() {
+				console.log(this, arguments);
+			},
+			onClickItem: function(row) {
+				console.log(this, arguments);
+			}
+		}).search();
+	}
 		
     var curent_user;
     $(function() {
@@ -290,7 +291,7 @@
 			}
 							
         });
-		$('#withdraw_his').on('click', searchWithdrawList.search());
+		$('#withdraw_his').on('click', searchWithdrawList);
     });
     </script>
 </body>
