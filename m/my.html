@@ -248,19 +248,6 @@
             }
         });
     }
-	
-	function searchWithdrawList() {
-		weui.searchPage('#withdraw-list', {
-			resultTpl: '#withdraw-his-templ',
-			loader: searchWithdraw,
-			onInput: function() {
-				console.log(this, arguments);
-			},
-			onClickItem: function(row) {
-				console.log(this, arguments);
-			}
-		}).search();
-	}
 		
     var curent_user;
     $(function() {
@@ -291,7 +278,18 @@
 			}
 							
         });
-		$('#withdraw_his').on('click', searchWithdrawList);
+		$('#withdraw_his').on('click', function(){
+			weui.searchPage('#withdraw-list', {
+				resultTpl: '#withdraw-his-templ',
+				loader: searchWithdraw,
+				onInput: function() {
+					console.log(this, arguments);
+				},
+				onClickItem: function(row) {
+					console.log(this, arguments);
+				}
+			});
+		});
     });
     </script>
 </body>
