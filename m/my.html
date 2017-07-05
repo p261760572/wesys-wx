@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="weui-tab page page_show">
+    <div class="weui-tab page page_show" id="my_page">
         <div class="weui-panel weui-panel_access">
             <!--div class="weui-panel_bd">
                 <a href="javascript:;" class="weui-media-box weui-media-box_appmsg weui-cell_access" onclick="weui.page.show('#nickname-page')">
@@ -161,7 +161,6 @@
     <script type="text/javascript" src="js/wx.js"></script>
     <script id="withdraw-his-templ" type="text/html">
         {{each rows as row i}}
-        <br>
         <div class="weui-form-preview">
             <div class="weui-form-preview__hd">
                 <div class="weui-form-preview__item">
@@ -182,18 +181,34 @@
                     <label class="weui-form-preview__label">系统交易号</label>
                     <span class="weui-form-preview__value">{{row.trans_no}}</span>
                 </div>
+				<div class="weui-form-preview__item">
+                    <label class="weui-form-preview__label">资金状态</label>
+                    <span class="weui-form-preview__value">{{row.settle_flag}}</span>
+                </div>
             </div>
         </div>
+        <br>
         {{/each}}
     </script>
     <script type="text/javascript">
+	var current_page = 'my_page';
     wxConfig({
         jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone'],
         ready: function() {
             share()
         }
     });
-
+	history.pushState(null, null, document.URL);
+	window.addEventListener('popstate', function () {
+		if(current_page == 'withdraw-list') {
+			weui.page.show('#my_page');
+			current_page = 'my_page';
+			history.pushState(null, null, document.URL);
+		} else if(current_page == 'my_page') {
+			history.back();
+		}
+	});
+		
     function share() {
         if (curent_user) {
             wxOnMenuShare({
@@ -249,18 +264,16 @@
         });
     }
 	
-	var WithdrawList = function() {
-		weui.searchPage('#withdraw-list', {
-			resultTpl: '#withdraw-his-templ',
-			loader: searchWithdraw,
-			onInput: function() {
-				console.log(this, arguments);
-			},
-			onClickItem: function(row) {
-				console.log(this, arguments);
-			}
-		});
-	}
+	var WithdrawList = weui.searchPage('#withdraw-list', {
+		resultTpl: '#withdraw-his-templ',
+		loader: searchWithdraw,
+		onInput: function() {
+			console.log(this, arguments);
+		},
+		onClickItem: function(row) {
+			console.log(this, arguments);
+		}
+	});
     var curent_user;
     $(function() {
 		$('#nickname-submit-btn').on('click', onNicknameSubmit);
@@ -291,6 +304,8 @@
 							
         });
 		$('#withdraw_his').on('click', function(){
+			weui.page.show('#withdraw-list');
+			current_page = 'withdraw-list';
 			WithdrawList.search();
 		});
     });

@@ -934,9 +934,9 @@
             if (hasMore == true) {
                 options.pageNumber++;
                 $loadmoreWrap.find('.weui-footer').show();
-            } else {
+            } /*else {
                 $loadmoreWrap.find('.weui-loadmore_line').show();
-            }
+            }*/
         }
 
         $parent.append($loadmoreWrap);
