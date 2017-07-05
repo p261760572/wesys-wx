@@ -249,7 +249,7 @@
         });
     }
 	
-	var searchWithdraw = function() {
+	var WithdrawList = function() {
 		weui.searchPage('#withdraw-list', {
 			resultTpl: '#withdraw-his-templ',
 			loader: searchWithdraw,
@@ -291,7 +291,7 @@
 							
         });
 		$('#withdraw_his').on('click', function(){
-			searchWithdraw.search();
+			WithdrawList.search();
 		});
     });
     </script>
