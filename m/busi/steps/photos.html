@@ -399,13 +399,13 @@
 
 	function show_page() {
 		for(var i=Current_elec; i < elec_group.length; i++) {
-			if(Current_elec == elec_group.length-1) {
-				windows.local.href = "base.html";
+			if(i == elec_group.length-1) {
+				window.location.href = "base.html";
 			} else {
 				var page_id = elec_group[i].elec_info_type;
 				if($('#'+page_id).length > 0) {
 					weui.page.show('#'+page_id);
-					Current_elec = i;
+					Current_elec = i+1;
 					break;
 				}
 			}
@@ -471,10 +471,10 @@
             $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
         $('[name="submit-btn"]').on('click', onSubmit);
-		//LoadForm();
+		/*LoadForm();
         $('#form').find('.weui-uploader').each(function () {
             initUploader(this, $(this).attr('data-type'));
-        });        
+        });    */    
     });
     </script>
 </body>

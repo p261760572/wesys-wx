@@ -89,11 +89,9 @@
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:60px; background-color:burlywood">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.busi_type_nm}}
-                </p>
+                <h2 align="center">{{row.busi_type_nm}}</h2>
             </div>
             <div class="weui-cell__ft"></div>
         </div>
@@ -101,11 +99,9 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:60px; background-color:burlywood">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.acq_inst_nm}}
-                </p>
+                <h2 align="center">{{row.acq_inst_nm}}</p>
             </div>
             <div class="weui-cell__ft"></div>
         </div>
@@ -113,11 +109,9 @@
     </script>
     <script id="mt-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:60px; background-color:burlywood">
             <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.busi_type_nm}}
-                </p>
+                <h2 align="center">{{row.text}}</h2>
             </div>
             <div class="weui-cell__ft"></div>
         </div>
@@ -184,7 +178,7 @@
 
 						loader: function(param, success, error) {
 							console.log(arguments);
-							$$.request('/action/bm/mhcnt-type/list', {}, {
+							$$.request('/action/bm/mchnt-type/list', {}, {
 								success: function(data) {
 									if (data.errcode == 0) {
 										success(data.rows);
@@ -205,7 +199,7 @@
 										 acq_inst_id: acq_inst,
 										 mchnt_type: row.value};
 							$.extend({}, query, param);
-							window.local.href = "./photos.html?" + $.param(param);
+							window.location.href = "./photos.html?" + $.param(param);
 						}
 					}).search()
 				}
