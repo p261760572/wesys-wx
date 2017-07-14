@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>补充信息</title>
+    <link rel="stylesheet" href="../../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../../css/ui-base.css">
+</head>
+
+<body>
+   <div class="page page_show">
+		<form id="form">
+			<div>
+				<div class="weui-cells__title" id="title">联系信息</div>
+				<div class="weui-cells weui-cells_form">
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label class="weui-label">门店名称<span class="required">*</span></label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" type="text" name="shop_name" required="">
+						</div>
+					</div>
+					<div class="weui-cell hide" id="debit-card-fee-cell">
+						<div class="weui-cell__hd">
+							<label class="weui-label">借记卡手续费<span class="required">*</span></label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" type="text" name="debit_card_fee_nm" required="" placeholder="请选择借记卡手续费" id="debit-card-fee-select2">
+							<input type="hidden" name="debit_card_fee">
+						</div>
+					</div>
+					<div class="weui-cell hide" id="credit-card-fee-cell">
+						<div class="weui-cell__hd">
+							<label class="weui-label">贷记卡手续费<span class="required">*</span></label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" type="text" name="credit_card_fee_nm" required="" placeholder="请选择贷记卡手续费" id="credit-card-fee-select2">
+							<input type="hidden" name="credit_card_fee">
+						</div>
+					</div>
+					<div class="weui-cell weui-cell_vcode hide" id="fee-cell">
+						<div class="weui-cell__hd">
+							<label for="" class="weui-label">手续费<span class="required">*</span></label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input for_busi" name="fee" type="text" required="" pattern="^\d+\.?\d*$" placeholder="请输入手续费千分比" invalidTips="请输入正确的手续费">
+						</div>
+						<div class="weui-cell__ft">
+							<button class="weui-vcode-btn">‰</button>
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label class="weui-label">MCC</label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" type="text" name="mcc_nm" placeholder="请选择商户商业" id="mcc-select2">
+							<input type="hidden" name="mcc">
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label class="weui-label">机具类型<span class="required">*</span></label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" type="text" name="equi_type_nm" required="" placeholder="请选择机具类型" id="equi-type-select2">
+							<input type="hidden" name="equi_type">
+						</div>
+					</div>
+					<div class="weui-cell" id="term_num">
+						<div class="weui-cell__hd">
+							<label class="weui-label">终端数量</label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" placeholder="请输入终端数量" type="number" name="term_num">
+						</div>
+					</div>
+					<div class="weui-cell">
+						<div class="weui-cell__hd">
+							<label class="weui-label">销售类型<span class="required">*</span></label>
+						</div>
+						<div class="weui-cell__bd">
+							<select class="weui-select" name="sale_type" required missingTips="请选择销售类型">
+								<option value="1">全额销售</option>
+								<option value="2">优惠销售</option>
+								<option value="3">优质赠送</option>
+							</select>
+						</div>
+					</div>
+					<div class="weui-cell" id="term_num">
+						<div class="weui-cell__hd">
+							<label class="weui-label">销售金额</label>
+						</div>
+						<div class="weui-cell__bd">
+							<input class="weui-input" placeholder="请输入销售金额" type="number" name="term_num">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="weui-btn-area btn-area">
+				<a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back()">上一步</a>
+				<a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
+			</div>
+		</form>
+    </div>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
+    <script type="text/javascript" src="../../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
+    <script type="text/javascript" src="../../js/district.js"></script>
+    <script>
+    var query = $$.parseQueryString();
+    var operateType = 'create-save';
+		
+	var hash = window.location.hash;
+
+    function onSubmit() {
+        if (!weui.form.validate('#form', $$.rules)) return;
+        var param = $('#form').serializeObject();
+		param = $.extend({}, query, param);
+		if (hash.substr(0, 6) == '#step/') {
+            var arr = hash.substr(6).split('/');
+			param['flow'] = arr[0];
+			param['step'] = parseInt(arr[1]);
+		}
+        $$.request('/action/bm/mchnt-base-info/' + operateType, param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    weui.toast('操作成功', function() {
+                        window.location.href = 'select-busi.html?' + $.param($.extend(query, {
+                            mchnt_id: data.data.mchnt_id
+                        }));
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+
+    function setPickerValues(target, items, arr) {
+        var result = [];
+
+        function getValue(items, depth) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].text == arr[depth]) {
+                    result[depth] = items[i].value;
+                    if (items[i].children && items[i].children.length) {
+                        getValue(items[i].children, depth + 1);
+                    }
+                    break;
+                }
+            }
+        }
+
+        getValue(items, 0);
+
+        var $target = $(target);
+        var $temp = $target;
+        for (var i = 0; i < result.length; i++) {
+            $temp = $temp.next();
+            $temp.val(result[i]);
+        }
+        $target.val(arr.join(' ')).change(); //触发change
+
+        return result;
+    }
+
+	function LoadForm() {
+		if(query.mchnt_id && query.mchnt_id != "") {
+			$$.request('/action/bm/mchnt-base-info/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						weui.form.load('#form', data.data);
+					} else {
+
+					}
+				},
+				error: function() {}
+			});
+		}
+	}
+    $(function() {
+		history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
+        $('#submit-btn').on('click', onSubmit);
+        $('#city-picker').on('focus', function() {
+            $$.showPicker(this, districtData);
+        });
+        // 失去焦点时检测
+        weui.form.checkIfBlur('#form', $$.rules);
+		
+		LoadForm();
+        getLocation(function(addr) {
+            setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
+            $('#addr').val(addr.street + addr.streetNumber);
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -13,8 +13,24 @@
 <body>
     <form id="form">
         <div title="填写基本信息">
-            <div class="weui-cells__title">联系信息</div>
+            <div class="weui-cells__title" id="title">联系信息</div>
             <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">商户简称<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="mchnt_abbr" required="" placeholder="请输入商户简称">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">营业执照号<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="license_no" required="" validType="license_no" readonly>
+                    </div>
+                </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
                         <label class="weui-label">联系人<span class="required">*</span></label>
@@ -29,33 +45,6 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input" type="number" name="mobile" required="" placeholder="请输入手机号" validType="mobile" invalidTips="请输入有效的手机号">
-                    </div>
-                </div>
-                <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">常用邮箱</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="email" placeholder="请输入常用邮箱" validType="email" invalidTips="请输入有效的邮箱">
-                    </div>
-                </div>
-            </div>
-            <div class="weui-cells__title">经营信息</div>
-            <div class="weui-cells weui-cells_form">
-                <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">商户简称<span class="required">*</span></label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="mchnt_abbr" required="" placeholder="请输入商户简称">
-                    </div>
-                </div>
-                <div class="weui-cell">
-                    <div class="weui-cell__hd">
-                        <label class="weui-label">联系电话</label>
-                    </div>
-                    <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="telno" placeholder="请输入联系电话" validType="telno" invalidTips="请输入有效的电话号码">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -77,11 +66,44 @@
                         <input class="weui-input" type="text" name="addr" required="" placeholder="请输入详细地址" id="addr">
                     </div>
                 </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件号码<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="cert_id" id="cert_id" required="" readonly>
+                    </div>
+                </div>
+                <div class="weui-cell">
+					<div class="weui-cell__hd">
+						<label class="weui-label">银行账号<span class="required">*</span></label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input" name="account_no" id="account_no" required="" type="number" style="font-weight:bold; font-size:20px; color: red;" readonly>
+					</div>
+				</div>
+           		<div class="weui-cell">
+					<div class="weui-cell__hd">
+						<label class="weui-label">开户支行<span class="required">*</span></label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input" type="text" required="" name="account_bank_branch_nm" placeholder="请选择开户支行" id="account-bank-branch-select2">
+						<input type="hidden" required="" name="account_bank_branch_cd">
+					</div>
+				</div>
+           		<div class="weui-cell">
+					<div class="weui-cell__hd">
+						<label class="weui-label">备注</label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input" name="remark" type="text">
+					</div>
+				</div>
             </div>
         </div>
         <div class="weui-btn-area btn-area">
-            <a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="onBack()">返回</a>
-            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
+            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="">提交至后台</a>
+            <a id="flow-btn" href="javascript:" class="weui-btn weui-btn_primary">继续完善</a>
         </div>
     </form>
     <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>

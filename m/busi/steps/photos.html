@@ -1,0 +1,464 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>入网影印件</title>
+    <link rel="stylesheet" href="../../js/lib/weuijs/style/weuijs.min.css">
+    <link rel="stylesheet" href="../../css/ui-base.css">
+</head>
+
+<body>
+    <div class="page" id="yyzzzm">
+        <form id="form1">
+            <div class="weui-cells__title">营业执照</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader required" data-type="yyzzzm">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">营业执照正面照片<span class="required">*</span></p>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files">
+                                </ul>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">营业执照号<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照" onkeyup="this.value=this.value.toUpperCase()">
+                    </div>
+                </div>
+            </div>
+            <div class="weui-btn-area btn-area">
+                <a href="javascript:" class="weui-btn weui-btn_default" onclick="prev();">返回</a>
+                <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
+            </div>
+        </form>
+    </div>
+    <div class="page" id="frzjzm">
+        <form id="form2">
+            <div class="weui-cells__title">企业法人/证件持有人</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">证件类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="cert_type" required missingTips="请选择证件类型">
+                            <option value="01">身份证</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader required recognize" data-type="frzjzm">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files">
+                                </ul>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件姓名<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="cert_name" id="cert_name" required="" placeholder="请输入证件姓名">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件号码<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="cert_id" id="cert_id" required="" placeholder="请输入证件号码" validType="idnum" invalidTips="请输入有效的证件号码">
+                    </div>
+                </div>
+             </div>
+             <div class="weui-btn-area btn-area">
+                <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();">返回</a>
+                <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
+             </div>
+         </form>
+    </div>
+    <div class="page" id="frzjfm">
+        <form id="form3">
+            <div class="weui-cells__title">企业法人/证件持有人</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader recognize" data-type="frzjfm">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">身份证反面照片</p>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files">
+                                </ul>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">证件有效期</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="cert_date" placeholder="请输入证件有效期" id="cert-date-picker" readonly>
+                    </div>
+                </div>
+                <div class="weui-btn-area btn-area">
+					<a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();">返回</a>
+					<a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
+				</div>
+       		</div>
+        </form>
+    </div>
+    <div class="page" id="zhzm">
+        <form id="form4">
+            <div class="weui-cells__title">账户正面</div>
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">账户性质<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="account_type" required missingTips="请选择账户性质">
+                            <option value="1">对私</option>
+                            <option value="2">对公</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_select weui-cell_select-after">
+                    <div class="weui-cell__hd">
+                        <label for="" class="weui-label">账户类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <select class="weui-select" name="isCard" id="isCard" required missingTips="请选择账户类型">
+                            <option value="1">银行卡</option>
+                            <option value="2">公账户</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <div class="weui-uploader required" data-type="zhzm">
+                            <div class="weui-uploader__hd">
+                                <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
+                            </div>
+                            <div class="weui-uploader__bd">
+                                <ul class="weui-uploader__files">
+                                </ul>
+                                <div class="weui-uploader__input-box">
+                                    <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+				<div class="weui-cell">
+					<div class="weui-cell__hd">
+						<label class="weui-label">银行账号<span class="required">*</span></label>
+					</div>
+					<div class="weui-cell__bd">
+						<input class="weui-input" name="account_no" id="account_no" required="" type="number" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
+					</div>
+				</div>
+        	  </div>
+        	  <div class="weui-btn-area btn-area">
+				  <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();">返回</a>
+				  <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
+			  </div>
+         </form>
+    </div>
+    <script type="text/javascript" src="../../js/lib/zepto.min.js"></script>
+    <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
+    <script id="list-template" type="text/html">
+        {{each rows as row i}}
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
+            <div class="weui-cell__bd weui-cell_primary">
+                <p>
+                    {{row.text}}
+                </p>
+            </div>
+            <div class="weui-cell__ft"></div>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+    var query = $$.parseQueryString();
+	var Current_elec=0;
+    var uploaderData = [], elec_group = [];
+	
+	var ocr_map = {
+		'frzjzm':{
+			url: '/gateway/ocr/idcard', 
+			param: {id_card_side: 'front'}, 
+			ret: [
+				{tag: 'id', target: '#cert_id'}, 
+				{tag: 'name', target: '#cert_name'}
+			]
+		},
+		'frzjfm':{
+			url:'/gateway/ocr/idcard', 
+			param: {id_card_side: 'back'}, 
+			ret:[{tag: 'valid_date', target: '#cert-date-picker', callback: valid_regular}]
+		},
+	};
+    
+	function valid_regular(data) {
+		var data = data.match(/([^\-]+)$/)[0].replace(/(\.)/g,'');
+		return data;
+	}
+		
+	function imageToDataUrl(url, callback, param) {
+		var canvas = document.createElement("canvas");
+		var ctx = canvas.getContext("2d");
+
+		var img = new Image();
+		img.onload = function () {
+			var w = img.width;
+			var h = img.height;
+			var dataURL;
+
+			canvas.width = w;
+			canvas.height = h;
+			ctx.drawImage(img, 0, 0);
+
+			var dataURL =  canvas.toDataURL('image/jpeg');
+			console.log(dataURL);
+			callback(dataURL, param);
+		}
+		img.src = url;
+	}
+		
+	function auto_recognize(data, param) {
+		var Default = {
+			image: data,
+			serverid: param.serverid
+		};
+		$.extend(Default, ocr_map[param.elec_info_type].param || {});
+		
+		$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+			$(item.target).attr('readonly', true);
+		});
+		$$.request(ocr_map[param.elec_info_type].url, Default, {
+			success: function(data) {
+				if (data.errcode == 0) {
+					$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+						if(data.data[item.tag] && data.data[item.tag]!=undefined) {
+							if(item.callback) {
+								data.data[item.tag] = item.callback(data.data[item.tag]);
+							}
+							$(item.target).val(data.data[item.tag]);
+						}
+					});
+				} else {
+					
+				}
+				
+			}
+		});
+		$.each(ocr_map[param.elec_info_type].ret, function(index, item) {
+			$(item.target).removeAttr('readonly');
+		});
+	}
+		
+    function initUploader(selector, elec_info_type) {
+		var target = $(selector);
+        weui.ajaxUploader(selector, {
+            url: $$.wrapUrl('/action/upload'),
+            auto: true,
+            type: 'file',
+            fileVal: 'file',
+            compress: {
+                width: 1600,
+                height: 1600,
+                quality: 0.92
+            },
+            onBeforeSend: function(data, headers) {
+                console.log(this, arguments);
+                // return false; // 阻止文件上传
+            },
+            onSuccess: function(ret) {
+				uploaderData[this.id] = {
+					status: '1',
+					serverid: ret.serverid,
+					elec_info_type: elec_info_type
+				};
+				
+				if(target.hasClass('recognize')) {
+					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
+					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
+				}
+            },
+            onError: function(err) {
+                console.log(this, err);
+            }
+        });
+    }
+
+	function prev() {
+		window.location.href = 'select-busi.html';
+	}
+	
+	function checkMustPic() {
+		var check = true;
+		$('#form').find('.weui-uploader.required').each(function(index, item){
+			var target = $(this);
+			if(target.find('.weui-uploader__file').length == 0 ||
+				target.find('.weui-uploader__file').attr('data-id') == undefined ||
+				target.find('.weui-uploader__file').attr('data-id') == null) {
+				if(!(target.closest('.weui-cell').hasClass('hide'))) {
+					check = false;
+					return check;
+				}
+			}
+		});
+		return check;
+	}
+		
+    function onSubmit() {
+        if (!weui.form.validate('#form', $$.rules)) return;
+		
+		if (!checkMustPic()) {
+			weui.alert('请完善电子资料', {
+				title: '提示'
+			});
+			return false;
+		}
+		
+        var param = $('#form').serializeObject();
+        var elec_info = [];
+		if (hash.substr(0, 6) == '#step/') {
+            var arr = hash.substr(6).split('/');
+			param['flow'] = arr[1];
+			param['step'] = parseInt(arr[2]);
+		}
+		var flag = true;
+        $('#form').find('.weui-uploader__file').forEach(function(item) {
+            var id = parseInt($(item).attr('data-id'));
+            if(id != undefined && id != null) {
+				if(uploaderData[id] == null) {
+					flag = false;
+					return flag;
+				}
+				elec_info.push(uploaderData[id]);
+			}
+        });
+		if(flag == false) {
+			weui.alert('图片加载中，请稍候提交', {
+				title: '提示'
+			});
+			return;
+		}
+        param.elec_info = elec_info;
+
+        param = $.extend({}, query, param);
+
+        $$.request('/action/bm/mchnt-base-param/save-mchnt', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    flows.next({
+                        mchnt_param_id: data.data.mchnt_param_id
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            }
+        });
+    }
+
+	function LoadForm() {
+		var id;
+		if(query.mchnt_id && query.mchnt_id != "" &&
+		  	query.mchnt_param_id && query.mchnt_param_id != "") {
+			weui.page.show('#page1');
+			$$.request('/action/bm/mchnt-base-info/view', query, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						/*
+						if(data.data.mchnt_type == '2') {
+							$('#s10').prop('checked', false).change();
+						}*/
+						weui.form.load('#form', data.data);
+						var images = data.images;
+						
+						$.each(images, function(index, item) {
+							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
+							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
+							id = weui.uploader(target).appendFile(url);
+							weui.uploader(target).clearFileStatus(id);
+							uploaderData[id] = {
+								status: '1',
+								serverid: item.serverid,
+								elec_info_type: item.elec_info_type
+							}
+						})
+						
+					} else {
+
+					}
+				},
+				error: function() {}
+			});
+		}
+	}
+    $(function() {
+		history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
+		$$.request('/action/bm/elec-info-enter/search', query, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {
+                error();
+            }
+        });
+		$('#cert-date-picker').on('focus', function() {
+            $$.showDatePicker(this, {format: 'yyyyMMdd'});
+        });
+        $('#submit-btn').on('click', onSubmit);
+		LoadForm();
+        $('#form').find('.weui-uploader').each(function () {
+            initUploader(this, $(this).attr('data-type'));
+        });        
+    });
+    </script>
+</body>
+
+</html>
