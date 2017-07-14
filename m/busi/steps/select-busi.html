@@ -123,11 +123,13 @@
 	function back() {
 		window.location.href = '../../index.html';
 	}
-	/*
+	
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
-		history.pushState(null, null, document.URL);
-	});*/
+		weui.page.back();
+		//history.pushState(null, null, document.URL);
+	});
+		
 	weui.searchPage('#page1', {
 		resultTpl: '#acq-template',
 		loader: function(param, success, error) {

@@ -210,6 +210,10 @@
         {{/each}}
     </script>
     <script>
+	history.pushState(null, null, document.URL);
+	window.addEventListener('popstate', function () {
+		weui.page.back();
+	});
     var query = $$.parseQueryString();
 	var Current_elec;
     var uploaderData = [], elec_group = [];
@@ -447,10 +451,6 @@
 		}
 	}
     $(function() {
-		history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', function () {
-            history.pushState(null, null, document.URL);
-        });
 		$$.request('/action/bm/elec-info-enter/search', query, {
             success: function(data) {
                 if (data.errcode == 0) {
