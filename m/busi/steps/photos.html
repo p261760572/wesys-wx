@@ -211,7 +211,7 @@
     </script>
     <script>
     var query = $$.parseQueryString();
-	var Current_elec=0;
+	var Current_elec;
     var uploaderData = [], elec_group = [];
 	
 	var ocr_map = {
@@ -343,6 +343,7 @@
 	}
 		
     function onSubmit() {
+		/*
         if (!weui.form.validate('#form', $$.rules)) return;
 		
 		if (!checkMustPic()) {
@@ -392,9 +393,24 @@
                     });
                 }
             }
-        });
+        });*/
+		show_page();
     }
 
+	function show_page() {
+		for(var i=Current_elec; i < elec_group.length; i++) {
+			if(Current_elec == elec_group.length-1) {
+				windows.local.href = "base.html";
+			} else {
+				var page_id = elec_group[i].elec_info_type;
+				if($('#'+page_id).length > 0) {
+					weui.page.show('#'+page_id);
+					Current_elec = i;
+					break;
+				}
+			}
+		}
+	}
 	function LoadForm() {
 		var id;
 		if(query.mchnt_id && query.mchnt_id != "" &&
@@ -438,7 +454,9 @@
 		$$.request('/action/bm/elec-info-enter/search', query, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    
+                    elec_group = data.rows;
+					Current_elec = 0;
+					show_page();
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
@@ -452,8 +470,8 @@
 		$('#cert-date-picker').on('focus', function() {
             $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
-        $('#submit-btn').on('click', onSubmit);
-		LoadForm();
+        $('[name="submit-btn"]').on('click', onSubmit);
+		//LoadForm();
         $('#form').find('.weui-uploader').each(function () {
             initUploader(this, $(this).attr('data-type'));
         });        

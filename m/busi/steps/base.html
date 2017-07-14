@@ -103,7 +103,7 @@
         </div>
         <div class="weui-btn-area btn-area">
             <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="">提交至后台</a>
-            <a id="flow-btn" href="javascript:" class="weui-btn weui-btn_primary">继续完善</a>
+            <a id="flow-btn" href="extra-info.html" class="weui-btn weui-btn_primary">继续完善</a>
         </div>
     </form>
     <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
@@ -215,6 +215,7 @@
             history.pushState(null, null, document.URL);
         });
         $('#submit-btn').on('click', onSubmit);
+		//$('#flow-btn').on('click', onSubmit);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
