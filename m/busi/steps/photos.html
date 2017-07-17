@@ -197,18 +197,6 @@
     </div>
     <script type="text/javascript" src="../../js/lib/zepto.min.js"></script>
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
-    <script id="list-template" type="text/html">
-        {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}">
-            <div class="weui-cell__bd weui-cell_primary">
-                <p>
-                    {{row.text}}
-                </p>
-            </div>
-            <div class="weui-cell__ft"></div>
-        </div>
-        {{/each}}
-    </script>
     <script>
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
@@ -347,7 +335,7 @@
 	}
 		
     function onSubmit() {
-		/*
+		
         if (!weui.form.validate('#form', $$.rules)) return;
 		
 		if (!checkMustPic()) {
@@ -359,11 +347,6 @@
 		
         var param = $('#form').serializeObject();
         var elec_info = [];
-		if (hash.substr(0, 6) == '#step/') {
-            var arr = hash.substr(6).split('/');
-			param['flow'] = arr[1];
-			param['step'] = parseInt(arr[2]);
-		}
 		var flag = true;
         $('#form').find('.weui-uploader__file').forEach(function(item) {
             var id = parseInt($(item).attr('data-id'));
@@ -388,29 +371,42 @@
         $$.request('/action/bm/mchnt-base-param/save-mchnt', param, {
             success: function(data) {
                 if (data.errcode == 0) {
-                    flows.next({
-                        mchnt_param_id: data.data.mchnt_param_id
-                    });
+					window.location.href = "base.html?"+$.param({rec_id: data.data.rec_id});
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
                     });
                 }
             }
-        });*/
-		show_page();
+        });
+		show_page('forward');
     }
 
-	function show_page() {
-		for(var i=Current_elec; i < elec_group.length; i++) {
-			if(i == elec_group.length-1) {
-				window.location.href = "base.html";
-			} else {
-				var page_id = elec_group[i].elec_info_type;
-				if($('#'+page_id).length > 0) {
-					weui.page.show('#'+page_id);
-					Current_elec = i+1;
-					break;
+	function show_page(direction) {
+		if(direction == 'forward') {
+			for(var i=Current_elec; i < elec_group.length; i++) {
+				if(i == elec_group.length-1) {
+					window.location.href = "base.html";
+				} else {
+					var page_id = elec_group[i].elec_info_type;
+					if($('#'+page_id).length > 0) {
+						weui.page.show('#'+page_id);
+						Current_elec = i+1;
+						break;
+					}
+				}
+			}
+		} else if(direction == 'back') {
+			for(var i=Current_elec; i >= 0; i--) {
+				if(i == 0) {
+					window.location.href = "select-busi.html";
+				} else {
+					var page_id = elec_group[i].elec_info_type;
+					if($('#'+page_id).length > 0) {
+						weui.page.show('#'+page_id);
+						Current_elec = i-1;
+						break;
+					}
 				}
 			}
 		}
@@ -423,10 +419,6 @@
 			$$.request('/action/bm/mchnt-base-info/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
-						/*
-						if(data.data.mchnt_type == '2') {
-							$('#s10').prop('checked', false).change();
-						}*/
 						weui.form.load('#form', data.data);
 						var images = data.images;
 						
@@ -471,10 +463,10 @@
             $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
         $('[name="submit-btn"]').on('click', onSubmit);
-		/*LoadForm();
+		//LoadForm();
         $('#form').find('.weui-uploader').each(function () {
             initUploader(this, $(this).attr('data-type'));
-        });    */    
+        });  
     });
     </script>
 </body>
