@@ -73,7 +73,7 @@
                 <!--label class="weui-search-bar__label">
                     <h1>商户类型</h1> </label-->
             </form>
-            <a href="javascript:" class="weui-search-bar__cancel-btn hide">取消</a>
+            <a href="javascript:" class="weui-search-bar__cancel-btn hide" style="background-color:cadetblue">取消</a>
         </div>
         <div class="weui-cells searchbar-result">
             <!-- <div class="weui-cell weui-cell_access">
@@ -89,9 +89,9 @@
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
     <script id="list-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:60px; background-color:burlywood">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="border-radius: 4px; margin-bottom: 8px; background-color:cadetblue; height:50px;">
             <div class="weui-cell__bd weui-cell_primary">
-                <h2 align="center">{{row.busi_type_nm}}</h2>
+                <h2 align="center" style="font-family: "Georgia", Tahoma, Sans-Serif;font-size: 12px;line-height: 18px;color: #888;">{{row.busi_type_nm}}</h2>
             </div>
             <div class="weui-cell__ft"></div>
         </div>
@@ -99,9 +99,9 @@
     </script>
     <script id="acq-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:60px; background-color:burlywood">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="border-radius: 4px; margin-bottom: 8px; background-color:cadetblue; height:50px;">
             <div class="weui-cell__bd weui-cell_primary">
-                <h2 align="center">{{row.acq_inst_nm}}</p>
+                <h2 align="center" style="font-family: "Georgia", Tahoma, Sans-Serif;font-size: 12px;line-height: 18px;color: #888;">{{row.acq_inst_nm}}</p>
             </div>
             <div class="weui-cell__ft"></div>
         </div>
@@ -109,9 +109,9 @@
     </script>
     <script id="mt-template" type="text/html">
         {{each rows as row i}}
-        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="height:60px; background-color:burlywood">
+        <div class="weui-cell weui-cell_access searchbar-result__item" data-index="{{total+i}}" style="border-radius: 4px; margin-bottom: 8px; background-color:cadetblue; height:50px;">
             <div class="weui-cell__bd weui-cell_primary">
-                <h2 align="center">{{row.text}}</h2>
+                <h2 align="center" style="font-family: "Georgia", Tahoma, Sans-Serif;font-size: 12px;line-height: 18px;color: #888;">{{row.text}}</h2>
             </div>
             <div class="weui-cell__ft"></div>
         </div>
@@ -127,7 +127,6 @@
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
 		weui.page.back();
-		//history.pushState(null, null, document.URL);
 	});
 		
 	weui.searchPage('#page1', {

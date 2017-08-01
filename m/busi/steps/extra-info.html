@@ -55,10 +55,10 @@
 					</div>
 					<div class="weui-cell">
 						<div class="weui-cell__hd">
-							<label class="weui-label">MCC</label>
+							<label class="weui-label">MCC<span class="required">*</span></label>
 						</div>
 						<div class="weui-cell__bd">
-							<input class="weui-input" type="text" name="mcc_nm" placeholder="请选择商户商业" id="mcc-select2">
+							<input class="weui-input" type="text" name="mcc_nm" required="" placeholder="请选择商户商业" id="mcc-select2">
 							<input type="hidden" name="mcc">
 						</div>
 					</div>
@@ -79,30 +79,30 @@
 							<input class="weui-input" placeholder="请输入终端数量" type="number" name="term_num">
 						</div>
 					</div>
-					<div class="weui-cell">
+					<div class="weui-cell weui-cell_select weui-cell_select-after">
 						<div class="weui-cell__hd">
 							<label class="weui-label">销售类型<span class="required">*</span></label>
 						</div>
 						<div class="weui-cell__bd">
-							<select class="weui-select" name="sale_type" required missingTips="请选择销售类型">
+							<select class="weui-select" name="sales_type" required missingTips="请选择销售类型">
 								<option value="1">全额销售</option>
 								<option value="2">优惠销售</option>
 								<option value="3">优质赠送</option>
 							</select>
 						</div>
 					</div>
-					<div class="weui-cell" id="term_num">
+					<div class="weui-cell">
 						<div class="weui-cell__hd">
 							<label class="weui-label">销售金额</label>
 						</div>
 						<div class="weui-cell__bd">
-							<input class="weui-input" placeholder="请输入销售金额" type="number" name="term_num">
+							<input class="weui-input" placeholder="请输入销售金额" type="number" name="sales_amount">
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="weui-btn-area btn-area">
-				<a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="history(-1)">上一步</a>
+				<a id="back-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="history.back()">上一步</a>
 				<a id="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">提交</a>
 			</div>
 		</form>
@@ -113,26 +113,17 @@
     <script type="text/javascript" src="../../js/district.js"></script>
     <script>
     var query = $$.parseQueryString();
-    var operateType = 'create-save';
-		
-	var hash = window.location.hash;
 
+	var baseurl = '/test';
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
 		param = $.extend({}, query, param);
-		if (hash.substr(0, 6) == '#step/') {
-            var arr = hash.substr(6).split('/');
-			param['flow'] = arr[0];
-			param['step'] = parseInt(arr[1]);
-		}
-        $$.request('/action/bm/mchnt-base-info/' + operateType, param, {
+        $$.request(baseurl+'/action/bm/app-busi/update-extra', param, {
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-                        window.location.href = 'select-busi.html?' + $.param($.extend(query, {
-                            mchnt_id: data.data.mchnt_id
-                        }));
+						window.location.href = '../../index.html';
                     });
                 } else {
                     weui.alert(data.errmsg, {
@@ -173,8 +164,8 @@
     }
 
 	function LoadForm() {
-		if(query.mchnt_id && query.mchnt_id != "") {
-			$$.request('/action/bm/mchnt-base-info/view', query, {
+		if(query.mchnt_param_id && query.mchnt_param_id != "") {
+			$$.request(baseurl+'/action/bm/app-busi/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.form.load('#form', data.data);
@@ -187,23 +178,64 @@
 		}
 	}
     $(function() {
-		/*
-		history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', function () {
-            history.pushState(null, null, document.URL);
-        });*/
         $('#submit-btn').on('click', onSubmit);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
         // 失去焦点时检测
-        weui.form.checkIfBlur('#form', $$.rules);
+        //weui.form.checkIfBlur('#form', $$.rules);
 		
 		LoadForm();
-        getLocation(function(addr) {
-            setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
-            $('#addr').val(addr.street + addr.streetNumber);
+		$('#mcc-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索商户类别',
+                valueField: 'mcc',
+                textField: 'mcc_nm',
+                url: '/action/bm/mcc/search'
+            }).search();
         });
+		
+		$('#debit-card-fee-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索手续费',
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    // debit_flag: '1'
+                }
+            }).search();
+        });
+
+        $('#credit-card-fee-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索手续费',
+                valueField: 'fee_cd',
+                textField: 'fee_nm',
+                url: '/action/bm/fee/search',
+                queryParams: {
+                    credit_flag: '1'
+                }
+            }).search();
+        });
+		
+		$$.request('/action/bm/parameter/list', {equi_type: '1'}, {
+            success: function(data) {
+                if (data.errcode == 0) {
+                    $('#equi-type-select2').on('focus', function() {
+                        $$.showSelect2(this, data.equi_type, {
+                            title: '搜索机具类型',
+                        });
+                    });
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            }
+        });
+
+
     });
     </script>
 </body>

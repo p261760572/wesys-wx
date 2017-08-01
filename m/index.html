@@ -44,7 +44,7 @@
                     </div>
                     <p class="weui-grid__label">未结事项</p>
                 </a-->
-                <a href="busi/steps/select-busi.html" class="weui-grid">
+                <a href="busi/steps/select-busi.html" class="weui-grid" name="test">
                     <div class="weui-grid__icon">
                         <img src="images/icon_nav_actionSheet.png" alt="">
                     </div>
@@ -121,6 +121,9 @@
                 if (data.errcode == 0) {
                     curent_user = data;
                     share();
+					if(data.data.role_id != '1') {
+						$('[name="test"]').addClass('hide');
+					}
                 } else if (data.errcode == 5) {
                     window.location.href = $$.wrapUrl('/m/login.html');
                 } else {

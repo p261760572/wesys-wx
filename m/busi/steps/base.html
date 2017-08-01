@@ -79,7 +79,7 @@
 						<label class="weui-label">银行账号<span class="required">*</span></label>
 					</div>
 					<div class="weui-cell__bd">
-						<input class="weui-input" name="account_no" id="account_no" required="" type="number" style="font-weight:bold; font-size:20px; color: red;" readonly>
+						<input class="weui-input" name="account_no" id="account_no" required="" type="number" style="font-weight:bold; font-size:20px; color: red;">
 					</div>
 				</div>
            		<div class="weui-cell">
@@ -102,8 +102,8 @@
             </div>
         </div>
         <div class="weui-btn-area btn-area">
-            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_default" onclick="">提交至后台</a>
-            <a id="flow-btn" href="extra-info.html" class="weui-btn weui-btn_primary">继续完善</a>
+            <a id="submit-btn" href="javascript:" class="weui-btn weui-btn_default">提交至后台</a>
+            <a id="flow-btn" href="javascript:" class="weui-btn weui-btn_primary">继续完善</a>
         </div>
     </form>
     <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=mUs8UNiHRImGLNueae1Gd9PVdejrYdHC"></script>
@@ -112,29 +112,17 @@
     <script type="text/javascript" src="../../js/district.js"></script>
     <script>
     var query = $$.parseQueryString();
-    var operateType = 'create-save';
-		
-	var hash = window.location.hash;
-    function onBack() {
-        window.location.href="../../index.html";
-    }
 
+	var baseurl = '/test';
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
 		param = $.extend({}, query, param);
-		if (hash.substr(0, 6) == '#step/') {
-            var arr = hash.substr(6).split('/');
-			param['flow'] = arr[0];
-			param['step'] = parseInt(arr[1]);
-		}
-        $$.request('/action/bm/mchnt-base-info/' + operateType, param, {
+        $$.request(baseurl+'/action/bm/app-busi/update', param, {
             success: function(data) {
                 if (data.errcode == 0) {
                     weui.toast('操作成功', function() {
-                        window.location.href = 'select-busi.html?' + $.param($.extend(query, {
-                            mchnt_id: data.data.mchnt_id
-                        }));
+						window.location.href = '../../index.html';
                     });
                 } else {
                     weui.alert(data.errmsg, {
@@ -146,6 +134,24 @@
         });
     }
 
+	function complete() {
+        if (!weui.form.validate('#form', $$.rules)) return;
+        var param = $('#form').serializeObject();
+		param = $.extend({}, query, param);
+        $$.request(baseurl+'/action/bm/app-busi/update', param, {
+            success: function(data) {
+                if (data.errcode == 0) {
+					window.location.href = 'extra-info.html?' + $.param(query);
+                } else {
+                    weui.alert(data.errmsg, {
+                        title: '提示'
+                    });
+                }
+            },
+            error: function() {}
+        });
+    }
+		
     function setPickerValues(target, items, arr) {
         var result = [];
 
@@ -174,11 +180,11 @@
         return result;
     }
 
-    function getLocation(success) {
+	function getLocation(success) {
         var geolocation = new BMap.Geolocation();
         geolocation.getCurrentPosition(function(r) {
             if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-
+                
                 var geoc = new BMap.Geocoder();
                 var pt = r.point;
 
@@ -186,7 +192,7 @@
                     console.log(this, arguments);
                     // var addComp = rs.addressComponents;
                     // alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
-                    if (success) success(rs.addressComponents);
+                    if(success) success(rs.addressComponents);
                 });
             } else {
                 console.log(this, arguments);
@@ -195,9 +201,10 @@
             enableHighAccuracy: true
         });
     }
+		
 	function LoadForm() {
-		if(query.mchnt_id && query.mchnt_id != "") {
-			$$.request('/action/bm/mchnt-base-info/view', query, {
+		if(query.mchnt_param_id && query.mchnt_param_id != "") {
+			$$.request(baseurl+'/action/bm/app-busi/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
 						weui.form.load('#form', data.data);
@@ -216,17 +223,28 @@
             history.pushState(null, null, document.URL);
         });*/
         $('#submit-btn').on('click', onSubmit);
-		//$('#flow-btn').on('click', onSubmit);
+		$('#flow-btn').on('click', complete);
         $('#city-picker').on('focus', function() {
             $$.showPicker(this, districtData);
         });
+		
+		$('#account-bank-branch-select2').on('focus', function() {
+			var local_area = $('input[name="province"]').val()+$('input[name="city"]').val()+$('input[name="district"]').val();
+            $$.showSelect2(this, {
+                title: '搜索开户支行',
+				queryParams: {region_cd: local_area, account_no: $('#account_no').val()},
+                valueField: 'bank_branch_cd',
+                textField: 'bank_branch_nm',
+                url: '/action/bm/bank-branch/search_move'
+            }).search();
+        });
         // 失去焦点时检测
-        weui.form.checkIfBlur('#form', $$.rules);
+        //weui.form.checkIfBlur('#form', $$.rules);
 		
 		LoadForm();
         getLocation(function(addr) {
             setPickerValues('#city-picker', districtData, [addr.province, addr.city, addr.district]);
-            $('#addr').val(addr.street + addr.streetNumber);
+            $('#addr').val(addr.province + addr.city + addr.district + addr.street + addr.streetNumber);
         });
     });
     </script>

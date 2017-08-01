@@ -17,7 +17,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required" data-type="yyzzzm">
+                        <div class="weui-uploader required recognize" data-type="yyzzzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">营业执照正面照片<span class="required">*</span></p>
                             </div>
@@ -37,7 +37,7 @@
                         <label class="weui-label">营业执照号<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照" onkeyup="this.value=this.value.toUpperCase()">
+                        <input class="weui-input" type="text" id="license_no" name="license_no" required="" placeholder="请输入营业执照号" validType="license_no" invalidTips="请输入有效的营业执照" onkeyup="this.value=this.value.toUpperCase()">
                     </div>
                 </div>
             </div>
@@ -96,7 +96,7 @@
                 </div>
              </div>
              <div class="weui-btn-area btn-area">
-                <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();">返回</a>
+                <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();CurrentPage--;">返回</a>
                 <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
              </div>
          </form>
@@ -132,7 +132,7 @@
                 </div>
             </div>
 			<div class="weui-btn-area btn-area">
-				<a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();">返回</a>
+				<a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();CurrentPage--;">返回</a>
 				<a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
 			</div>
         </form>
@@ -165,7 +165,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required" data-type="zhzm">
+                        <div class="weui-uploader required recognize" data-type="zhzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
                             </div>
@@ -190,7 +190,7 @@
 				</div>
         	  </div>
         	  <div class="weui-btn-area btn-area">
-				  <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();">返回</a>
+				  <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();CurrentPage--;">返回</a>
 				  <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
 			  </div>
          </form>
@@ -210,15 +210,34 @@
         {{/each}}
     </script>
     <script>
+	var baseurl = '/test';
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
-		weui.page.back();
+		if(CurrentPage > 1) {
+			weui.page.back();
+			CurrentPage--;
+			history.pushState(null, null, document.URL);
+		} else {
+			window.location.href = "select-busi.html";
+		}
+		
+	});
+		
+	$(window).bind('beforeunload', function(){ 
+		return '您可能有数据没有保存'; 
 	});
     var query = $$.parseQueryString();
-	var Current_elec;
+	var CurrentPage = 0;
     var uploaderData = [], elec_group = [];
 	
 	var ocr_map = {
+		'yyzzzm':{
+			url: '/gateway/ocr/general', 
+			param: {}, 
+			ret: [
+				{tag: 'license_no', target: '#license_no'}
+			]
+		},
 		'frzjzm':{
 			url: '/gateway/ocr/idcard', 
 			param: {id_card_side: 'front'}, 
@@ -231,6 +250,11 @@
 			url:'/gateway/ocr/idcard', 
 			param: {id_card_side: 'back'}, 
 			ret:[{tag: 'valid_date', target: '#cert-date-picker', callback: valid_regular}]
+		},
+		'zhzm':{
+			url:'/gateway/ocr/bankcard', 
+			param: {}, 
+			ret:[{tag: 'bank_card_number', target: '#account_no'}]
 		},
 	};
     
@@ -332,7 +356,7 @@
 	
 	function checkMustPic() {
 		var check = true;
-		$('#form').find('.weui-uploader.required').each(function(index, item){
+		$('#form'+CurrentPage).find('.weui-uploader.required').each(function(index, item){
 			var target = $(this);
 			if(target.find('.weui-uploader__file').length == 0 ||
 				target.find('.weui-uploader__file').attr('data-id') == undefined ||
@@ -347,101 +371,82 @@
 	}
 		
     function onSubmit() {
-		/*
-        if (!weui.form.validate('#form', $$.rules)) return;
-		
+        if (!weui.form.validate('#form'+CurrentPage, $$.rules)) return;
 		if (!checkMustPic()) {
-			weui.alert('请完善电子资料', {
+			weui.alert('请上传电子资料', {
 				title: '提示'
 			});
 			return false;
 		}
-		
-        var param = $('#form').serializeObject();
-        var elec_info = [];
-		if (hash.substr(0, 6) == '#step/') {
-            var arr = hash.substr(6).split('/');
-			param['flow'] = arr[1];
-			param['step'] = parseInt(arr[2]);
-		}
-		var flag = true;
-        $('#form').find('.weui-uploader__file').forEach(function(item) {
-            var id = parseInt($(item).attr('data-id'));
-            if(id != undefined && id != null) {
-				if(uploaderData[id] == null) {
-					flag = false;
-					return flag;
-				}
-				elec_info.push(uploaderData[id]);
-			}
-        });
-		if(flag == false) {
-			weui.alert('图片加载中，请稍候提交', {
-				title: '提示'
-			});
-			return;
-		}
-        param.elec_info = elec_info;
-
-        param = $.extend({}, query, param);
-
-        $$.request('/action/bm/mchnt-base-param/save-mchnt', param, {
-            success: function(data) {
-                if (data.errcode == 0) {
-                    flows.next({
-                        mchnt_param_id: data.data.mchnt_param_id
-                    });
-                } else {
-                    weui.alert(data.errmsg, {
-                        title: '提示'
-                    });
-                }
-            }
-        });*/
 		show_page();
+		if(CurrentPage == elec_group.length) {
+			var param = {};
+			var elec_info = [];
+			$('form').forEach(function(item) {
+				$.extend(param, $(item).serializeObject());
+				$(item).find('.weui-uploader__file').forEach(function(items) {
+					var id = parseInt($(items).attr('data-id'));
+					if(id != undefined && id != null) {
+						if(uploaderData[id] == null) {
+							return false;
+						}
+						elec_info.push(uploaderData[id]);
+					}
+				});
+			});
+			param.elec_info = elec_info;
+
+			param = $.extend({}, query, param);
+
+			$$.request(baseurl+'/action/bm/app-busi/create-base', param, {
+				success: function(data) {
+					if (data.errcode == 0) {
+						window.location.href = "base.html?"+$.param($.extend({},query, {mchnt_param_id: data.mchnt_param_id}));
+					} else {
+						weui.alert(data.errmsg, {
+							title: '提示'
+						});
+					}
+				}
+			});
+		}
     }
 
 	function show_page() {
-		for(var i=Current_elec; i < elec_group.length; i++) {
-			if(i == elec_group.length-1) {
-				window.location.href = "base.html";
-			} else {
-				var page_id = elec_group[i].elec_info_type;
-				if($('#'+page_id).length > 0) {
-					weui.page.show('#'+page_id);
-					Current_elec = i+1;
-					break;
-				}
+		for(var i=CurrentPage; i < elec_group.length; i++) {
+			var page_id = elec_group[i].elec_info_type;
+			if($('#'+page_id).length > 0) {
+				weui.page.show('#'+page_id);
+				CurrentPage = i+1;
+				LoadForm();
+				return;
 			}
 		}
+		CurrentPage = elec_group.length;
 	}
 	function LoadForm() {
 		var id;
-		if(query.mchnt_id && query.mchnt_id != "" &&
-		  	query.mchnt_param_id && query.mchnt_param_id != "") {
-			weui.page.show('#page1');
-			$$.request('/action/bm/mchnt-base-info/view', query, {
+		if(query.mchnt_param_id && query.mchnt_param_id != "") {
+			$$.request(baseurl+'/action/bm/app-busi/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
-						/*
-						if(data.data.mchnt_type == '2') {
-							$('#s10').prop('checked', false).change();
-						}*/
-						weui.form.load('#form', data.data);
+						weui.form.load('#form'+CurrentPage, data.data);
 						var images = data.images;
 						
-						$.each(images, function(index, item) {
-							var target = $('#form').find('.weui-uploader[data-type='+item.elec_info_type+']')[0];
-							var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
-							id = weui.uploader(target).appendFile(url);
-							weui.uploader(target).clearFileStatus(id);
-							uploaderData[id] = {
-								status: '1',
-								serverid: item.serverid,
-								elec_info_type: item.elec_info_type
-							}
+						$('#form'+CurrentPage).find('.weui-uploader').each(function(idx, target){
+							$.each(images, function(index, item) {
+								if(item.elec_info_type == $(target).attr('data-type')) {
+									var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
+									id = weui.uploader(target).appendFile(url);
+									weui.uploader(target).clearFileStatus(id);
+									uploaderData[id] = {
+										status: '1',
+										serverid: item.serverid,
+										elec_info_type: item.elec_info_type
+									}
+								}
+							})
 						})
-						
 					} else {
 
 					}
@@ -451,11 +456,10 @@
 		}
 	}
     $(function() {
-		$$.request('/action/bm/elec-info-enter/search', query, {
+		$$.request(baseurl+'/action/bm/elec-info-enter/search', query, {
             success: function(data) {
                 if (data.errcode == 0) {
                     elec_group = data.rows;
-					Current_elec = 0;
 					show_page();
                 } else {
                     weui.alert(data.errmsg, {
@@ -464,17 +468,17 @@
                 }
             },
             error: function() {
-                error();
+                
             }
         });
 		$('#cert-date-picker').on('focus', function() {
             $$.showDatePicker(this, {format: 'yyyyMMdd'});
         });
         $('[name="submit-btn"]').on('click', onSubmit);
-		/*LoadForm();
-        $('#form').find('.weui-uploader').each(function () {
+		
+        $('form').find('.weui-uploader').each(function () {
             initUploader(this, $(this).attr('data-type'));
-        });    */    
+        });      
     });
     </script>
 </body>
