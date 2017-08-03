@@ -25,10 +25,10 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">营业执照号<span class="required">*</span></label>
+                        <label class="weui-label">营业执照号</label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="license_no" required="" validType="license_no" readonly>
+                        <input class="weui-input" type="text" name="license_no" validType="license_no" readonly>
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -114,6 +114,11 @@
     var query = $$.parseQueryString();
 
 	var baseurl = '/test';
+	history.pushState(null, null, 'photos.html?'+$.param(query));
+	window.addEventListener('popstate', function () {
+		//window.location.href = 'photos.html?'+$.param(query);
+	});
+		
     function onSubmit() {
         if (!weui.form.validate('#form', $$.rules)) return;
         var param = $('#form').serializeObject();
@@ -217,11 +222,6 @@
 		}
 	}
     $(function() {
-		/*
-		history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', function () {
-            history.pushState(null, null, document.URL);
-        });*/
         $('#submit-btn').on('click', onSubmit);
 		$('#flow-btn').on('click', complete);
         $('#city-picker').on('focus', function() {

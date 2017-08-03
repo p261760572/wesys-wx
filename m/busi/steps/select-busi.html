@@ -126,7 +126,12 @@
 	
 	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
-		weui.page.back();
+		if(!$('#page1').hasClass('page_show')) {
+			weui.page.back();
+			history.pushState(null, null, document.URL);
+		} else{
+			window.location.href = '../../index.html';
+		}
 	});
 		
 	weui.searchPage('#page1', {

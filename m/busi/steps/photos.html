@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="weui-btn-area btn-area">
-                <a href="javascript:" class="weui-btn weui-btn_default" onclick="prev();">返回</a>
+                <a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
                 <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
             </div>
         </form>
@@ -96,7 +96,7 @@
                 </div>
              </div>
              <div class="weui-btn-area btn-area">
-                <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();CurrentPage--;">返回</a>
+                <a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
                 <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
              </div>
          </form>
@@ -132,7 +132,7 @@
                 </div>
             </div>
 			<div class="weui-btn-area btn-area">
-				<a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();CurrentPage--;">返回</a>
+				<a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
 				<a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
 			</div>
         </form>
@@ -190,7 +190,7 @@
 				</div>
         	  </div>
         	  <div class="weui-btn-area btn-area">
-				  <a href="javascript:" class="weui-btn weui-btn_default" onclick="weui.page.back();CurrentPage--;">返回</a>
+				  <a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
 				  <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
 			  </div>
          </form>
@@ -199,14 +199,11 @@
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
     <script>
 	var baseurl = '/test';
-	history.pushState(null, null, document.URL);
+	//history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
-		if(CurrentPage > 1) {
-			weui.page.back();
-			CurrentPage--;
+		show_page('back');
+		if(CurrentPage > 0) {
 			history.pushState(null, null, document.URL);
-		} else {
-			window.location.href = "select-busi.html";
 		}
 		
 	});
@@ -215,7 +212,7 @@
 		return '您可能有数据没有保存'; 
 	});
     var query = $$.parseQueryString();
-	var CurrentPage = 0;
+	var CurrentPage = -1, CurrentForm;
     var uploaderData = [], elec_group = [];
 	
 	var ocr_map = {
@@ -344,7 +341,7 @@
 	
 	function checkMustPic() {
 		var check = true;
-		$('#form'+CurrentPage).find('.weui-uploader.required').each(function(index, item){
+		$(CurrentForm).find('.weui-uploader.required').each(function(index, item){
 			var target = $(this);
 			if(target.find('.weui-uploader__file').length == 0 ||
 				target.find('.weui-uploader__file').attr('data-id') == undefined ||
@@ -359,14 +356,14 @@
 	}
 		
     function onSubmit() {
-        if (!weui.form.validate('#form'+CurrentPage, $$.rules)) return;
+        if (!weui.form.validate($(CurrentForm), $$.rules)) return;
 		if (!checkMustPic()) {
 			weui.alert('请上传电子资料', {
 				title: '提示'
 			});
 			return false;
 		}
-		show_page();
+		show_page('forward');
 		if(CurrentPage == elec_group.length) {
 			var param = {};
 			var elec_info = [];
@@ -397,20 +394,36 @@
 					}
 				}
 			});
-		}
+		} 
     }
 
-	function show_page() {
-		for(var i=CurrentPage; i < elec_group.length; i++) {
-			var page_id = elec_group[i].elec_info_type;
-			if($('#'+page_id).length > 0) {
-				weui.page.show('#'+page_id);
-				CurrentPage = i+1;
-				LoadForm();
-				return;
+	function show_page(direction) {
+		if(direction == 'forward') {
+			for(var i=CurrentPage+1; i < elec_group.length; i++) {
+				var page_id = elec_group[i].elec_info_type;
+				if($('#'+page_id).length > 0) {
+					weui.page.show('#'+page_id);
+					CurrentPage = i;
+					CurrentForm = $('#'+page_id).find('form')[0];
+					LoadForm();
+					return;
+				}
 			}
+			CurrentPage = elec_group.length;
+		} else if(direction == 'back') {
+			for(var i=CurrentPage-1; i >= 0; i--) {
+				var page_id = elec_group[i].elec_info_type;
+				if($('#'+page_id).length > 0) {
+					weui.page.show('#'+page_id);
+					CurrentPage = i;
+					CurrentForm = $('#'+page_id).find('form')[0];
+					LoadForm();
+					return;
+				}
+			}
+			CurrentPage = -1;
+			window.location.href = "select-busi.html";
 		}
-		CurrentPage = elec_group.length;
 	}
 	function LoadForm() {
 		var id;
@@ -418,10 +431,10 @@
 			$$.request(baseurl+'/action/bm/app-busi/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
-						weui.form.load('#form'+CurrentPage, data.data);
+						weui.form.load($(CurrentForm), data.data);
 						var images = data.images;
 						
-						$('#form'+CurrentPage).find('.weui-uploader').each(function(idx, target){
+						$(CurrentForm).find('.weui-uploader').each(function(idx, target){
 							$.each(images, function(index, item) {
 								if(item.elec_info_type == $(target).attr('data-type')) {
 									var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
@@ -448,7 +461,7 @@
             success: function(data) {
                 if (data.errcode == 0) {
                     elec_group = data.rows;
-					show_page();
+					show_page('forward');
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'
