@@ -17,7 +17,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required recognize" data-type="yyzzzm">
+                        <div class="weui-uploader required" data-type="yyzzzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">营业执照正面照片<span class="required">*</span></p>
                             </div>
@@ -43,6 +43,7 @@
             </div>
             <div class="weui-btn-area btn-area">
                 <a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
             </div>
         </form>
@@ -63,7 +64,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required recognize" data-type="frzjzm">
+                        <div class="weui-uploader required" data-type="frzjzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证正面照片<span class="required">*</span></p>
                             </div>
@@ -73,6 +74,7 @@
                                 <div class="weui-uploader__input-box">
                                     <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
                                 </div>
+                                <a href="javascript:" class="weui-btn weui-btn_mini weui-btn_primary" onclick="OCR(this)" style="margin-left: 20px;">识别</a>
                             </div>
                         </div>
                     </div>
@@ -97,6 +99,7 @@
              </div>
              <div class="weui-btn-area btn-area">
                 <a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
              </div>
          </form>
@@ -107,7 +110,7 @@
             <div class="weui-cells weui-cells_form">
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader recognize" data-type="frzjfm">
+                        <div class="weui-uploader" data-type="frzjfm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">身份证反面照片</p>
                             </div>
@@ -117,6 +120,7 @@
                                 <div class="weui-uploader__input-box">
                                     <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
                                 </div>
+                                <a href="javascript:" class="weui-btn weui-btn_mini weui-btn_primary" onclick="OCR(this)" style="margin-left: 20px;">识别</a>
                             </div>
                         </div>
                     </div>
@@ -133,6 +137,7 @@
             </div>
 			<div class="weui-btn-area btn-area">
 				<a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
+				&nbsp;&nbsp;&nbsp;&nbsp;
 				<a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
 			</div>
         </form>
@@ -165,7 +170,7 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__bd">
-                        <div class="weui-uploader required recognize" data-type="zhzm">
+                        <div class="weui-uploader required" data-type="zhzm">
                             <div class="weui-uploader__hd">
                                 <p class="weui-uploader__title">账户正面照片<span class="required">*</span></p>
                             </div>
@@ -175,6 +180,7 @@
                                 <div class="weui-uploader__input-box">
                                     <input class="weui-uploader__input" type="file" accept="image/*" capture="camera">
                                 </div>
+                                <a href="javascript:" class="weui-btn weui-btn_mini weui-btn_primary" onclick="OCR(this)" style="margin-left: 20px;">识别</a>
                             </div>
                         </div>
                     </div>
@@ -191,6 +197,7 @@
         	  </div>
         	  <div class="weui-btn-area btn-area">
 				  <a href="javascript:" class="weui-btn weui-btn_default" onclick="show_page('back');">返回</a>
+				  &nbsp;&nbsp;&nbsp;&nbsp;
 				  <a name="submit-btn" href="javascript:" class="weui-btn weui-btn_primary">下一步</a>
 			  </div>
          </form>
@@ -202,15 +209,11 @@
 	//history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
 		show_page('back');
-		if(CurrentPage > 0) {
+		if(CurrentPage > 0 && CurrentPage < elec_group.length) {
 			history.pushState(null, null, document.URL);
 		}
-		
 	});
 		
-	$(window).bind('beforeunload', function(){ 
-		return '您可能有数据没有保存'; 
-	});
     var query = $$.parseQueryString();
 	var CurrentPage = -1, CurrentForm;
     var uploaderData = [], elec_group = [];
@@ -248,6 +251,15 @@
 		return data;
 	}
 		
+	function OCR(target) {
+		var element = $(target).siblings('.weui-uploader__files').children('.weui-uploader__file')[0];
+		if(element != null) {
+			var id = parseInt($(element).attr('data-id'));
+			var url =  $$.wrapUrl('/action/uploads/') + uploaderData[id].serverid;
+			imageToDataUrl(url, auto_recognize, uploaderData[id]);
+		}
+	}
+		
 	function imageToDataUrl(url, callback, param) {
 		var canvas = document.createElement("canvas");
 		var ctx = canvas.getContext("2d");
@@ -263,7 +275,7 @@
 			ctx.drawImage(img, 0, 0);
 
 			var dataURL =  canvas.toDataURL('image/jpeg');
-			console.log(dataURL);
+			//console.log(dataURL);
 			callback(dataURL, param);
 		}
 		img.src = url;
@@ -323,11 +335,11 @@
 					serverid: ret.serverid,
 					elec_info_type: elec_info_type
 				};
-				
+				/*
 				if(target.hasClass('recognize')) {
 					var url =  $$.wrapUrl('/action/uploads/') + ret.serverid;
 					imageToDataUrl(url, auto_recognize, uploaderData[this.id]);
-				}
+				}*/
             },
             onError: function(err) {
                 console.log(this, err);
