@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" > 
     <title>基本信息</title>
     <link rel="stylesheet" href="../js/lib/weuijs/style/weuijs.css">
     <link rel="stylesheet" href="../css/ui-base.css">
@@ -66,10 +66,10 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">商户简称<span class="required">*</span></label>
+                        <label class="weui-label">商户名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input base" type="text" name="mchnt_abbr" required="" placeholder="请输入商户简称">
+                        <input class="weui-input base" type="text" name="mchnt_abbr" required="" placeholder="请输入商户名称">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -121,6 +121,15 @@
                     </div>
                     <div class="weui-cell__bd">
                         <input class="weui-input base" type="number" name="term_num" required="" placeholder="请输入终端数量">
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">机具类型<span class="required">*</span></label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="text" name="equi_type_nm" required="" placeholder="请选择机具类型" id="equi-type-select2" readonly>
+                        <input class="base" type="hidden" name="equi_type">
                     </div>
                 </div>
                 <div class="weui-cell weui-cell_select weui-cell_select-after">
@@ -208,10 +217,10 @@
                 </div>
                 <div class="weui-cell">
                     <div class="weui-cell__hd">
-                        <label class="weui-label">开户名称<span class="required">*</span></label>
+                        <label class="weui-label">账户名称<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input busi" type="text" name="account_name" required="" placeholder="请输入开户名称">
+                        <input class="weui-input busi" type="text" name="account_name" required="" placeholder="请输入账户名称">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -566,6 +575,15 @@
                 url: '/action/bm/parameter/list',
 				queryParams: {term_inves: '1'},
 				rowsName: 'term_inves'
+            }).search();
+        });
+		
+		$('#equi-type-select2').on('focus', function() {
+            $$.showSelect2(this, {
+                title: '搜索机具类型',
+                url: '/action/bm/parameter/list',
+				queryParams: {equi_type: '1'},
+				rowsName: 'equi_type'
             }).search();
         });
     });

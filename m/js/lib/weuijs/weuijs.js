@@ -2391,7 +2391,7 @@ $.fn.scroll = function(options) {
 
         options = $.extend({
             content: content,
-            duration: 3000,
+            duration: 1000,
             callback: $.noop,
             className: ''
         }, options);

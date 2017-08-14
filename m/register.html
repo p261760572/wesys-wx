@@ -159,7 +159,8 @@
 
                 if (data.errcode == 0) {
                     weui.toast('注册成功', function() {
-                        window.location.href = $$.wrapUrl('/m/login.html');
+                        //window.location.href = $$.wrapUrl('/m/login.html');
+						window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf8f68fabffece9a3&redirect_uri=https%3a%2f%2fwww.hntonglink.com%2fp%2fm%2fuser-binding.html&response_type=code&scope=snsapi_base&state=123#wechat_redirect';
                     });
                 } else {
                     weui.topTips(data.errmsg);
