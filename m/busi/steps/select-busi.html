@@ -189,7 +189,7 @@
 			var param = {busi_type: busi_type,
 						 acq_inst_id: acq_inst_id,
 						 mchnt_type: row.value};
-			$.extend({}, query, param);
+			param = $.extend({}, query, param);
 			window.location.href = "./photos.html?" + $.param(param);
 		}
 	})

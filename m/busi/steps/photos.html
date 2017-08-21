@@ -85,7 +85,7 @@
                         <label class="weui-label">证件姓名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_name" id="cert_name" required="" placeholder="请输入证件姓名">
+                        <input class="weui-input" type="text" name="cert_name" id="cert_name" required="" placeholder="请输入证件姓名" validType="name">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -162,7 +162,7 @@
                         <label for="" class="weui-label">账户类型<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <select class="weui-select" name="isCard" id="isCard" required missingTips="请选择账户类型">
+                        <select class="weui-select" name="iscard" id="iscard" required missingTips="请选择账户类型">
                             <option value="1">银行卡</option>
                             <option value="2">公账户</option>
                         </select>
@@ -191,7 +191,7 @@
 						<label class="weui-label">银行账号<span class="required">*</span></label>
 					</div>
 					<div class="weui-cell__bd">
-						<input class="weui-input" name="account_no" id="account_no" required="" type="number" placeholder="请输入银行账号" style="font-weight:bold; font-size:20px; color: red;">
+						<input class="weui-input" name="account_no" id="account_no" required="" type="number" placeholder="请输入银行账号" validType="cardno" style="font-weight:bold; font-size:20px; color: red;">
 					</div>
 				</div>
         	  </div>
@@ -206,7 +206,7 @@
     <script type="text/javascript" src="../../js/lib/weuijs/weuijs.min.js"></script>
     <script>
 	var baseurl = '/test';
-	//history.pushState(null, null, document.URL);
+	history.pushState(null, null, document.URL);
 	window.addEventListener('popstate', function () {
 		show_page('back');
 		if(CurrentPage > 0 && CurrentPage < elec_group.length) {
@@ -246,6 +246,25 @@
 		},
 	};
     
+	var rules = $.extend({}, $$.rules.rules, {
+		license_no: function(value) {
+			var re = /^([a-zA-Z0-9]{15}|[a-zA-Z0-9]{18})$/;
+			return re.test(value);
+		},
+		name: function(value, param) {
+			var re = /^[\u4e00-\u9fa5]{2,20}$/; 
+			return re.test(value);
+        },
+		cardno: function(value, param) {
+			if($('#isCard').val() == '1') {
+				var re = /^\d{14,19}$/; 
+				return re.test(value);
+			} else{
+				return true;
+			}
+        }
+	});
+	
 	function valid_regular(data) {
 		var data = data.match(/([^\-]+)$/)[0].replace(/(\.)/g,'');
 		return data;
@@ -346,10 +365,6 @@
             }
         });
     }
-
-	function prev() {
-		window.location.href = 'select-busi.html';
-	}
 	
 	function checkMustPic() {
 		var check = true;
@@ -368,7 +383,7 @@
 	}
 		
     function onSubmit() {
-        if (!weui.form.validate($(CurrentForm), $$.rules)) return;
+        if (!weui.form.validate($(CurrentForm), {rules: rules})) return;
 		if (!checkMustPic()) {
 			weui.alert('请上传电子资料', {
 				title: '提示'
@@ -417,7 +432,6 @@
 					weui.page.show('#'+page_id);
 					CurrentPage = i;
 					CurrentForm = $('#'+page_id).find('form')[0];
-					LoadForm();
 					return;
 				}
 			}
@@ -429,12 +443,11 @@
 					weui.page.show('#'+page_id);
 					CurrentPage = i;
 					CurrentForm = $('#'+page_id).find('form')[0];
-					LoadForm();
 					return;
 				}
 			}
 			CurrentPage = -1;
-			window.location.href = "select-busi.html";
+			window.location.href = "select-busi.html?" + $.param(query);
 		}
 	}
 	function LoadForm() {
@@ -443,10 +456,12 @@
 			$$.request(baseurl+'/action/bm/app-busi/view', query, {
 				success: function(data) {
 					if (data.errcode == 0) {
-						weui.form.load($(CurrentForm), data.data);
+						$('form').each(function(){
+							weui.form.load($(this), data.data);
+						});
 						var images = data.images;
-						
-						$(CurrentForm).find('.weui-uploader').each(function(idx, target){
+						//$('.weui-uploader__file').remove();
+						$('.weui-uploader').each(function(idx, target){
 							$.each(images, function(index, item) {
 								if(item.elec_info_type == $(target).attr('data-type')) {
 									var url =  $$.wrapUrl('/action/uploads/') + item.serverid;
@@ -474,6 +489,7 @@
                 if (data.errcode == 0) {
                     elec_group = data.rows;
 					show_page('forward');
+					LoadForm();
                 } else {
                     weui.alert(data.errmsg, {
                         title: '提示'

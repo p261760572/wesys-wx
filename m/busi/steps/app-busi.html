@@ -118,11 +118,7 @@
 						acq_inst_id: row.acq_inst_id,
 						busi_type: row.busi_type
 					};
-					if(row.account_bank_branch_cd == null) {
-						 window.location.href = 'photos.html?' + $.param(params);
-					} else {
-						window.location.href = 'base.html?' + $.param(params);
-					}
+					window.location.href = 'base.html?' + $.param(params);
 				}
             });
         }

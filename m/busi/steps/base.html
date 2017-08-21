@@ -36,7 +36,7 @@
                         <label class="weui-label">法人姓名<span class="required">*</span></label>
                     </div>
                     <div class="weui-cell__bd">
-                        <input class="weui-input" type="text" name="cert_name" required="" pattern="" placeholder="请输入法人姓名">
+                        <input class="weui-input" type="text" name="cert_name" required="" pattern="" placeholder="请输入法人姓名" validType="name">
                     </div>
                 </div>
                 <div class="weui-cell">
@@ -65,7 +65,7 @@
                         <input type="hidden" name="city">
                         <input type="hidden" name="district">
                     </div>
-                    <div class="weui-cell__fd" id="Location">
+                    <div class="weui-cell__fd" id="Location" style="margin-top: 5px;">
                     <!--i class="icon-location"></i-->
                     <img class="weui-vcode-img" src="../../css/location.svg"></img>
                     </div>
@@ -125,8 +125,27 @@
 		window.location.href = 'photos.html?'+$.param(query);
 	});
 		
+	var rules = $.extend({}, $$.rules.rules, {
+		license_no: function(value) {
+			var re = /^([a-zA-Z0-9]{15}|[a-zA-Z0-9]{18})$/;
+			return re.test(value);
+		},
+		name: function(value, param) {
+			var re = /^[\u4e00-\u9fa5]{2,20}$/; 
+			return re.test(value);
+        },
+		cardno: function(value, param) {
+			if($('#isCard').val() == '1') {
+				var re = /^\d{14,19}$/; 
+				return re.test(value);
+			} else{
+				return true;
+			}
+        }
+	});
+		
     function onSubmit() {
-        if (!weui.form.validate('#form', $$.rules)) return;
+        if (!weui.form.validate('#form', {rules: rules})) return;
         var param = $('#form').serializeObject();
 		param = $.extend({}, query, param);
         $$.request(baseurl+'/action/bm/app-busi/update', param, {
